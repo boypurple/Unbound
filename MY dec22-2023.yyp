@@ -50,7 +50,7 @@
   "isEcma":false,
   "LibraryEmitters":[],
   "MetaData":{
-    "IDEVersion":"2024.14.4.222",
+    "IDEVersion":"2024.1400.4.1030",
   },
   "name":"MY dec22-2023",
   "resources":[
@@ -89,6 +89,7 @@
     {"id":{"name":"GameData","path":"scripts/GameData/GameData.yy",},},
     {"id":{"name":"Init","path":"scripts/Init/Init.yy",},},
     {"id":{"name":"item_table","path":"scripts/item_table/item_table.yy",},},
+    {"id":{"name":"LoadGame","path":"scripts/LoadGame/LoadGame.yy",},},
     {"id":{"name":"math","path":"scripts/math/math.yy",},},
     {"id":{"name":"MenuFunctions","path":"scripts/MenuFunctions/MenuFunctions.yy",},},
     {"id":{"name":"object_add","path":"scripts/object_add/object_add.yy",},},
@@ -97,6 +98,7 @@
     {"id":{"name":"play_sound","path":"scripts/play_sound/play_sound.yy",},},
     {"id":{"name":"player_action_table","path":"scripts/player_action_table/player_action_table.yy",},},
     {"id":{"name":"PSI","path":"scripts/PSI/PSI.yy",},},
+    {"id":{"name":"SaveGame","path":"scripts/SaveGame/SaveGame.yy",},},
     {"id":{"name":"snd_battle_start","path":"sounds/snd_battle_start/snd_battle_start.yy",},},
     {"id":{"name":"snd_click","path":"sounds/snd_click/snd_click.yy",},},
     {"id":{"name":"snd_dialog","path":"sounds/snd_dialog/snd_dialog.yy",},},

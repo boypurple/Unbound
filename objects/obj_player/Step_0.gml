@@ -73,4 +73,8 @@ if(!global.gamePaused)
 	if (!instance_exists(obj_dialog_box) && _status != "battle") {
 		_status = "overworld";
 	}
+	if (keyboard_check_pressed(vk_escape))
+	{
+		global.gamePaused = true;
+	}
 }

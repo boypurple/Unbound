@@ -21,7 +21,11 @@ if(global.gamePaused)
 					with(all)
 					{
 						gamePausedImageSpeed = image_speed
-						image_speed = 0
+						
+						//Removing this line of code makes animation work, even after the game
+						//has been paused and unpaused. Keeping it here just in case.
+						
+						//image_speed = 0
 					}
 					break
 				
@@ -38,7 +42,7 @@ if(global.gamePaused)
 					break
 				
 				case 4: //Save
-					SaveGame()
+					SaveGame(obj_player)
 					break
 				
 				case 5: //Quit
