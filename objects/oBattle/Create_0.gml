@@ -6,6 +6,10 @@ units = []
 turn = 0
 unitTurnOrder = []
 unitRenderOrder = []
+allst = []
+alldef = []
+off = []
+defd = []
 
 turnCount = 0
 roundCount = 0
@@ -30,10 +34,37 @@ cursor =
 }
 
 //Make enemies
+//for(var i = 0; i < array_length(enemies); i++)
+//{
+//	enemyUnits[i] = instance_create_depth(x + 250 + ((i mod 3) * 128), y + 180 - ((i mod 3) * 10) - ((i div 3) * 25), depth - 10, oBattleUnitEnemy, enemies[i])
+//	array_push(units, enemyUnits[i])
+//}
+// Configurações do Grid Visual
+var _startX = x + 250;
+var _startY = y + 190; // Y inicial (Linha 0 ficará mais para baixo na tela)
+var _colSpacing = 120; // Espaçamento horizontal entre as colunas
+var _rowSpacing = 60;  // O quanto o Y diminui (sobe na tela) por linha
+
+// Make enemies
 for(var i = 0; i < array_length(enemies); i++)
 {
-	enemyUnits[i] = instance_create_depth(x + 250 + ((i mod 3) * 128), y + 180 - ((i mod 3) * 10) - ((i div 3) * 25), depth - 10, oBattleUnitEnemy, enemies[i])
-	array_push(units, enemyUnits[i])
+	// Extrai os dados passados no NewEncounter
+	var _eData = enemies[i].data;
+	var _col = enemies[i].col;
+	var _row = enemies[i].row;
+	
+	// Calcula a posição na tela
+	var _spawnX = _startX + (_col * _colSpacing);
+	var _spawnY = _startY - (_row * _rowSpacing);
+	
+	// Cria o inimigo injetando o _eData
+	enemyUnits[i] = instance_create_depth(_spawnX, _spawnY, depth - 10, oBattleUnitEnemy, _eData);
+	
+	// Registra as coordenadas da matriz no objeto para o Cursor usar depois
+	enemyUnits[i].gridCol = _col;
+	enemyUnits[i].gridRow = _row;
+	
+	array_push(units, enemyUnits[i]);
 }
 
 //Make friends
@@ -118,7 +149,7 @@ function BattleStateSelectAction()
 					array_push(_menuOptions, [_subMenusArray[i], SubMenu, [_subMenus[$ _subMenusArray[i]]], true])
 				}
 			
-				Menu(x + 10, y + 110, _menuOptions, , 74, 60)
+				Menu(x + 10, y + 10, _menuOptions, , 176, 80)
 			}
 			else
 			{
@@ -214,6 +245,60 @@ function BattleStatePerformAction()
 
 function BattleStateVictoryCheck()
 {
+	if(global.escape)
+	{
+		for(var i = 0; i < array_length(partyUnits); i++)
+		{
+			if(partyUnits[i].afo)
+			{
+				switch(partyUnits[i].aftype)
+				{
+					case "a":
+						partyUnits[i].strength -= (allst[i] * 0.05)
+						partyUnits[i].def += (alldef[i] * 0.05)
+						break;
+						
+					case "b":
+						partyUnits[i].strength -= (allst[i] * 0.15)
+						partyUnits[i].def += (alldef[i] * 0.15)
+						break;
+					case "y":
+						partyUnits[i].strength -= (allst[i] * 0.25)
+						partyUnits[i].def += (alldef[i] * 0.25)
+						break;
+					case "o":
+						partyUnits[i].strength -= (allst[i] * 0.40)
+						partyUnits[i].def += (alldef[i] * 0.40)
+						break;
+				}
+				partyUnits[i].afo = false
+				partyUnits[i].aftype = ""
+				partyUnits[i].anum = 0
+			}
+			
+			if(partyUnits[i].offenseup)
+			{
+				partyUnits[i].strength -= (off[i] * 0.2)
+				partyUnits[i].offenseup = false
+			}
+			
+			if(partyUnits[i].defdown)
+			{
+				partyUnits[i].def -= (defd[i] * 0.2)
+				partyUnits[i].defdown = false
+			}
+			
+			if(partyUnits[i].hyper)
+			{
+				partyUnits[i].spd -= 1
+				partyUnits[i].hyper = false
+			}
+		}
+		global.escape = false
+		// Dica: Aqui você também pode limpar os arrays, destruir o obj_battle,
+		// tocar uma música de vitória/Game Over ou reativar o jogador no mapa.
+		instance_destroy()
+	}
 	// 1. Checa se todos os aliados estão mortos
 	var _partyDead = true;
 	for(var i = 0; i < array_length(partyUnits); i++)
@@ -244,9 +329,41 @@ function BattleStateVictoryCheck()
 		{
 			if(partyUnits[i].afo)
 			{
-				partyUnits[i].def -= 1
-				partyUnits[i].strength -= 1
+				switch(partyUnits[i].aftype)
+				{
+					case "a":
+						partyUnits[i].strength -= (allst[i] * 0.05)
+						partyUnits[i].def += (alldef[i] * 0.05)
+						break;
+						
+					case "b":
+						partyUnits[i].strength -= (allst[i] * 0.15)
+						partyUnits[i].def += (alldef[i] * 0.15)
+						break;
+					case "y":
+						partyUnits[i].strength -= (allst[i] * 0.25)
+						partyUnits[i].def += (alldef[i] * 0.25)
+						break;
+					case "o":
+						partyUnits[i].strength -= (allst[i] * 0.40)
+						partyUnits[i].def += (alldef[i] * 0.40)
+						break;
+				}
 				partyUnits[i].afo = false
+				partyUnits[i].aftype = ""
+				partyUnits[i].anum = 0
+			}
+			
+			if(partyUnits[i].offenseup)
+			{
+				partyUnits[i].strength -= (off[i] * 0.2)
+				partyUnits[i].offenseup = false
+			}
+			
+			if(partyUnits[i].defdown)
+			{
+				partyUnits[i].def -= (defd[i] * 0.2)
+				partyUnits[i].defdown = false
 			}
 			
 			if(partyUnits[i].hyper)
@@ -278,9 +395,41 @@ function BattleStateVictoryCheck()
 		{
 			if(partyUnits[i].afo)
 			{
-				partyUnits[i].def -= 1
-				partyUnits[i].strength -= 1
+				switch(partyUnits[i].aftype)
+				{
+					case "a":
+						partyUnits[i].strength -= (allst[i] * 0.05)
+						partyUnits[i].def += (alldef[i] * 0.05)
+						break;
+						
+					case "b":
+						partyUnits[i].strength -= (allst[i] * 0.15)
+						partyUnits[i].def += (alldef[i] * 0.15)
+						break;
+					case "y":
+						partyUnits[i].strength -= (allst[i] * 0.25)
+						partyUnits[i].def += (alldef[i] * 0.25)
+						break;
+					case "o":
+						partyUnits[i].strength -= (allst[i] * 0.40)
+						partyUnits[i].def += (alldef[i] * 0.40)
+						break;
+				}
 				partyUnits[i].afo = false
+				partyUnits[i].aftype = ""
+				partyUnits[i].anum = 0
+			}
+			
+			if(partyUnits[i].offenseup)
+			{
+				partyUnits[i].strength -= (off[i] * 0.2)
+				partyUnits[i].offenseup = false
+			}
+			
+			if(partyUnits[i].defdown)
+			{
+				partyUnits[i].def -= (def[i] * 0.2)
+				partyUnits[i].defdown = false
 			}
 			
 			if(partyUnits[i].hyper)
@@ -319,7 +468,7 @@ function BattleStateTurnProgression()
 		roundCount++
 	}
 	
-	for(var i = 0; i < array_length(unitTurnOrder) - 1; i++)
+	for(var i = 0; i <= array_length(unitTurnOrder) - 1; i++)
 	{
 		var _unit = unitTurnOrder[i]
 		if(_unit.itchy)
@@ -342,33 +491,87 @@ function BattleStateTurnProgression()
 			}
 		}
 		
-		if(_unit.poisoned)
+		if(_unit.afo)
 		{
-			_unit.ponum += 1
-			
-			switch(_unit.poison)
+			if(_unit.anum <= 0)
 			{
-				case "":
-					break
-				
-				case "a":
-					BattleChangeHP(_unit, irandom_range(-4, -8), 0)
-					break
-					
-				case "b":
-					BattleChangeHP(_unit, irandom_range(-20, -40), 0)
-					break
-					
-				case "y":
-					BattleChangeHP(_unit, irandom_range(-50, -80), 0)
-					break
-					
-				case "o":
-					BattleChangeHP(_unit, irandom_range(-80, -100), 0)
-					break
+				allst[i] = _unit.strength
+				alldef[i] = _unit.def
+				switch(_unit.aftype)
+				{
+					case "a":
+						_unit.strength += (_unit.strength * 0.05)
+						_unit.def += (_unit.def * 0.05)
+						break;
+						
+					case "b":
+						_unit.strength += (_unit.strength * 0.15)
+						_unit.def += (_unit.def * 0.15)
+						break;
+					case "y":
+						_unit.strength += (_unit.strength * 0.25)
+						_unit.def += (_unit.def * 0.25)
+						break;
+					case "o":
+						_unit.strength += (_unit.strength * 0.40)
+						_unit.def += (_unit.def * 0.40)
+						break;
+				}
 			}
 			
-			if(_unit.ponum >= 5)
+			_unit.anum += 1
+			if(_unit.anum >= 4)
+			{
+				_unit.strength = allst[i]
+				_unit.def = alldef[i]
+				_unit.afo = false
+				_unit.aftype = ""
+				_unit.anum = 0
+			}
+		}
+		
+		if(_unit.offenseup)
+		{
+			off[i] = _unit.strength
+			_unit.strength += (_unit.strength * 0.2)
+		}
+		
+		if(_unit.defdown)
+		{
+			defd[i] = _unit.def
+			_unit.def += (_unit.def * 0.2)
+		}
+		
+		if(_unit.poisoned)
+		{
+			if(_unit.ponum >= 1)
+			{
+				switch(_unit.poison)
+				{
+					case "":
+						break
+				
+					case "a":
+						BattleChangeHP(_unit, irandom_range(-4, -8), 0)
+						break
+					
+					case "b":
+						BattleChangeHP(_unit, irandom_range(-20, -40), 0)
+						break
+					
+					case "y":
+						BattleChangeHP(_unit, irandom_range(-50, -80), 0)
+						break
+					
+					case "o":
+						BattleChangeHP(_unit, irandom_range(-80, -100), 0)
+						break
+				}
+			}
+			
+			_unit.ponum += 1
+			
+			if(_unit.ponum >= 6)
 			{
 				_unit.poisoned = false
 				_unit.ponum = 0
@@ -376,7 +579,6 @@ function BattleStateTurnProgression()
 			}
 		}
 	}
-	
 	battleState = BattleStateSelectAction
 }
 

@@ -12,7 +12,7 @@ function Menu(_x, _y, _options, _description = -1, _width = undefined, _height =
 		xmargin = 10
 		ymargin = 8
 		draw_set_font(fnMother3)
-		heightLine = 12
+		heightLine = 20
 		
 		//Auto width
 		if(_width == undefined)
@@ -98,11 +98,11 @@ function MenuSelectAction(_user, _action)
 					{
 						targetSide = oBattle.partyUnits
 						activeTarget = activeUser
-						var _findSelf = function(_element, _user)
-						{
-							return (_element == cursorTarget)
-						}
-						targetIndex = array_find_index(oBattle.partyUnits, _findSelf)
+						//var _findSelf = function(_element, _user)
+						//{
+						//	return (_element == cursorTarget)
+						//}
+						//targetIndex = array_find_index(oBattle.partyUnits, _findSelf)
 					}
 				}
 				else //Target self by default
@@ -111,11 +111,11 @@ function MenuSelectAction(_user, _action)
 					{
 						targetSide = oBattle.partyUnits
 						activeTarget = activeUser
-						var _findSelf = function(_element, _user)
-						{
-							return (_element == cursorTarget)
-						}
-						targetIndex = array_find_index(oBattle.partyUnits, _findSelf)
+						//var _findSelf = function(_element, _user)
+						//{
+						//	return (_element == cursorTarget)
+						//}
+						//targetIndex = array_find_index(oBattle.partyUnits, _findSelf)
 					}
 					else
 					{

@@ -109,14 +109,14 @@ if (_intro_timer == 3) {
 				_item_index[1] -= 2;
 				if (_item_index[1] % 4 == 0) {
 					_cursor_index = 4;
-					_offset -= 4;
+					offset -= 4;
 				}
 			}
 			if (keyboard_check_pressed(vk_down) && _item_index[0]+_item_index[1]+1 < array_length(_items)) {
 				_item_index[1] += 2;
 				if (_item_index[1] % 4 == 0) {
 					_cursor_index = 1;
-					_offset += 4;
+					offset += 4;
 				}
 			}
 			break;

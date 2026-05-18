@@ -74,14 +74,14 @@ function CheckLevelUp(_unit)
 		var _hpGain = irandom_range(2, 5);
 		var _ppGain = irandom_range(1, 3);
 		var _strGain = 1;
-		var _defGain = irandom_range(0, 1);
+		var defGain = irandom_range(0, 1);
 		
 		_unit.hpMax += _hpGain;
 		_unit.hp = _unit.hpMax; // Cura ao subir de nível
 		_unit.ppMax += _ppGain;
 		_unit.pp = _unit.ppMax;
 		_unit.strength += _strGain;
-		_unit.def += _defGain;
+		_unit.def += defGain;
 		
 		// Mensagem visual no log ou texto flutuante
 		instance_create_depth(320, 180, 0, oBattleFloatingText, 

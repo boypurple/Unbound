@@ -11,3 +11,12 @@ settingsSide = 0
 
 audioOptionName = ["Volume: " + string(global.volume), "SE Volume: " + string(global.volumeSE)]
 audioOptionSelected = 0
+
+for(var i = 0; i < array_length(global.party); i++)
+{
+	partyOption[i] = global.party[i].spr
+}
+partyOptionSelected = 0
+partySide = 0
+
+skillOptionSelected = 0

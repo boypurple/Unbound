@@ -142,7 +142,7 @@ if (_intro_timer >= 2) {
 			case "item":
 				_color = c_white;
 				draw_set_colour(c_white);
-				for (_item_text_index = _offset;; _item_text_index++) {
+				for (_item_text_index = offset;; _item_text_index++) {
 					draw_text_transformed(camera_get_view_x(view_camera[0])+120, camera_get_view_y(view_camera[0])+70, _items[_item_text_index+0]._name, 2, 2, 0);
 					if not (_item_text_index+1 < array_length(_items)-1) {
 						break;

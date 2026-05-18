@@ -28,12 +28,60 @@ if(cursor.active)
 		//if(_moveV == 1) targetSide = oBattle.enemyUnits
 		
 		//Verify target list
-		if(targetSide == oBattle.enemyUnits)
+		//if(targetSide == oBattle.enemyUnits)
+		//{
+		//	targetSide = array_filter(targetSide, function(_element, _index)
+		//	{
+		//		return _element.hp > 0
+		//	})
+		//}
+		//Verify target list e aplicar Formação
+		var _isEnemyTargeting = false;
+		
+		// Descobre se estamos mirando em inimigos para aplicar a regra de grid
+		if (is_array(targetSide) && array_length(targetSide) > 0) 
 		{
-			targetSide = array_filter(targetSide, function(_element, _index)
+			if (targetSide[0].object_index == oBattleUnitEnemy) _isEnemyTargeting = true;
+		} 
+		else if (targetSide == oBattle.enemyUnits) 
+		{
+			_isEnemyTargeting = true;
+		}
+
+		if (_isEnemyTargeting)
+		{
+			if(targetAll == false) //Single target mode
 			{
-				return _element.hp > 0
-			})
+				targetSide = array_filter(oBattle.enemyUnits, function(_element, _index)
+				{
+					// 1. O inimigo precisa estar vivo
+					if (_element.hp <= 0) return false; 
+				
+					// 2. Regra de Cobertura: Checa se há alguém na frente dele
+					var _isBlocked = false;
+					for (var i = 0; i < array_length(oBattle.enemyUnits); i++) 
+					{
+						var _frontGuard = oBattle.enemyUnits[i];
+					
+						// Bloqueia SE houver um inimigo vivo, na mesma coluna, numa linha menor (mais à frente)
+						if (_frontGuard.hp > 0 && _frontGuard.gridCol == _element.gridCol && _frontGuard.gridRow < _element.gridRow) 
+						{
+							_isBlocked = true;
+							break; // Para o loop assim que encontrar o bloqueador
+						}
+					}
+				
+					return !_isBlocked; // Retorna true (alvejável) se NÃO estiver bloqueado
+				});
+			}
+		}
+		else
+		{
+			// Se estiver mirando em aliados (magias de cura, etc), apenas filtra os mortos
+			targetSide = array_filter(oBattle.partyUnits, function(_element, _index)
+			{
+				return _element.hp > 0;
+			});
 		}
 		
 		//Move between targets

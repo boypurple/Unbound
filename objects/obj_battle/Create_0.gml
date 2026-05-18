@@ -65,7 +65,7 @@ _item_use = function(_item) {
 
 _item_text_index = 0;
 
-_offset = 0;
+offset = 0;
 
 _current_item = {};
 
