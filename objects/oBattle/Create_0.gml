@@ -149,7 +149,7 @@ function BattleStateSelectAction()
 					array_push(_menuOptions, [_subMenusArray[i], SubMenu, [_subMenus[$ _subMenusArray[i]]], true])
 				}
 			
-				Menu(x + 10, y + 10, _menuOptions, , 176, 80)
+				Menu(x + 10, y + 10, _menuOptions, , , )
 			}
 			else
 			{
