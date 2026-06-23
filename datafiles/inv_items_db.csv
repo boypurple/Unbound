@@ -1,0 +1,30 @@
+Name,Price,sprite,image index,Max stack,Level,Rarity,Magic,Description
+string,real,asset,real,real,real,real,real,string
+Red dust,1,spr_red,0,32,1,100,0,Collected under a sleeping red dragon. Can be used when brewing potions of healing.
+Purple sand,2,spr_purple,0,16,1,80,1,Blown by magic winds from the stars.
+Slime drop,4,spr_green,0,16,2,60,0,Collected near a bedrock of some sort.
+Ear wax,8,spr_yellow,0,8,3,50,0,You don't want to know where it has been collected.
+Teardrop,500,spr_blue,0,2,10,20,1,Has been collected on a sad unicorn.
+Milk,1548,spr_white,0,1,20,10,0,Add some coffee to make it tastier.
+Ink,66,spr_black,0,4,6,11,0,This is the most powerfull drop ever created. It has a long description to show you the place you have in the description box! So long that I can write another line, and another one, and another one.
+Dagger,10,spr_sword,0,1,1,1,0,A short sword. Simple and effective, handcrafted.
+Sword,15,spr_sword,1,1,2,2,0,Handcrafted item.Sharp and swift.
+Icy Sword,20,spr_sword,2,1,3,3,1,Frozen and magical sword.
+Flaming Sword,25,spr_sword,3,1,4,4,1,Sharp and burning like hell.
+Healing Potion,100,spr_potion,0,8,5,10,0,Fresh brewed potion.
+Speed Potion,200,spr_potion,1,8,6,11,0,Fresh brewed potion.
+Strength Potion,235,spr_potion,2,8,7,12,0,Fresh brewed potion.
+Potion of Wind,500,spr_potion,3,8,8,13,1,Fresh brewed potion.
+Gold Coin,1,spr_gold,0,100,1,1,0,Made from gold.
+Hand Axe,12,spr_axe,0,1,1,2,0,An axe made for woodsman. Can cut any tree.
+Battle Axe,25,spr_axe,1,1,2,10,0,Built for real warrior. Can cut an ork in two in one blow!
+Icy Axe,100,spr_axe,2,1,5,3,1,Crafted in the northen land of Izzmur. It's cold as ice, ready to sacrifice.
+Fire Axe,150,spr_axe,3,1,3,5,1,Come on baby light my fire! Sharp on the edge and burns like hell.
+Wooden Shield,10,spr_shield,0,1,1,1,0,Custom shield made from wood. Hand painted. Uses one hand. Can't use ranged weapons while holding it.
+Metal Shield,10,spr_shield,1,1,1,2,0,Shield forged with metal.Uses one hand. Can't use ranged weapons while holding it.
+Heaven Shield,100,spr_shield,2,1,5,5,1,A blessed tower shield. Uses one hand. Can't use ranged weapons while holding it.
+Death Shield,100,spr_shield,3,1,5,5,1,A strong shield forged in hell. Uses one hand. Can't use ranged weapons while holding it.
+Leather armor,10,spr_armor,0,1,1,1,0,A light and comfortable armor that gives you enough protection against smaller weapons.
+Chain Mail,20,spr_armor,1,1,2,2,0,A comfortable armor made from small metal rings. Great protection against sword and arrows.
+Icy Plate,100,spr_armor,2,1,5,10,1,This full armor gives you all the protection you need to go in hell. +10 against Flaming Sword.
+Obsidian Plate,100,spr_armor,3,1,5,10,1,This armor protects you against all type of attack but its so heavy that you can't walk or run.

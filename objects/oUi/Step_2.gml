@@ -1,11 +1,12 @@
-if(global.gamePaused)
+if(global.gameMenu)
 {
 	keyUp = keyboard_check_pressed(vk_up) || keyboard_check_pressed(ord("W"))
 	keyDown = keyboard_check_pressed(vk_down) || keyboard_check_pressed(ord("S"))
-	keyLeft = keyboard_check_direct(vk_left) || keyboard_check_direct(ord("A"))
-	keyRight = keyboard_check_direct(vk_right) || keyboard_check_direct(ord("D"))
+	keyLeft = keyboard_check_pressed(vk_left) || keyboard_check_pressed(ord("A"))
+	keyRight = keyboard_check_pressed(vk_right) || keyboard_check_pressed(ord("D"))
 	keyActivate = keyboard_check_pressed(vk_space)
 	keyDeactivate = keyboard_check_pressed(vk_escape)
+
 	if(!global.config && !global.partyMenu)
 	{
 		pauseOptionSelected += (keyDown - keyUp)
@@ -28,20 +29,27 @@ if(global.gamePaused)
 				case 1: //Party
 					global.partyMenu = true
 					break
-				
-				case 2: //Goods
+
+				case 2: //Inventory
+					instance_inventory = instance_create_layer(0, 0, global.Layer_UI, oInventory_UI)
+					instance_inventory.instance_inventory = instance_inventory
+					instance_activate_object(instance_inventory);
+					global.gameMenu = false
+					break
+
+				case 3: //Goods
 					Goods()
 					break
-			
-				case 3: //Settings
+
+				case 4: //Settings
 					global.config = true
 					break
-				
-				case 4: //Save
+
+				case 5: //Save
 					SaveGame()
 					break
-				
-				case 5: //Quit
+
+				case 6: //Quit
 					game_restart()
 					break
 			}
@@ -155,7 +163,7 @@ if(global.gamePaused)
 						partySide = 0
 					}
 					break
-				
+
 				case 1: //Functions
 					if(global.partySkillMenu)
 					{
@@ -180,4 +188,5 @@ if(global.gamePaused)
 			}
 		}
 	}
+
 }

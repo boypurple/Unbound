@@ -1,0 +1,3 @@
+inv_inventory_free(1);
+
+game_restart(); //An interesting function...

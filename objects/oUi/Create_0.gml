@@ -1,7 +1,7 @@
 click = false
 
-pauseOption = [sContinue, sParty, sGoods, sSettings, sSave, sQuit]
-pauseOptionName = ["Continue", "Party", "Goods", "Settings", "Save", "Quit"]
+pauseOption = [sContinue, sParty, sGoods, sGoods, sSettings, sSave, sQuit]
+pauseOptionName = ["Continue", "Party", "Inventory", "Goods", "Settings", "Save", "Quit"]
 pauseOptionSelected = 0
 
 settingsOption = [sAudio, sVideo, sControl, sQuit]
@@ -20,3 +20,6 @@ partyOptionSelected = 0
 partySide = 0
 
 skillOptionSelected = 0
+
+Layer()
+inv_database_ini()

@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"GameMenu",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"GameMenu",
+  "parent":{
+    "name":"Jyotis",
+    "path":"folders/Scripts/Jyotis.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

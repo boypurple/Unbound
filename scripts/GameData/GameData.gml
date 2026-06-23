@@ -11,6 +11,13 @@ global.configControl = false
 global.partyMenu = false
 global.partySkillMenu = false
 
+global.gameMenu = false
+
+global.inventory = []
+global.inventoryMaxColumn = 5 
+global.inventoryMaxSlots = 10
+global.inventoryKeyItems = []
+
 global.boss = false
 global.escape = false
 
