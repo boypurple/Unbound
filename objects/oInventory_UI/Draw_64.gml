@@ -109,10 +109,46 @@ if(global.gamePaused)
 
 			if (i < array_length(_currentItems))
 			{
-				// Draw item icon if available
-				if(_currentItems[i].icon != -1)
+				var _item = _currentItems[i]
+				if (_item.id != -1)
 				{
-					draw_sprite(_currentItems[i].icon, 0, _cellX + _cellWidth / 2, _cellY + _cellHeight / 2)
+					// Draw item icon if available
+					if(_item.icon != -1)
+					{
+						draw_sprite(_item.icon, 0, _cellX + _cellWidth / 2, _cellY + _cellHeight / 2)
+					}
+
+					panel_xscale = 0.2
+					panel_yscale = 0.9
+					// Fetch original asset sizes
+					base_w = sprite_get_width(InventoryTray) / 6
+					base_h = sprite_get_height(InventoryTray) * 3 / 4
+					// Multiply by scale
+					scaled_w = base_w * panel_xscale
+					scaled_h = base_h * panel_yscale
+					_panelX = (RESOLUTION_W - scaled_w) / 2
+					_panelY = (RESOLUTION_H - scaled_h) / 2
+					draw_set_halign(fa_right)
+					draw_set_valign(fa_middle)
+
+					draw_sprite_ext(InventoryTray, 0, _panelX, _panelY, panel_xscale, panel_yscale, 0, c_white, 1)
+
+					draw_set_color(c_black);
+					draw_set_font(font0);
+
+					draw_set_valign(fa_middle);
+					draw_set_halign(fa_center);
+					draw_text(128, 16, _item.name);
+					draw_sprite_ext(_item.icon, 0, 112, 24, 2, 2, 0, c_white, 1);
+
+					draw_set_halign(fa_left);
+					//draw_text(4, 80, "Price: "+string(price)+" gold.");
+					//draw_text(4, 96, "Level: "+string(level));
+					//draw_text(4, 112, "Rarity: "+string(rarity));
+					draw_text(4, 128, "Type: "+string(_item.type));
+
+					draw_set_halign(fa_center);
+					draw_text_ext(128, 196, _item.description, 16, 248);
 				}
 
 				// Draw item name below cell

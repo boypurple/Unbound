@@ -75,13 +75,12 @@ function InventoryAddItem(_item, _quantity = undefined)
         var _newItem = _item
         _newItem.quantity = _qtyToAdd
         array_push(global.inventoryKeyItems, _newItem)
-    }
-    
-    
-    // Trigger onGet event
-    if(_newItem.events.onGet != -1)
-    {
-        _newItem.events.onGet(_newItem, _qtyToAdd)
+
+        // Trigger onGet event
+        if(_newItem.events.onGet != -1)
+        {
+            _newItem.events.onGet(_newItem, _qtyToAdd)
+        }
     }
     
     return true

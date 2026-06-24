@@ -61,6 +61,15 @@ if(global.gamePaused)
 			}
 			inventoryOptionSelected = clamp(inventoryOptionSelected, -1,  global.inventoryMaxSlots - 1)
 			show_debug_message("inventoryOptionSelected " + string(inventoryOptionSelected))
+
+			/*
+			var _item = {id: -1, name: "", description: "", type: "", icon: -1}
+			if(inventoryOptionSelected >= 0 && inventoryOptionSelected < array_length(_currentItems) && _currentItems[inventoryOptionSelected].id != -1)
+			{
+				_item = _currentItems[inventoryOptionSelected]
+			}
+			ItemDescriptionPanel(_item)
+			*/
 		}
 
 		inventoryCursor = clamp(inventoryCursor, 0, 1)
