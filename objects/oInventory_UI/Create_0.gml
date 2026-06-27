@@ -1,5 +1,3 @@
-InventorySystem();
-
 click = false
 
 inventoryCursor = 0 // 0 = Tab, 1 = Items

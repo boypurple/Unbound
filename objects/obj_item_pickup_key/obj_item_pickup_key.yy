@@ -9,7 +9,7 @@
     {"$GMOverriddenProperty":"v1","%Name":"","name":"","objectId":{"name":"obj_item_pickup","path":"objects/obj_item_pickup/obj_item_pickup.yy",},"propertyId":{"name":"display_name_pickup","path":"objects/obj_item_pickup/obj_item_pickup.yy",},"resourceType":"GMOverriddenProperty","resourceVersion":"2.0","value":"Key Item",},
     {"$GMOverriddenProperty":"v1","%Name":"","name":"","objectId":{"name":"obj_item_pickup","path":"objects/obj_item_pickup/obj_item_pickup.yy",},"propertyId":{"name":"description_pickup","path":"objects/obj_item_pickup/obj_item_pickup.yy",},"resourceType":"GMOverriddenProperty","resourceVersion":"2.0","value":"This is a Key Item",},
     {"$GMOverriddenProperty":"v1","%Name":"","name":"","objectId":{"name":"obj_item_pickup","path":"objects/obj_item_pickup/obj_item_pickup.yy",},"propertyId":{"name":"sprite_pickup","path":"objects/obj_item_pickup/obj_item_pickup.yy",},"resource":{"name":"Shovel","path":"sprites/Shovel/Shovel.yy",},"resourceType":"GMOverriddenProperty","resourceVersion":"2.0","value":"Shovel",},
-    {"$GMOverriddenProperty":"v1","%Name":"","name":"","objectId":{"name":"obj_item_pickup","path":"objects/obj_item_pickup/obj_item_pickup.yy",},"propertyId":{"name":"item_type_pickup","path":"objects/obj_item_pickup/obj_item_pickup.yy",},"resourceType":"GMOverriddenProperty","resourceVersion":"2.0","value":"key_item",},
+    {"$GMOverriddenProperty":"v1","%Name":"","name":"","objectId":{"name":"obj_item_pickup","path":"objects/obj_item_pickup/obj_item_pickup.yy",},"propertyId":{"name":"item_type_pickup","path":"objects/obj_item_pickup/obj_item_pickup.yy",},"resourceType":"GMOverriddenProperty","resourceVersion":"2.0","value":"3",},
   ],
   "parent":{
     "name":"Item_Pickup",

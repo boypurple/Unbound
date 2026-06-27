@@ -13,13 +13,18 @@ function InventorySystem()
 
 function InventorySystemInit()
 {
+    var _stack = debug_get_callstack(10); // Retrieves the last 10 execution layers
+    for (var i = 0; i < array_length(_stack); i++) {
+        show_debug_message(_stack[i]);
+    }
     show_debug_message("InventorySystemInit");
     // Initialize inventory if not exists
-    if(!variable_global_exists("inventory"))
+    if(!global.inventoryInit)
     {
         global.inventory = []
         global.inventoryMaxSlots = 10
         global.inventoryKeyItems = [] // Separate array for key items
+        global.inventoryInit = true
     }
 }
 
@@ -31,12 +36,25 @@ function InventorySystemInit()
 /// @param _item Item struct to add
 /// @param _quantity Quantity to add (optional, uses item.quantity if not specified)
 /// @return true if added successfully, false otherwise
-function InventoryAddItem(_item, _quantity = undefined)
+function InventoryAddItem(_item, _quantity = 0)
 {
-    var _qtyToAdd = _quantity == undefined ? _item.quantity : _quantity
+    var _qtyToAdd = _quantity == 0 ? _item.quantity : _quantity
     
     // Check if item already exists in inventory (for stackable items)
-    if(_item.type != ITEM_TYPE_KEY)
+    if (_item.type == ITEM_TYPE.key_item)
+    {
+        // Add as new item
+        var _newItem = _item
+        _newItem.quantity = _qtyToAdd
+        array_push(global.inventoryKeyItems, _newItem)
+
+        // Trigger onGet event
+        if(_newItem.events.onGet != -1)
+        {
+            _newItem.events.onGet(_newItem, _qtyToAdd)
+        }
+    }
+    else
     {
         for(var i = 0; i < array_length(global.inventory); i++)
         {
@@ -68,19 +86,6 @@ function InventoryAddItem(_item, _quantity = undefined)
         }
         
         array_push(global.inventory, _newItem)
-    }
-    else if (_item.type == ITEM_TYPE_KEY)
-    {
-        // Add as new item
-        var _newItem = _item
-        _newItem.quantity = _qtyToAdd
-        array_push(global.inventoryKeyItems, _newItem)
-
-        // Trigger onGet event
-        if(_newItem.events.onGet != -1)
-        {
-            _newItem.events.onGet(_newItem, _qtyToAdd)
-        }
     }
     
     return true

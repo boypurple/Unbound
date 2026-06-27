@@ -22,4 +22,4 @@ partySide = 0
 skillOptionSelected = 0
 
 Layer()
-inv_database_ini()
+InventorySystem();

@@ -1,17 +1,8 @@
 var _newItem = NaN
-
-if (item_type_pickup != ITEM_TYPE_KEY)
+show_debug_message("item_type_pickup " + string(item_type_pickup))
+if (item_type_pickup == ITEM_TYPE.key_item)
 {
-	_newItem = CreateItem(
-		item_id_pickup,           // Unique ID
-	    display_name_pickup,         // Display name
-	    description_pickup,  // Description
-		item_type_pickup,
-	    sprite_pickup,           // Sprite icon
-	)
-}
-else if (item_type_pickup == ITEM_TYPE_KEY)
-{
+	show_debug_message("Get Key ")
 	_newItem = CreateKeyItem(
 	    item_id_pickup,           // Unique ID
 	    display_name_pickup,         // Display name
@@ -26,6 +17,16 @@ else if (item_type_pickup == ITEM_TYPE_KEY)
 	        show_debug_message("Lost " + _item.name);
 	    }
 	);
+}
+else
+{
+	_newItem = CreateItem(
+		item_id_pickup,           // Unique ID
+	    display_name_pickup,         // Display name
+	    description_pickup,  // Description
+		item_type_pickup,
+	    sprite_pickup,           // Sprite icon
+	)
 }
 
 

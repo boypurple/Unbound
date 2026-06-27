@@ -9,6 +9,32 @@
 #macro ITEM_TYPE_EQUIPMENT "equipment"
 #macro ITEM_TYPE_MATERIAL "material"
 
+enum ITEM_TYPE 
+{
+    consumable,     // Evaluates to 0
+    equipment,  // Evaluates to 1
+    material,    // Evaluates to 2
+    key_item,    // Evaluates to 3
+    COUNT
+}
+
+function ItemTypeToString(_enum_value) {
+    // Array order must exactly match the enum order
+    var static _names = [
+        "Consumable",
+        "Equipment",
+        "Material",
+        "Key Item"
+    ];
+    
+    // Bounds check to avoid "index out of bounds" errors
+    if (_enum_value >= 0 && _enum_value < array_length(_names)) {
+        return _names[_enum_value];
+    }
+    
+    return "Unknown Item";
+}
+
 // ============================================
 // ITEM STRUCTURE TEMPLATE
 // ============================================
@@ -51,7 +77,7 @@ function CreateKeyItem(_id, _name, _description, _icon, _onGet = -1, _onLose = -
         id: _id,
         name: _name,
         description: _description,
-        type: ITEM_TYPE_KEY,
+        type: ITEM_TYPE.key_item,
         icon: _icon,
         quantity: 1,
         maxQuantity: 1,

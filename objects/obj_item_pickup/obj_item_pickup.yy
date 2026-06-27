@@ -31,7 +31,7 @@
     {"$GMObjectProperty":"v2","%Name":"display_name_pickup","filters":[],"listItems":[],"multiselect":false,"name":"display_name_pickup","rangeEnabled":false,"rangeMax":10.0,"rangeMin":0.0,"resourceType":"GMObjectProperty","resourceVersion":"2.0","value":"Test Item","varType":2,},
     {"$GMObjectProperty":"v2","%Name":"description_pickup","filters":[],"listItems":[],"multiselect":false,"name":"description_pickup","rangeEnabled":false,"rangeMax":10.0,"rangeMin":0.0,"resourceType":"GMObjectProperty","resourceVersion":"2.0","value":"This is a Test Item","varType":2,},
     {"$GMObjectProperty":"v2","%Name":"sprite_pickup","filters":[],"listItems":[],"multiselect":false,"name":"sprite_pickup","rangeEnabled":false,"rangeMax":10.0,"rangeMin":0.0,"resource":{"name":"Shovel","path":"sprites/Shovel/Shovel.yy",},"resourceType":"GMObjectProperty","resourceVersion":"2.0","value":"Shovel","varType":5,},
-    {"$GMObjectProperty":"v2","%Name":"item_type_pickup","filters":[],"listItems":[],"multiselect":false,"name":"item_type_pickup","rangeEnabled":false,"rangeMax":10.0,"rangeMin":0.0,"resourceType":"GMObjectProperty","resourceVersion":"2.0","value":"consumable","varType":2,},
+    {"$GMObjectProperty":"v2","%Name":"item_type_pickup","filters":[],"listItems":[],"multiselect":false,"name":"item_type_pickup","rangeEnabled":false,"rangeMax":10.0,"rangeMin":0.0,"resourceType":"GMObjectProperty","resourceVersion":"2.0","value":"0","varType":1,},
   ],
   "resourceType":"GMObject",
   "resourceVersion":"2.0",

@@ -13,10 +13,19 @@ global.partySkillMenu = false
 
 global.gameMenu = false
 
+global.inventoryInit = false
 global.inventory = []
 global.inventoryMaxColumn = 5 
 global.inventoryMaxSlots = 10
 global.inventoryKeyItems = []
+global.inventory_tab_type = [
+    [ITEM_TYPE.consumable, ITEM_TYPE.equipment, ITEM_TYPE.material],
+    [ITEM_TYPE.key_item]
+]
+global.inventory_tab_name = [
+    "Items",
+    "Key Items"
+]
 
 global.boss = false
 global.escape = false
