@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"ItemDescriptionPanel",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"ItemDescriptionPanel",
+  "parent":{
+    "name":"Jyotis",
+    "path":"folders/Scripts/Jyotis.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

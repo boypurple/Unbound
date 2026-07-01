@@ -1,5 +1,5 @@
 /// @desc Pause Screen
-if(global.gamePaused)
+if(global.gameMenu)
 {
 	if(!global.config && !global.partyMenu)
 	{
@@ -153,7 +153,7 @@ if(global.gamePaused)
 				}
 				draw_set_halign(fa_left)
 				draw_text(360, 96 + (i * 32), global.party[partyOptionSelected].actions[i].name)
-		
+
 				draw_set_alpha(1)
 			}
 		}

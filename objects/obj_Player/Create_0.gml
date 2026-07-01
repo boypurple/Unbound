@@ -26,3 +26,5 @@ if(array_length(global.party) >= 2)
 	_follower1.sprite = global.party[1].spr
 	_follower1.record = 16
 }
+
+gamePausedImageSpeed = 0

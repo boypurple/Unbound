@@ -23,3 +23,15 @@ function RefreshMapBG()
 
 //Initialize background
 RefreshMapBG()
+
+// Enable minimap
+function MinimapEnable()
+{
+	visible = true
+}
+
+// Disable minimap
+function MinimapDisable()
+{
+	visible = false
+}
