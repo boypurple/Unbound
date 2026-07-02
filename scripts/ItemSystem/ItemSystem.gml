@@ -1,26 +1,8 @@
 /// Supports multiple item types with event-driven architecture
 
-// ============================================
-// ITEM TYPE DEFINITIONS
-// ============================================
-
-#macro ITEM_TYPE_KEY "key_item"
-#macro ITEM_TYPE_CONSUMABLE "consumable"
-#macro ITEM_TYPE_EQUIPMENT "equipment"
-#macro ITEM_TYPE_MATERIAL "material"
-
-enum ITEM_TYPE 
-{
-    consumable,     // Evaluates to 0
-    equipment,  // Evaluates to 1
-    material,    // Evaluates to 2
-    key_item,    // Evaluates to 3
-    COUNT
-}
-
 function ItemTypeToString(_enum_value) {
     // Array order must exactly match the enum order
-    var static _names = [
+    var _names = [
         "Consumable",
         "Equipment",
         "Material",
@@ -69,7 +51,7 @@ Item Structure:
 // ============================================
 // ITEM CREATION HELPERS
 // ============================================
-
+/*
 /// @desc Create a new Key Item
 function CreateKeyItem(_id, _name, _description, _icon, _onGet = -1, _onLose = -1)
 {
@@ -105,7 +87,99 @@ function CreateItem(_id, _name, _description, _type, _icon, _quantity = 1, _maxQ
         metadata: {}
     }
 }
+*/
 
-function ItemSystem(){
-
+function CreateItemInventory(_item_id_string, _quantity = 1)
+{
+    return {
+        id: _item_id_string,
+        stack: _quantity
+    }
 }
+
+// Item Database
+
+function LoadItemDatabase() {
+    global.item_database = {}; 
+
+    if (!file_exists("items_db.csv")) {
+        show_debug_message("ERROR: items_db.csv tidak ditemukan!");
+        return;
+    }
+
+    var _grid = load_csv("items_db.csv");
+    var _grid_height = ds_grid_height(_grid);
+
+    for (var i = 2; i < _grid_height; i++) {
+        
+        var _id          = ds_grid_get(_grid, 0, i); // String
+        var _name        = ds_grid_get(_grid, 1, i); // String
+        var _type        = real(ds_grid_get(_grid, 2, i));
+        var _sell_price  = real(ds_grid_get(_grid, 3, i)); // Real
+        var _sprite_s    = ds_grid_get(_grid, 4, i); // Asset (String)
+        var _img_index   = real(ds_grid_get(_grid, 5, i)); // Real
+        var _max_stack   = real(ds_grid_get(_grid, 6, i)); // Real
+        var _level       = real(ds_grid_get(_grid, 7, i)); // Real
+        var _rarity      = real(ds_grid_get(_grid, 8, i)); // Real
+        var _desc        = ds_grid_get(_grid, 9, i); // String
+
+        var _sprite_asset = asset_get_index(_sprite_s);
+        if (_sprite_asset == -1) {
+            _sprite_asset = sPlaceholder;
+        }
+
+        var _new_event = {
+            onGet: -1,
+            onLose: -1,
+            onUse: -1
+        };
+        if (_type == ITEM_TYPE.key_item) {
+            _new_event.onGet = function(_item_id, _quantity) {
+                 show_debug_message("Got " + _item_id);
+            };
+            _new_event.onLose = function(_item_id, _quantity) {
+                show_debug_message("Lost " + _item_id);
+            };
+            _new_event.onUse = function(_item_id, _quantity) {
+                show_debug_message("Use " + _item_id);
+            };
+        }
+
+        var _item_struct = {
+            id: _id,
+            name: _name,
+            type: _type, 
+            sell_price: _sell_price,
+            icon: _sprite_asset,
+            image_index: _img_index,
+            max_stack: _max_stack,
+            level: _level,
+            rarity: _rarity,
+            description: _desc,
+            events: _new_event,
+            metadata: {}
+        };
+        //show_debug_message("Add item to database: " + _id + " sprite: " + string(_sprite_asset));
+        global.item_database[$ _id] = _item_struct;
+    }
+
+    ds_grid_destroy(_grid);
+    show_debug_message("Database Item Berhasil Dimuat!");
+}
+
+function GetItemFromDatabase(_id) {
+    return global.item_database[$ _id];
+}
+
+function GetRandomItemID() {
+    var _item_keys = variable_struct_get_names(global.item_database);
+    var _total_items = array_length(_item_keys);
+    
+    if (_total_items == 0) return "";
+
+    var _random_index = irandom(_total_items - 1);
+   
+    return _item_keys[_random_index];
+}
+
+

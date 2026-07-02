@@ -13,6 +13,8 @@ global.partySkillMenu = false
 
 global.gameMenu = false
 
+global.item_database = []
+
 global.inventoryInit = false
 global.inventory = []
 global.inventoryMaxColumn = 5 

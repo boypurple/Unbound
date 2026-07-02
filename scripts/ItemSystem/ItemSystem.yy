@@ -5,8 +5,8 @@
   "isDnD":false,
   "name":"ItemSystem",
   "parent":{
-    "name":"Jyotis",
-    "path":"folders/Scripts/Jyotis.yy",
+    "name":"Item",
+    "path":"folders/Scripts/Jyotis/Item.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

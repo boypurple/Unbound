@@ -1,12 +1,12 @@
 {
   "$GMScript":"v1",
-  "%Name":"ItemDescriptionPanel",
+  "%Name":"ItemData",
   "isCompatibility":false,
   "isDnD":false,
-  "name":"ItemDescriptionPanel",
+  "name":"ItemData",
   "parent":{
-    "name":"Inventory",
-    "path":"folders/Scripts/Jyotis/Inventory.yy",
+    "name":"Item",
+    "path":"folders/Scripts/Jyotis/Item.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

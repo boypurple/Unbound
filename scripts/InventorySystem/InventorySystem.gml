@@ -33,42 +33,30 @@ function InventorySystemInit()
 // ============================================
 
 /// @desc Add item to inventory
-/// @param _item Item struct to add
+/// @param _item_id_string ID of the item to add
 /// @param _quantity Quantity to add (optional, uses item.quantity if not specified)
 /// @return true if added successfully, false otherwise
-function InventoryAddItem(_item, _quantity = 0)
+function InventoryAddItem(_item_id_string, _quantity = 1)
 {
-    var _qtyToAdd = _quantity == 0 ? _item.quantity : _quantity
-    
-    // Check if item already exists in inventory (for stackable items)
-    if (_item.type == ITEM_TYPE.key_item)
-    {
-        // Add as new item
-        var _newItem = _item
-        _newItem.quantity = _qtyToAdd
-        array_push(global.inventoryKeyItems, _newItem)
+    //show_debug_message("InventoryAddItem: " + _item_id_string);
+    var _item_data = GetItemFromDatabase(_item_id_string)
 
-        // Trigger onGet event
-        if(_newItem.events.onGet != -1)
-        {
-            _newItem.events.onGet(_newItem, _qtyToAdd)
-        }
-    }
-    else
+    // Check if item already exists in inventory (for stackable items)
+    if (_item_data.type == ITEM_TYPE.key_item)
     {
-        for(var i = 0; i < array_length(global.inventory); i++)
+        for(var i = 0; i < array_length(global.inventoryKeyItems); i++)
         {
-            if(global.inventory[i].id == _item.id)
+            if(global.inventoryKeyItems[i].id == _item_id_string)
             {
                 // Stack with existing item
-                var _newQty = global.inventory[i].quantity + _qtyToAdd
-                if(_newQty <= global.inventory[i].maxQuantity)
+                var _newQty = global.inventoryKeyItems[i].stack + _quantity
+                if(_newQty <= _item_data.max_stack)
                 {
-                    global.inventory[i].quantity = _newQty
+                    global.inventoryKeyItems[i].stack = _newQty
                     // Trigger onGet event
-                    if(global.inventory[i].events.onGet != -1)
+                    if(global.inventoryKeyItems[i].events.onGet != -1)
                     {
-                        global.inventory[i].events.onGet(global.inventory[i], _qtyToAdd)
+                        global.inventoryKeyItems[i].events.onGet(_item_id_string, _quantity)
                     }
                     return true
                 }
@@ -76,15 +64,43 @@ function InventoryAddItem(_item, _quantity = 0)
         }
 
         // Add as new item
-        var _newItem = _item
-        _newItem.quantity = _qtyToAdd
-        
+        var _newItem = CreateItemInventory(_item_id_string, _quantity)
+        array_push(global.inventoryKeyItems, _newItem)
+
+        // Trigger onGet event
+        if(_item_data.events.onGet != -1)
+        {
+            _item_data.events.onGet(_item_id_string, _quantity)
+        }
+    }
+    else
+    {
+        for(var i = 0; i < array_length(global.inventory); i++)
+        {
+            if(global.inventory[i].id == _item_id_string)
+            {
+                // Stack with existing item
+                var _newQty = global.inventory[i].stack + _quantity
+                if(_newQty <= _item_data.max_stack)
+                {
+                    global.inventory[i].stack = _newQty
+                    // Trigger onGet event
+                    if(global.inventory[i].events.onGet != -1)
+                    {
+                        global.inventory[i].events.onGet(_item_id_string, _quantity)
+                    }
+                    return true
+                }
+            }
+        }
         // Check inventory space
         if(array_length(global.inventory) >= global.inventoryMaxSlots)
         {
             return false // Inventory full
         }
-        
+
+        // Add as new item
+        var _newItem = CreateItemInventory(_item_id_string, _quantity)
         array_push(global.inventory, _newItem)
     }
     
@@ -95,36 +111,64 @@ function InventoryAddItem(_item, _quantity = 0)
 /// @param _itemId ID of item to remove
 /// @param _quantity Quantity to remove (optional, removes all if not specified)
 /// @return true if removed successfully, false otherwise
-function InventoryRemoveItem(_itemId, _quantity = undefined)
+function InventoryRemoveItem(_itemId, _quantity = 1)
 {
-    for(var i = 0; i < array_length(global.inventory); i++)
+    var _item_data = GetItemFromDatabase(_itemId)
+
+    if (_item_data.type == ITEM_TYPE.key_item)
     {
-        if(global.inventory[i].id == _itemId)
+        for(var i = 0; i < array_length(global.inventoryKeyItems); i++)
         {
-            var _item = global.inventory[i]
-            var _qtyToRemove = _quantity == undefined ? _item.quantity : _quantity
-            
-            // Trigger onLose event before removal
-            if(_item.events.onLose != -1)
+            if(global.inventoryKeyItems[i].id == _itemId)
             {
-                _item.events.onLose(_item, _qtyToRemove)
-            }
-            
-            if(_qtyToRemove >= _item.quantity)
-            {
-                // Remove entire item
-                array_delete(global.inventory, i, 1)
-                return true
-            }
-            else
-            {
-                // Reduce quantity
-                _item.quantity -= _qtyToRemove
-                return true
+                // Trigger onLose event before removal
+                if(_item_data.events.onLose != -1)
+                {
+                    _item_data.events.onLose(_itemId, _quantity)
+                }
+                
+                if(_quantity >= global.inventoryKeyItems[i].stack)
+                {
+                    // Remove entire item
+                    array_delete(global.inventoryKeyItems, i, 1)
+                    return true
+                }
+                else
+                {
+                    // Reduce quantity
+                    global.inventoryKeyItems[i].stack -= _quantity
+                    return true
+                }
             }
         }
     }
-    
+    else
+    {
+        for(var i = 0; i < array_length(global.inventory); i++)
+        {
+            if(global.inventory[i].id == _itemId)
+            {
+                // Trigger onLose event before removal
+                if(_item_data.events.onLose != -1)
+                {
+                    _item_data.events.onLose(_itemId, _quantity)
+                }
+                
+                if(_quantity >= global.inventory[i].stack)
+                {
+                    // Remove entire item
+                    array_delete(global.inventory, i, 1)
+                    return true
+                }
+                else
+                {
+                    // Reduce quantity
+                    global.inventory[i].stack -= _quantity
+                    return true
+                }
+            }
+        }
+    }
     return false // Item not found
 }
 
@@ -137,7 +181,7 @@ function InventoryHasItem(_itemId)
     {
         if(global.inventory[i].id == _itemId)
         {
-            return global.inventory[i].quantity
+            return global.inventory[i].stack
         }
     }
     return 0
@@ -194,9 +238,9 @@ function InventoryUseItem(_itemId, _user, _target)
                 _item.events.onUse(_item, _user, _target)
                 
                 // Reduce quantity or remove item
-                if(_item.quantity > 1)
+                if(_item.stack > 1)
                 {
-                    _item.quantity--
+                    _item.stack--
                 }
                 else
                 {
@@ -240,7 +284,7 @@ function InventoryClear()
         var _item = global.inventory[i]
         if(_item.events.onLose != -1)
         {
-            _item.events.onLose(_item, _item.quantity)
+            _item.events.onLose(_item.id, _item.stack)
         }
     }
     

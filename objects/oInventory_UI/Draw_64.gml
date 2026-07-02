@@ -59,7 +59,8 @@ if(global.gamePaused)
 		{
 			for(var i = 0; i < array_length(global.inventoryKeyItems); i++)
 			{
-				array_push(currentItems, global.inventoryKeyItems[i])
+				var _item_data = GetItemFromDatabase(global.inventoryKeyItems[i].id)
+				array_push(currentItems, _item_data)
 			}
 		}
 		if (array_contains(global.inventory_tab_type[inventoryTab], ITEM_TYPE.consumable) || 
@@ -68,9 +69,10 @@ if(global.gamePaused)
 		{
 			for(var i = 0; i < array_length(global.inventory); i++)
 			{
-				if (array_contains(global.inventory_tab_type[inventoryTab], global.inventory[i].type))
+				var _item_data = GetItemFromDatabase(global.inventory[i].id)
+				if (array_contains(global.inventory_tab_type[inventoryTab], _item_data.type))
 				{
-					array_push(currentItems, global.inventory[i])
+					array_push(currentItems, _item_data)
 				}
 			}
 		}
@@ -82,7 +84,7 @@ if(global.gamePaused)
 		var _cellHeight = 100
 		var _iconWidth = 60
 		var _iconHeight = 60
-		var _cellSpacingX = 10
+		var _cellSpacingX = 15
 		var _cellSpacingY = 20
 		var _gridStartX = _panelX + (scaled_w / 16)
 		var _gridStartY = _panelY + (scaled_h / 12)
@@ -110,21 +112,27 @@ if(global.gamePaused)
 			{
 				var _item = currentItems[i]
 				// Draw item icon if available
-				if(_item.icon != -1)
-				{
-					base_w = sprite_get_width(_item.icon)
-					base_h = sprite_get_height(_item.icon)
+				var _icon = _item[$ "icon"];
+				var _img_index = _item[$ "image_index"] ?? 0; // Jika tidak ada image_index, default ke 0
 
-					draw_set_halign(fa_center)
-					draw_set_valign(fa_middle)
-					draw_sprite_ext(_item.icon, 0, _cellX + (_cellWidth / 8), _cellY + (_cellHeight / 8), _iconWidth / base_w  ,  _iconHeight / base_h, 0, c_white, 1)
+				if (_icon != undefined && sprite_exists(_icon))
+				{
+					base_w = sprite_get_width(_icon);
+					base_h = sprite_get_height(_icon);
+
+					draw_set_halign(fa_center);
+					draw_set_valign(fa_middle);
+					
+					// Gunakan variabel _icon dan _img_index yang sudah aman di sini
+					draw_sprite_ext(_icon, _img_index, _cellX + (_cellWidth / 8), _cellY + (_cellHeight / 8), _iconWidth / base_w, _iconHeight / base_h, 0, c_white, 1);
 				}
 
 				// Draw item name below cell
 				draw_set_halign(fa_center)
 				draw_set_valign(fa_top)
 				draw_set_colour(c_white)
-				draw_text(_cellX + (_cellWidth / 2), _cellY + (_cellHeight - 5), currentItems[i].name)
+				//show_debug_message("Display Item: " + _item.name);
+				draw_text(_cellX + (_cellWidth / 2), _cellY + (_cellHeight - 5), _item.name)
 
 				if(i == inventoryOptionSelected)
 				{
@@ -154,10 +162,10 @@ if(global.gamePaused)
 						draw_set_halign(fa_center);
 						draw_text(inventory_panelX, inventory_panelY + 200, _item.name);
 
-						base_w = sprite_get_width(_item.icon)
-						base_h = sprite_get_height(_item.icon)
+						base_w = sprite_get_width(_icon)
+						base_h = sprite_get_height(_icon)
 						
-						draw_sprite_ext(_item.icon, 0, inventory_panelX, inventory_panelY + 100, _iconWidth / base_w  ,  _iconHeight / base_h, 0, c_white, 1);
+						draw_sprite_ext(_icon, _img_index, inventory_panelX - (base_w), inventory_panelY + 100 - (base_h), _iconWidth / base_w  ,  _iconHeight / base_h, 0, c_white, 1);
 
 						//draw_set_halign(fa_left);
 						//draw_text(4, 80, "Price: "+string(price)+" gold.");
@@ -196,5 +204,5 @@ if(global.gamePaused)
 
 		draw_set_halign(fa_right)
 		draw_set_valign(fa_bottom)
-		draw_text(1248, 688, "Press [Esc] to go back | [←/→] to switch tabs")
+		draw_text(1248, 688, "Press Esc to go back | <- and -> to switch tabs")
 }
