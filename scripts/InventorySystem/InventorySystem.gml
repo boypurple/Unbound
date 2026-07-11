@@ -8,7 +8,7 @@ function InventorySystem()
 {
     show_debug_message("InventorySystem");
     InventorySystemInit()
-    return global.inventory
+    return global.inventories
 }
 
 function InventorySystemInit()
@@ -21,52 +21,90 @@ function InventorySystemInit()
     // Initialize inventory if not exists
     if(!global.inventoryInit)
     {
-        global.inventory = []
-        global.inventoryMaxSlots = 10
-        global.inventoryKeyItems = [] // Separate array for key items
+        global.inventoryMaxSlots = 10   
+        global.inventories = {} // Dictionary for multi-character inventories
         global.inventoryInit = true
     }
 }
 
 // ============================================
-// INVENTORY MANAGEMENT
+// MULTI-CHARACTER INVENTORY MANAGEMENT
 // ============================================
 
-/// @desc Add item to inventory
+/// @desc Get inventory container for a specific character
+/// @param _character_id ID of the character
+/// @return struct with items and key_items arrays, or undefined if not found
+function GetCharacterInventory(_character_id)
+{
+    var _char_key = string(_character_id);
+    if (!variable_struct_exists(global.inventories, _char_key))
+    {
+        global.inventories[$ _char_key] = {
+            items: [],     // List item biasa milik karakter
+            key_items: []  // List key item milik karakter
+        };
+    }
+    return global.inventories[$ _char_key];
+}
+
+/// @desc Initialize inventory for a specific character
+/// @param _character_id ID of the character to initialize inventory for
+function InitializeCharacterInventory(_character_id)
+{
+    var _char_key = string(_character_id);
+    if (!variable_struct_exists(global.inventories, _char_key))
+    {
+        global.inventories[$ _char_key] = {
+            items: [],
+            key_items: []
+        }
+    }
+}
+
+/// @desc Add item to specific character's inventory
+/// @param _character_id ID of the character
 /// @param _item_id_string ID of the item to add
 /// @param _quantity Quantity to add (optional, uses item.quantity if not specified)
 /// @return true if added successfully, false otherwise
-function InventoryAddItem(_item_id_string, _quantity = 1)
+function AddItemToCharacterInventory(_character_id, _item_id_string, _quantity = 1)
 {
-    //show_debug_message("InventoryAddItem: " + _item_id_string);
-    var _item_data = GetItemFromDatabase(_item_id_string)
-
+    var _char_key = string(_character_id);
+    
+    // Initialize character inventory if not exists
+    if (!variable_struct_exists(global.inventories, _char_key))
+    {
+        InitializeCharacterInventory(_character_id);
+    }
+    
+    var _inv_data = global.inventories[$ _char_key];
+    var _item_data = GetItemFromDatabase(_item_id_string);
+    
     // Check if item already exists in inventory (for stackable items)
     if (_item_data.type == ITEM_TYPE.key_item)
     {
-        for(var i = 0; i < array_length(global.inventoryKeyItems); i++)
+        for(var i = 0; i < array_length(_inv_data[$ "key_items"]); i++)
         {
-            if(global.inventoryKeyItems[i].id == _item_id_string)
+            if(_inv_data[$ "key_items"][i].id == _item_id_string)
             {
                 // Stack with existing item
-                var _newQty = global.inventoryKeyItems[i].stack + _quantity
+                var _newQty = _inv_data[$ "key_items"][i].stack + _quantity
                 if(_newQty <= _item_data.max_stack)
                 {
-                    global.inventoryKeyItems[i].stack = _newQty
+                    _inv_data[$ "key_items"][i].stack = _newQty
                     // Trigger onGet event
-                    if(global.inventoryKeyItems[i].events.onGet != -1)
+                    if(_item_data.events.onGet != -1)
                     {
-                        global.inventoryKeyItems[i].events.onGet(_item_id_string, _quantity)
+                        _item_data.events.onGet(_item_id_string, _quantity)
                     }
                     return true
                 }
             }
         }
-
+        
         // Add as new item
         var _newItem = CreateItemInventory(_item_id_string, _quantity)
-        array_push(global.inventoryKeyItems, _newItem)
-
+        array_push(_inv_data[$ "key_items"], _newItem)
+        
         // Trigger onGet event
         if(_item_data.events.onGet != -1)
         {
@@ -75,51 +113,62 @@ function InventoryAddItem(_item_id_string, _quantity = 1)
     }
     else
     {
-        for(var i = 0; i < array_length(global.inventory); i++)
+        for(var i = 0; i < array_length(_inv_data[$ "items"]); i++)
         {
-            if(global.inventory[i].id == _item_id_string)
+            if(_inv_data[$ "items"][i].id == _item_id_string)
             {
                 // Stack with existing item
-                var _newQty = global.inventory[i].stack + _quantity
+                var _newQty = _inv_data[$ "items"][i].stack + _quantity
                 if(_newQty <= _item_data.max_stack)
                 {
-                    global.inventory[i].stack = _newQty
+                    _inv_data[$ "items"][i].stack = _newQty
                     // Trigger onGet event
-                    if(global.inventory[i].events.onGet != -1)
+                    show_debug_message("AddItemToCharacterInventory: Stack with existing item {" + _item_id_string + "}" + " new quantity: " + string(_newQty));
+                    if(_item_data.events.onGet != -1)
                     {
-                        global.inventory[i].events.onGet(_item_id_string, _quantity)
+                        _item_data.events.onGet(_item_id_string, _quantity)
                     }
                     return true
                 }
             }
         }
         // Check inventory space
-        if(array_length(global.inventory) >= global.inventoryMaxSlots)
+        if(array_length(_inv_data[$ "items"]) >= global.inventoryMaxSlots)
         {
             return false // Inventory full
         }
-
+        
         // Add as new item
         var _newItem = CreateItemInventory(_item_id_string, _quantity)
-        array_push(global.inventory, _newItem)
+        array_push(_inv_data[$ "items"], _newItem)
     }
     
     return true
 }
 
-/// @desc Remove item from inventory
+/// @desc Remove item from specific character's inventory
+/// @param _character_id ID of the character
 /// @param _itemId ID of item to remove
 /// @param _quantity Quantity to remove (optional, removes all if not specified)
 /// @return true if removed successfully, false otherwise
-function InventoryRemoveItem(_itemId, _quantity = 1)
+function RemoveItemFromCharacterInventory(_character_id, _itemId, _quantity = 1)
 {
-    var _item_data = GetItemFromDatabase(_itemId)
+    var _char_key = string(_character_id);
+    
+    // Initialize character inventory if not exists
+    if (!variable_struct_exists(global.inventories, _char_key))
+    {
+        return false // Character inventory doesn't exist
+    }
+    
+    var _inv_data = global.inventories[$ _char_key];
+    var _item_data = GetItemFromDatabase(_itemId);
 
     if (_item_data.type == ITEM_TYPE.key_item)
     {
-        for(var i = 0; i < array_length(global.inventoryKeyItems); i++)
+        for(var i = 0; i < array_length(_inv_data[$ "key_items"]); i++)
         {
-            if(global.inventoryKeyItems[i].id == _itemId)
+            if(_inv_data[$ "key_items"][i].id == _itemId)
             {
                 // Trigger onLose event before removal
                 if(_item_data.events.onLose != -1)
@@ -127,16 +176,16 @@ function InventoryRemoveItem(_itemId, _quantity = 1)
                     _item_data.events.onLose(_itemId, _quantity)
                 }
                 
-                if(_quantity >= global.inventoryKeyItems[i].stack)
+                if(_quantity >= _inv_data[$ "key_items"][i].stack)
                 {
                     // Remove entire item
-                    array_delete(global.inventoryKeyItems, i, 1)
+                    array_delete(_inv_data[$ "key_items"], i, 1)
                     return true
                 }
                 else
                 {
                     // Reduce quantity
-                    global.inventoryKeyItems[i].stack -= _quantity
+                    _inv_data[$ "key_items"][i].stack -= _quantity
                     return true
                 }
             }
@@ -144,9 +193,9 @@ function InventoryRemoveItem(_itemId, _quantity = 1)
     }
     else
     {
-        for(var i = 0; i < array_length(global.inventory); i++)
+        for(var i = 0; i < array_length(_inv_data[$ "items"]); i++)
         {
-            if(global.inventory[i].id == _itemId)
+            if(_inv_data[$ "items"][i].id == _itemId)
             {
                 // Trigger onLose event before removal
                 if(_item_data.events.onLose != -1)
@@ -154,16 +203,16 @@ function InventoryRemoveItem(_itemId, _quantity = 1)
                     _item_data.events.onLose(_itemId, _quantity)
                 }
                 
-                if(_quantity >= global.inventory[i].stack)
+                if(_quantity >= _inv_data[$ "items"][i].stack)
                 {
                     // Remove entire item
-                    array_delete(global.inventory, i, 1)
+                    array_delete(_inv_data[$ "items"], i, 1)
                     return true
                 }
                 else
                 {
                     // Reduce quantity
-                    global.inventory[i].stack -= _quantity
+                    _inv_data[$ "items"][i].stack -= _quantity
                     return true
                 }
             }
@@ -172,64 +221,108 @@ function InventoryRemoveItem(_itemId, _quantity = 1)
     return false // Item not found
 }
 
-/// @desc Check if player has item
+/// @desc Check if character has item
+/// @param _character_id ID of the character
 /// @param _itemId ID of item to check
 /// @return quantity if has item, 0 otherwise
-function InventoryHasItem(_itemId)
+function CharacterHasItem(_character_id, _itemId)
 {
-    for(var i = 0; i < array_length(global.inventory); i++)
+    var _char_key = string(_character_id);
+    
+    // Initialize character inventory if not exists
+    if (!variable_struct_exists(global.inventories, _char_key))
     {
-        if(global.inventory[i].id == _itemId)
+        return 0 // Character inventory doesn't exist
+    }
+    
+    var _inv_data = global.inventories[$ _char_key];
+    
+    for(var i = 0; i < array_length(_inv_data[$ "items"]); i++)
+    {
+        if(_inv_data[$ "items"][i].id == _itemId)
         {
-            return global.inventory[i].stack
+            return _inv_data[$ "items"][i].stack
         }
     }
     return 0
 }
 
-/// @desc Get item by ID
+/// @desc Get item from character's inventory by ID
+/// @param _character_id ID of the character
 /// @param _itemId ID of item to get
 /// @return item struct if found, undefined otherwise
-function InventoryGetItem(_itemId)
+function GetCharacterItem(_character_id, _itemId)
 {
-    for(var i = 0; i < array_length(global.inventory); i++)
+    var _char_key = string(_character_id);
+    
+    // Initialize character inventory if not exists
+    if (!variable_struct_exists(global.inventories, _char_key))
     {
-        if(global.inventory[i].id == _itemId)
+        return undefined // Character inventory doesn't exist
+    }
+    
+    var _inv_data = global.inventories[$ _char_key];
+    
+    for(var i = 0; i < array_length(_inv_data[$ "items"]); i++)
+    {
+        if(_inv_data[$ "items"][i].id == _itemId)
         {
-            return global.inventory[i]
+            return _inv_data[$ "items"][i]
         }
     }
     return undefined
 }
 
-/// @desc Get all items of specific type
+/// @desc Get all items of specific type from character's inventory
+/// @param _character_id ID of the character
 /// @param _type Item type constant
 /// @return array of items of specified type
-function InventoryGetItemsByType(_type)
+function GetCharacterItemsByType(_character_id, _type)
 {
-    var _result = []
-    for(var i = 0; i < array_length(global.inventory); i++)
+    var _char_key = string(_character_id);
+    
+    // Initialize character inventory if not exists
+    if (!variable_struct_exists(global.inventories, _char_key))
     {
-        if(global.inventory[i].type == _type)
+        return [] // Character inventory doesn't exist
+    }
+    
+    var _inv_data = global.inventories[$ _char_key];
+    var _result = []
+    
+    for(var i = 0; i < array_length(_inv_data[$ "items"]); i++)
+    {
+        if(_inv_data[$ "items"][i].type == _type)
         {
-            array_push(_result, global.inventory[i])
+            array_push(_result, _inv_data[$ "items"][i])
         }
     }
     return _result
 }
 
-/// @desc Use item from inventory
+/// @desc Use item from character's inventory
+/// @param _character_id ID of the character
 /// @param _itemId ID of item to use
 /// @param _user User using the item
 /// @param _target Target of item usage
 /// @return true if used successfully, false otherwise
-function InventoryUseItem(_itemId, _user, _target)
+function UseCharacterItem(_character_id, _itemId, _user, _target)
 {
-    for(var i = 0; i < array_length(global.inventory); i++)
+    var _char_key = string(_character_id);
+    
+    // Initialize character inventory if not exists
+    if (!variable_struct_exists(global.inventories, _char_key))
     {
-        if(global.inventory[i].id == _itemId)
+        return false // Character inventory doesn't exist
+    }
+    
+    var _inv_data = global.inventories[$ _char_key];
+    
+    for(var i = 0; i < array_length(_inv_data[$ "items"]); i++)
+    {
+        if(_inv_data[$ "items"][i].id == _itemId)
         {
-            var _item = global.inventory[i]
+            var _item = _inv_data[$ "items"][i]
             
             // Check if item has use event
             if(_item.events.onUse != -1)
@@ -244,7 +337,7 @@ function InventoryUseItem(_itemId, _user, _target)
                 }
                 else
                 {
-                    array_delete(global.inventory, i, 1)
+                    array_delete(_inv_data[$ "items"], i, 1)
                 }
                 
                 return true
@@ -257,44 +350,83 @@ function InventoryUseItem(_itemId, _user, _target)
     return false // Item not found
 }
 
-// ============================================
-// UTILITY FUNCTIONS
-// ============================================
-
-/// @desc Get total inventory count
-/// @return total number of items in inventory
-function InventoryGetCount()
+/// @desc Get total inventory count for character
+/// @param _character_id ID of the character
+/// @return total number of items in character's inventory
+function GetCharacterInventoryCount(_character_id)
 {
-    return array_length(global.inventory)
-}
-
-/// @desc Get inventory space remaining
-/// @return number of empty slots
-function InventoryGetSpaceRemaining()
-{
-    return global.inventoryMaxSlots - array_length(global.inventory)
-}
-
-/// @desc Clear entire inventory
-function InventoryClear()
-{
-    // Trigger onLose events for all items
-    for(var i = array_length(global.inventory) - 1; i >= 0; i--)
+    var _char_key = string(_character_id);
+    
+    // Initialize character inventory if not exists
+    if (!variable_struct_exists(global.inventories, _char_key))
     {
-        var _item = global.inventory[i]
+        return 0 // Character inventory doesn't exist
+    }
+    
+    var _inv_data = global.inventories[$ _char_key];
+    return array_length(_inv_data[$ "items"])
+}
+
+/// @desc Get inventory space remaining for character
+/// @param _character_id ID of the character
+/// @return number of empty slots
+function GetCharacterInventorySpaceRemaining(_character_id)
+{
+    var _char_key = string(_character_id);
+    
+    // Initialize character inventory if not exists
+    if (!variable_struct_exists(global.inventories, _char_key))
+    {
+        return global.inventoryMaxSlots // Character inventory doesn't exist, all slots available
+    }
+    
+    var _inv_data = global.inventories[$ _char_key];
+    return global.inventoryMaxSlots - array_length(_inv_data[$ "items"])
+}
+
+/// @desc Clear entire character's inventory
+/// @param _character_id ID of the character
+function ClearCharacterInventory(_character_id)
+{
+    var _char_key = string(_character_id);
+    
+    // Initialize character inventory if not exists
+    if (!variable_struct_exists(global.inventories, _char_key))
+    {
+        return // Character inventory doesn't exist
+    }
+    
+    var _inv_data = global.inventories[$ _char_key];
+    
+    // Trigger onLose events for all items
+    for(var i = array_length(_inv_data[$ "items"]) - 1; i >= 0; i--)
+    {
+        var _item = _inv_data[$ "items"][i]
         if(_item.events.onLose != -1)
         {
             _item.events.onLose(_item.id, _item.stack)
         }
     }
     
-    global.inventory = []
+    _inv_data[$ "items"] = []
+    _inv_data[$ "key_items"] = []
 }
 
-/// @desc Sort inventory by item type, then by name
-function InventorySort()
+/// @desc Sort character's inventory by item type, then by name
+/// @param _character_id ID of the character
+function SortCharacterInventory(_character_id)
 {
-    array_sort(global.inventory, function(_a, _b)
+    var _char_key = string(_character_id);
+    
+    // Initialize character inventory if not exists
+    if (!variable_struct_exists(global.inventories, _char_key))
+    {
+        return // Character inventory doesn't exist
+    }
+    
+    var _inv_data = global.inventories[$ _char_key];
+    
+    array_sort(_inv_data[$ "items"], function(_a, _b)
     {
         if(_a.type != _b.type)
         {
@@ -303,3 +435,4 @@ function InventorySort()
         return _a.name < _b.name ? -1 : 1
     })
 }
+

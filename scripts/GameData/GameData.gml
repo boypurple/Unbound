@@ -14,12 +14,13 @@ global.partySkillMenu = false
 global.gameMenu = false
 
 global.item_database = []
+global.inventoryMaxColumn = 5 
 
 global.inventoryInit = false
-global.inventory = []
-global.inventoryMaxColumn = 5 
 global.inventoryMaxSlots = 10
-global.inventoryKeyItems = []
+
+global.inventories = {}
+
 global.inventory_tab_type = [
     [ITEM_TYPE.consumable, ITEM_TYPE.equipment, ITEM_TYPE.material],
     [ITEM_TYPE.key_item]

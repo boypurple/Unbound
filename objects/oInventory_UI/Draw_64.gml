@@ -27,10 +27,30 @@ if(global.gamePaused)
 
 		draw_sprite_ext(InventoryTray, 0, _panelX, _panelY, panel_xscale, panel_yscale, 0, c_white, 1)
 
-		// Draw tabs
+		// Draw player tabs (above item tabs)
 		draw_set_halign(fa_left)
 		draw_set_valign(fa_bottom)
 
+		var _player_tab_yoffset = -30
+		var _player_tab_spacing = 500 / array_length(global.party)
+
+		for (var i = 0; i < array_length(global.party); i++)
+		{
+			if (playerTab == i)
+			{
+				draw_set_colour(c_yellow)
+				draw_text(_panelX + (_player_tab_spacing * i), _panelY + _player_tab_yoffset, global.party[i].name)
+			}
+			else
+			{
+				draw_set_colour(c_white)
+				draw_set_alpha(0.7)
+				draw_text(_panelX + (_player_tab_spacing * i), _panelY + _player_tab_yoffset, global.party[i].name)
+				draw_set_alpha(1)
+			}
+		}
+
+		// Draw item type tabs
 		var _tab_yoffset = 10
 		var _tab_spacing = 500 / array_length(global.inventory_tab_name) //ITEM_TYPE.COUNT
 
@@ -53,26 +73,34 @@ if(global.gamePaused)
 			}
 		}
 
-		// Get items based on current tab
+		// Get items based on current tab and selected player
 		currentItems = []
-		if (array_contains(global.inventory_tab_type[inventoryTab], ITEM_TYPE.key_item))
+		
+		// Get character inventory data with safety check
+		var _selected_character = global.party[playerTab]
+		var _inv_data = GetCharacterInventory(_selected_character.name)
+		
+		if (_inv_data != undefined)
 		{
-			for(var i = 0; i < array_length(global.inventoryKeyItems); i++)
+			if (array_contains(global.inventory_tab_type[inventoryTab], ITEM_TYPE.key_item))
 			{
-				var _item_data = GetItemFromDatabase(global.inventoryKeyItems[i].id)
-				array_push(currentItems, _item_data)
-			}
-		}
-		if (array_contains(global.inventory_tab_type[inventoryTab], ITEM_TYPE.consumable) || 
-		array_contains(global.inventory_tab_type[inventoryTab], ITEM_TYPE.equipment) || 
-		array_contains(global.inventory_tab_type[inventoryTab], ITEM_TYPE.material)	)
-		{
-			for(var i = 0; i < array_length(global.inventory); i++)
-			{
-				var _item_data = GetItemFromDatabase(global.inventory[i].id)
-				if (array_contains(global.inventory_tab_type[inventoryTab], _item_data.type))
+				for(var i = 0; i < array_length(_inv_data[$ "key_items"]); i++)
 				{
+					var _item_data = GetItemFromDatabase(_inv_data[$ "key_items"][i].id)
 					array_push(currentItems, _item_data)
+				}
+			}
+			if (array_contains(global.inventory_tab_type[inventoryTab], ITEM_TYPE.consumable) || 
+			array_contains(global.inventory_tab_type[inventoryTab], ITEM_TYPE.equipment) || 
+			array_contains(global.inventory_tab_type[inventoryTab], ITEM_TYPE.material)	)
+			{
+				for(var i = 0; i < array_length(_inv_data[$ "items"]); i++)
+				{
+					var _item_data = GetItemFromDatabase(_inv_data[$ "items"][i].id)
+					if (array_contains(global.inventory_tab_type[inventoryTab], _item_data.type))
+					{
+						array_push(currentItems, _item_data)
+					}
 				}
 			}
 		}

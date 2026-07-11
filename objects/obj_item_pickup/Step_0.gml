@@ -7,7 +7,7 @@ if (instance_exists(obj_player))
         var _key_interact = keyboard_check_pressed(vk_space);
         if (_key_interact) 
         {
-            InventoryAddItem(item_id_pickup,item_stack );
+            AddItemToCharacterInventory( global.party[0].name, item_id_pickup, item_stack );
             instance_destroy();
         }
     }

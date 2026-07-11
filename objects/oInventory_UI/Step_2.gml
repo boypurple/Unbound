@@ -12,36 +12,48 @@ if(global.gamePaused)
 	{
 		if (inventoryCursor == 0)
 		{
-			// Tab switching with left/right keys
+			// Player tab switching with left/right keys
+			playerTab += (keyRight - keyLeft)
+			playerTab = clamp(playerTab, 0, array_length(global.party) - 1)
+			if (keyDown == 1)
+			{
+				inventoryCursor = 1
+				inventoryTab = 0
+			}
+		}
+		else if (inventoryCursor == 1)
+		{
+			// Item type tab switching with left/right keys
 			inventoryTab += (keyRight - keyLeft)
 			inventoryTab = clamp(inventoryTab, 0, array_length(global.inventory_tab_name) - 1)
 			if (keyDown == 1)
 			{
-				inventoryCursor = 1
+				inventoryCursor = 2
 				inventoryOptionSelected = 0
 			}
-			//show_debug_message("inventoryTab " + string(inventoryTab))
-		}
-		else if (inventoryCursor == 1)
-		{
-			// Item selection
-			inventoryOptionSelected += ((keyRight - keyLeft) + ((keyDown - keyUp) * global.inventoryMaxColumn)) // Allow horizontal keys to also navigate items
-			if(inventoryOptionSelected < 0) 
+			if (keyUp == 1)
 			{
 				inventoryCursor = 0
 			}
-			inventoryOptionSelected = clamp(inventoryOptionSelected, -1,  global.inventoryMaxSlots - 1)
-			//show_debug_message("inventoryOptionSelected " + string(inventoryOptionSelected))
+		}
+		else if (inventoryCursor == 2)
+		{
+			// Item selection
+			inventoryOptionSelected += ((keyRight - keyLeft) + ((keyDown - keyUp) * global.inventoryMaxColumn))
+			if(inventoryOptionSelected < 0) 
+			{
+				inventoryCursor = 1
+			}
+			inventoryOptionSelected = clamp(inventoryOptionSelected, -1, global.inventoryMaxSlots - 1)
 		}
 
-		inventoryCursor = clamp(inventoryCursor, 0, 1)
-		//show_debug_message("inventoryCursor " + string(inventoryCursor))
+		inventoryCursor = clamp(inventoryCursor, 0, 2)
 	}
 
 	if(keyActivate)
 	{
 		// Use selected item
-		if(array_length(currentItems) > 0)
+		if(inventoryCursor == 2 && array_length(currentItems) > 0)
 		{
 			var _item = currentItems[inventoryOptionSelected]
 			// Add item usage logic here
