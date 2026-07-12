@@ -182,4 +182,14 @@ function GetRandomItemID() {
     return _item_keys[_random_index];
 }
 
+function SpawnItemPickup(_x, _y, _item_id) {
+    instance_create_layer(_x, _y, "Instances", obj_item_pickup, {
+        item_id_pickup: _item_id
+    });
+}
 
+function SpawnItemPickupRandomAroundPosition(_x, _y, _item_id) {
+    var _random_x = _x + random_range(-5, 5);
+    var _random_y = _y + random_range(-5, 5);
+    SpawnItemPickup(_random_x, _random_y, _item_id);
+}

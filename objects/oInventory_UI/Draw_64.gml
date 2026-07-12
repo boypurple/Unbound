@@ -214,6 +214,101 @@ if(global.gamePaused)
 			}
 		}
 
+		// Draw item options menu when in item options mode
+		if(inventoryCursor == 3 && selectedItemIndex >= 0 && selectedItemIndex < array_length(currentItems))
+		{
+			var _options = ["Pass to other character", "Drop/Remove item"]
+			var _menuX = _panelX + scaled_w + 50
+			var _menuY = _panelY + 100
+			var _optionHeight = 40
+			var _optionSpacing = 10
+			
+			draw_set_halign(fa_center)
+			draw_set_valign(fa_middle)
+			// Draw InventoryTray panel behind options
+			var _optionPanelScaleX = 0.6
+			var _optionPanelScaleY = 0.6
+			var _optionPanelW = sprite_get_width(InventoryTray) * _optionPanelScaleX
+			var _optionPanelH = sprite_get_height(InventoryTray) * _optionPanelScaleY
+			draw_sprite_ext(InventoryTray, 0, _menuX - _optionPanelW/4, _menuY - _optionPanelH/4, _optionPanelScaleX, _optionPanelScaleY, 0, c_white, 1)
+			
+			draw_set_halign(fa_left)
+			draw_set_valign(fa_middle)
+			
+			for(var i = 0; i < array_length(_options); i++)
+			{
+				var _optionY = _menuY + (i * (_optionHeight + _optionSpacing))
+				
+				// Draw option background
+				if(itemOptionSelected == i)
+				{
+					draw_set_colour(c_yellow)
+					draw_rectangle(_menuX - 10, _optionY - _optionHeight/2, _menuX + 250, _optionY + _optionHeight/2, false)
+					draw_set_colour(c_black)
+				}
+				else
+				{
+					draw_set_colour(c_white)
+				}
+				
+				draw_text(_menuX, _optionY, _options[i])
+			}
+			
+			draw_set_colour(c_white)
+		}
+		
+		// Draw character selection menu when in character selection mode
+		if(inventoryCursor == 4)
+		{
+			var _charMenuX = _panelX + scaled_w + 50
+			var _charMenuY = _panelY + 100
+			var _charOptionHeight = 40
+			var _charOptionSpacing = 10
+			
+			draw_set_halign(fa_center)
+			draw_set_valign(fa_middle)
+			// Draw InventoryTray panel behind options
+			var _optionPanelScaleX = 0.6
+			var _optionPanelScaleY = 0.6
+			var _optionPanelW = sprite_get_width(InventoryTray) * _optionPanelScaleX
+			var _optionPanelH = sprite_get_height(InventoryTray) * _optionPanelScaleY
+			draw_sprite_ext(InventoryTray, 0, _charMenuX - _optionPanelW/4, _charMenuY - _optionPanelH/4, _optionPanelScaleX, _optionPanelScaleY, 0, c_white, 1)
+			
+			draw_set_halign(fa_left)
+			draw_set_valign(fa_middle)
+			
+			// Draw title
+			draw_set_colour(c_white)
+			draw_text(_charMenuX, _charMenuY - 30, "Select character:")
+			
+			// Draw character options (excluding current character)
+			var _charIndex = 0
+			for(var i = 0; i < array_length(global.party); i++)
+			{
+				if(i != playerTab)
+				{
+					var _charOptionY = _charMenuY + (_charIndex * (_charOptionHeight + _charOptionSpacing))
+					
+					// Draw character option background
+					if(characterOptionSelected == i)
+					{
+						draw_set_colour(c_yellow)
+						draw_rectangle(_charMenuX - 10, _charOptionY - _charOptionHeight/2, _charMenuX + 250, _charOptionY + _charOptionHeight/2, false)
+						draw_set_colour(c_black)
+					}
+					else
+					{
+						draw_set_colour(c_white)
+					}
+					
+					draw_text(_charMenuX, _charOptionY, global.party[i].name)
+					_charIndex++
+				}
+			}
+			
+			draw_set_colour(c_white)
+		}
+
 		// Show empty message if no items
 		if(array_length(currentItems) == 0)
 		{

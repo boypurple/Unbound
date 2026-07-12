@@ -13,9 +13,7 @@ repeat(amount_to_spawn)
 
     if (_random_item_id != "")
     {
-        instance_create_layer(_random_x, _random_y, "Instances", obj_item_pickup, {
-            item_id_pickup: _random_item_id
-        });
+        SpawnItemPickup(_random_x, _random_y, _random_item_id);
     }
 }
 
