@@ -27,10 +27,30 @@ if(global.gamePaused)
 
 		draw_sprite_ext(InventoryTray, 0, _panelX, _panelY, panel_xscale, panel_yscale, 0, c_white, 1)
 
-		// Draw tabs
+		// Draw player tabs (above item tabs)
 		draw_set_halign(fa_left)
 		draw_set_valign(fa_bottom)
 
+		var _player_tab_yoffset = -30
+		var _player_tab_spacing = 500 / array_length(global.party)
+
+		for (var i = 0; i < array_length(global.party); i++)
+		{
+			if (playerTab == i)
+			{
+				draw_set_colour(c_yellow)
+				draw_text(_panelX + (_player_tab_spacing * i), _panelY + _player_tab_yoffset, global.party[i].name)
+			}
+			else
+			{
+				draw_set_colour(c_white)
+				draw_set_alpha(0.7)
+				draw_text(_panelX + (_player_tab_spacing * i), _panelY + _player_tab_yoffset, global.party[i].name)
+				draw_set_alpha(1)
+			}
+		}
+
+		// Draw item type tabs
 		var _tab_yoffset = 10
 		var _tab_spacing = 500 / array_length(global.inventory_tab_name) //ITEM_TYPE.COUNT
 
@@ -53,24 +73,34 @@ if(global.gamePaused)
 			}
 		}
 
-		// Get items based on current tab
+		// Get items based on current tab and selected player
 		currentItems = []
-		if (array_contains(global.inventory_tab_type[inventoryTab], ITEM_TYPE.key_item))
+		
+		// Get character inventory data with safety check
+		var _selected_character = global.party[playerTab]
+		var _inv_data = GetCharacterInventory(_selected_character.name)
+		
+		if (_inv_data != undefined)
 		{
-			for(var i = 0; i < array_length(global.inventoryKeyItems); i++)
+			if (array_contains(global.inventory_tab_type[inventoryTab], ITEM_TYPE.key_item))
 			{
-				array_push(currentItems, global.inventoryKeyItems[i])
-			}
-		}
-		if (array_contains(global.inventory_tab_type[inventoryTab], ITEM_TYPE.consumable) || 
-		array_contains(global.inventory_tab_type[inventoryTab], ITEM_TYPE.equipment) || 
-		array_contains(global.inventory_tab_type[inventoryTab], ITEM_TYPE.material)	)
-		{
-			for(var i = 0; i < array_length(global.inventory); i++)
-			{
-				if (array_contains(global.inventory_tab_type[inventoryTab], global.inventory[i].type))
+				for(var i = 0; i < array_length(_inv_data[$ "key_items"]); i++)
 				{
-					array_push(currentItems, global.inventory[i])
+					var _item_data = GetItemFromDatabase(_inv_data[$ "key_items"][i].id)
+					array_push(currentItems, _item_data)
+				}
+			}
+			if (array_contains(global.inventory_tab_type[inventoryTab], ITEM_TYPE.consumable) || 
+			array_contains(global.inventory_tab_type[inventoryTab], ITEM_TYPE.equipment) || 
+			array_contains(global.inventory_tab_type[inventoryTab], ITEM_TYPE.material)	)
+			{
+				for(var i = 0; i < array_length(_inv_data[$ "items"]); i++)
+				{
+					var _item_data = GetItemFromDatabase(_inv_data[$ "items"][i].id)
+					if (array_contains(global.inventory_tab_type[inventoryTab], _item_data.type))
+					{
+						array_push(currentItems, _item_data)
+					}
 				}
 			}
 		}
@@ -82,7 +112,7 @@ if(global.gamePaused)
 		var _cellHeight = 100
 		var _iconWidth = 60
 		var _iconHeight = 60
-		var _cellSpacingX = 10
+		var _cellSpacingX = 15
 		var _cellSpacingY = 20
 		var _gridStartX = _panelX + (scaled_w / 16)
 		var _gridStartY = _panelY + (scaled_h / 12)
@@ -110,21 +140,27 @@ if(global.gamePaused)
 			{
 				var _item = currentItems[i]
 				// Draw item icon if available
-				if(_item.icon != -1)
-				{
-					base_w = sprite_get_width(_item.icon)
-					base_h = sprite_get_height(_item.icon)
+				var _icon = _item[$ "icon"];
+				var _img_index = _item[$ "image_index"] ?? 0; // Jika tidak ada image_index, default ke 0
 
-					draw_set_halign(fa_center)
-					draw_set_valign(fa_middle)
-					draw_sprite_ext(_item.icon, 0, _cellX + (_cellWidth / 8), _cellY + (_cellHeight / 8), _iconWidth / base_w  ,  _iconHeight / base_h, 0, c_white, 1)
+				if (_icon != undefined && sprite_exists(_icon))
+				{
+					base_w = sprite_get_width(_icon);
+					base_h = sprite_get_height(_icon);
+
+					draw_set_halign(fa_center);
+					draw_set_valign(fa_middle);
+					
+					// Gunakan variabel _icon dan _img_index yang sudah aman di sini
+					draw_sprite_ext(_icon, _img_index, _cellX + (_cellWidth / 8), _cellY + (_cellHeight / 8), _iconWidth / base_w, _iconHeight / base_h, 0, c_white, 1);
 				}
 
 				// Draw item name below cell
 				draw_set_halign(fa_center)
 				draw_set_valign(fa_top)
 				draw_set_colour(c_white)
-				draw_text(_cellX + (_cellWidth / 2), _cellY + (_cellHeight - 5), currentItems[i].name)
+				//show_debug_message("Display Item: " + _item.name);
+				draw_text(_cellX + (_cellWidth / 2), _cellY + (_cellHeight - 5), _item.name)
 
 				if(i == inventoryOptionSelected)
 				{
@@ -154,10 +190,10 @@ if(global.gamePaused)
 						draw_set_halign(fa_center);
 						draw_text(inventory_panelX, inventory_panelY + 200, _item.name);
 
-						base_w = sprite_get_width(_item.icon)
-						base_h = sprite_get_height(_item.icon)
+						base_w = sprite_get_width(_icon)
+						base_h = sprite_get_height(_icon)
 						
-						draw_sprite_ext(_item.icon, 0, inventory_panelX, inventory_panelY + 100, _iconWidth / base_w  ,  _iconHeight / base_h, 0, c_white, 1);
+						draw_sprite_ext(_icon, _img_index, inventory_panelX - (base_w), inventory_panelY + 100 - (base_h), _iconWidth / base_w  ,  _iconHeight / base_h, 0, c_white, 1);
 
 						//draw_set_halign(fa_left);
 						//draw_text(4, 80, "Price: "+string(price)+" gold.");
@@ -178,6 +214,101 @@ if(global.gamePaused)
 			}
 		}
 
+		// Draw item options menu when in item options mode
+		if(inventoryCursor == 3 && selectedItemIndex >= 0 && selectedItemIndex < array_length(currentItems))
+		{
+			var _options = ["Pass to other character", "Drop/Remove item"]
+			var _menuX = _panelX + scaled_w + 50
+			var _menuY = _panelY + 100
+			var _optionHeight = 40
+			var _optionSpacing = 10
+			
+			draw_set_halign(fa_center)
+			draw_set_valign(fa_middle)
+			// Draw InventoryTray panel behind options
+			var _optionPanelScaleX = 0.6
+			var _optionPanelScaleY = 0.6
+			var _optionPanelW = sprite_get_width(InventoryTray) * _optionPanelScaleX
+			var _optionPanelH = sprite_get_height(InventoryTray) * _optionPanelScaleY
+			draw_sprite_ext(InventoryTray, 0, _menuX - _optionPanelW/4, _menuY - _optionPanelH/4, _optionPanelScaleX, _optionPanelScaleY, 0, c_white, 1)
+			
+			draw_set_halign(fa_left)
+			draw_set_valign(fa_middle)
+			
+			for(var i = 0; i < array_length(_options); i++)
+			{
+				var _optionY = _menuY + (i * (_optionHeight + _optionSpacing))
+				
+				// Draw option background
+				if(itemOptionSelected == i)
+				{
+					draw_set_colour(c_yellow)
+					draw_rectangle(_menuX - 10, _optionY - _optionHeight/2, _menuX + 250, _optionY + _optionHeight/2, false)
+					draw_set_colour(c_black)
+				}
+				else
+				{
+					draw_set_colour(c_white)
+				}
+				
+				draw_text(_menuX, _optionY, _options[i])
+			}
+			
+			draw_set_colour(c_white)
+		}
+		
+		// Draw character selection menu when in character selection mode
+		if(inventoryCursor == 4)
+		{
+			var _charMenuX = _panelX + scaled_w + 50
+			var _charMenuY = _panelY + 100
+			var _charOptionHeight = 40
+			var _charOptionSpacing = 10
+			
+			draw_set_halign(fa_center)
+			draw_set_valign(fa_middle)
+			// Draw InventoryTray panel behind options
+			var _optionPanelScaleX = 0.6
+			var _optionPanelScaleY = 0.6
+			var _optionPanelW = sprite_get_width(InventoryTray) * _optionPanelScaleX
+			var _optionPanelH = sprite_get_height(InventoryTray) * _optionPanelScaleY
+			draw_sprite_ext(InventoryTray, 0, _charMenuX - _optionPanelW/4, _charMenuY - _optionPanelH/4, _optionPanelScaleX, _optionPanelScaleY, 0, c_white, 1)
+			
+			draw_set_halign(fa_left)
+			draw_set_valign(fa_middle)
+			
+			// Draw title
+			draw_set_colour(c_white)
+			draw_text(_charMenuX, _charMenuY - 30, "Select character:")
+			
+			// Draw character options (excluding current character)
+			var _charIndex = 0
+			for(var i = 0; i < array_length(global.party); i++)
+			{
+				if(i != playerTab)
+				{
+					var _charOptionY = _charMenuY + (_charIndex * (_charOptionHeight + _charOptionSpacing))
+					
+					// Draw character option background
+					if(characterOptionSelected == i)
+					{
+						draw_set_colour(c_yellow)
+						draw_rectangle(_charMenuX - 10, _charOptionY - _charOptionHeight/2, _charMenuX + 250, _charOptionY + _charOptionHeight/2, false)
+						draw_set_colour(c_black)
+					}
+					else
+					{
+						draw_set_colour(c_white)
+					}
+					
+					draw_text(_charMenuX, _charOptionY, global.party[i].name)
+					_charIndex++
+				}
+			}
+			
+			draw_set_colour(c_white)
+		}
+
 		// Show empty message if no items
 		if(array_length(currentItems) == 0)
 		{
@@ -196,5 +327,5 @@ if(global.gamePaused)
 
 		draw_set_halign(fa_right)
 		draw_set_valign(fa_bottom)
-		draw_text(1248, 688, "Press [Esc] to go back | [←/→] to switch tabs")
+		draw_text(1248, 688, "Press Esc to go back | <- and -> to switch tabs")
 }

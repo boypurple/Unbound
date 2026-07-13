@@ -23,3 +23,4 @@ skillOptionSelected = 0
 
 Layer()
 InventorySystem();
+LoadItemDatabase();

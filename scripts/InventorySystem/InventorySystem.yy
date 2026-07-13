@@ -5,8 +5,8 @@
   "isDnD":false,
   "name":"InventorySystem",
   "parent":{
-    "name":"Jyotis",
-    "path":"folders/Scripts/Jyotis.yy",
+    "name":"Inventory",
+    "path":"folders/Scripts/Jyotis/Inventory.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",
