@@ -55,6 +55,7 @@
   ],
   "ForcedPrefabProjectReferences":[],
   "IncludedFiles":[
+    {"$GMIncludedFile":"","%Name":"equipment.csv","CopyToMask":-1,"filePath":"datafiles","name":"equipment.csv","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"items_db.csv","CopyToMask":-1,"filePath":"datafiles","name":"items_db.csv","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
   ],
   "isEcma":false,
@@ -89,6 +90,7 @@
     {"id":{"name":"obj_slime","path":"objects/obj_slime/obj_slime.yy",},},
     {"id":{"name":"obj_sound","path":"objects/obj_sound/obj_sound.yy",},},
     {"id":{"name":"oFollower","path":"objects/oFollower/oFollower.yy",},},
+    {"id":{"name":"oEquipment_UI","path":"objects/oEquipment_UI/oEquipment_UI.yy",},},
     {"id":{"name":"oInventory_UI","path":"objects/oInventory_UI/oInventory_UI.yy",},},
     {"id":{"name":"oMenu","path":"objects/oMenu/oMenu.yy",},},
     {"id":{"name":"oMiniMap","path":"objects/oMiniMap/oMiniMap.yy",},},
@@ -101,6 +103,7 @@
     {"id":{"name":"BattleFunctions","path":"scripts/BattleFunctions/BattleFunctions.yy",},},
     {"id":{"name":"cutscene_table","path":"scripts/cutscene_table/cutscene_table.yy",},},
     {"id":{"name":"enemy_action_table","path":"scripts/enemy_action_table/enemy_action_table.yy",},},
+    {"id":{"name":"EquipmentSystem","path":"scripts/EquipmentSystem/EquipmentSystem.yy",},},
     {"id":{"name":"GameData","path":"scripts/GameData/GameData.yy",},},
     {"id":{"name":"GameMenu","path":"scripts/GameMenu/GameMenu.yy",},},
     {"id":{"name":"Init","path":"scripts/Init/Init.yy",},},

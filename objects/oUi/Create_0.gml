@@ -1,8 +1,10 @@
 click = false
 
 pauseOption = [sContinue, sParty, sGoods, sGoods, sSettings, sSave, sQuit]
-pauseOptionName = ["Continue", "Party", "Inventory", "Goods", "Settings", "Save", "Quit"]
+pauseOptionName = ["Continue", "Party", "Inventory", "Equipment", "Settings", "Save", "Quit"]
 pauseOptionSelected = 0
+instance_inventory = noone
+instance_equipment = noone
 
 settingsOption = [sAudio, sVideo, sControl, sQuit]
 settingsOptionName = ["Audio", "Video", "Controls", "Quit"]
@@ -24,3 +26,5 @@ skillOptionSelected = 0
 Layer()
 InventorySystem();
 LoadItemDatabase();
+InitEquipmentSystem();
+LoadEquipmentDatabase();

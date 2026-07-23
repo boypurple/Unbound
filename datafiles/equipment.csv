@@ -1,0 +1,19 @@
+ItemID,SlotType,Name,OffenseFlat,DefenseFlat,WrathFlat,LuckFlat,SpeedFlat,OffensePct,DefensePct,WrathPct,LuckPct,SpeedPct,IsTwoHanded,Description
+string,string,string,real,real,real,real,real,real,real,real,real,real,bool,string
+dagger,hand,Dagger,5,0,0,0,2,0,0,0,0,0,false,A short sword. Simple and effective. Fits in one hand.
+sword,hand,Sword,10,0,0,0,0,0,0,0,0,0,false,A balanced hand-and-a-half sword. Reliable in any battle.
+icy_swird,hand,Icy Sword,12,0,0,-2,0,0,0,10,0,0,false,A frost-enchanted blade. Slows the wielder slightly but boosts Wrath.
+flaming_sword,hand,Flaming Sword,15,0,5,0,-1,0,0,0,0,0,false,Burns hot — powerful but shaves a hair off your Speed.
+hand_axe,hand,Hand Axe,8,0,0,0,0,0,0,0,0,0,false,A compact one-handed axe. Built for fast strikes.
+battle_axe,hand,Battle Axe,18,0,3,0,-3,0,0,0,0,0,false,A fearsome two-handed axe. Huge power at a speed cost.
+icy_axe,hand,Icy Axe,14,0,0,0,-2,0,0,15,0,0,false,Crafted in the northern wastes. Cold fury on every swing.
+fire_axe,hand,Fire Axe,16,0,4,0,-2,0,0,0,0,0,false,Burns like hell on impact. Leaves a scorched edge.
+wooden_shield,hand,Wooden Shield,0,5,0,0,0,0,0,0,0,0,false,A hand-painted shield carved from hardwood. Blocks simple blows.
+metal_shield,hand,Metal Shield,0,10,0,0,-1,0,0,0,0,0,false,A forged metal barrier. Heavier than wood but far sturdier.
+heaven_shield,hand,Heaven Shield,0,20,0,5,0,0,5,0,0,0,false,A blessed tower shield that radiates holy light.
+death_shield,hand,Death Shield,5,18,5,0,-2,0,0,0,0,0,false,Forged in hellfire. Offers offense as well as defense.
+leather_armor,body,Leather Armor,0,8,0,0,3,0,0,0,0,0,false,Light and comfortable. Great mobility with decent protection.
+chain_mail,body,Chain Mail,0,15,0,0,0,0,5,0,0,0,false,Interlinked metal rings. Solid protection without full-plate weight.
+icy_plate,body,Icy Plate,0,25,0,0,-3,0,10,0,0,0,false,A full suit of frost-forged plate. Near-impenetrable but very heavy.
+obsidian_plate,body,Obsidian Plate,0,35,0,0,-8,0,15,0,0,0,false,The ultimate armor. You are immovable — for better or worse.
+shovel,hand,Shovel,3,0,0,2,0,0,0,0,5,0,false,Not a weapon — but it'll do in a pinch. Raises Luck oddly.
