@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"EquipmentSystem",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"EquipmentSystem",
+  "parent":{
+    "name":"Inventory",
+    "path":"folders/Scripts/Jyotis/Inventory.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

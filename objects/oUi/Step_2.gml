@@ -37,8 +37,11 @@ if(global.gameMenu)
 					global.gameMenu = false
 					break
 
-				case 3: //Goods
-					Goods()
+				case 3: //Equipment
+					instance_equipment = instance_create_layer(0, 0, global.Layer_UI, oEquipment_UI)
+					instance_equipment.instance_equipment = instance_equipment
+					instance_activate_object(instance_equipment);
+					global.gameMenu = false
 					break
 
 				case 4: //Settings

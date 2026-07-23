@@ -14,6 +14,8 @@ global.partySkillMenu = false
 global.gameMenu = false
 
 global.item_database = []
+global.equipment_database = {} // Separated equipment stat database (equipment.csv)
+global.character_equipments  = {} // Per-character equipment containers: { hand, body }
 global.inventoryMaxColumn = 5 
 
 global.inventoryInit = false
