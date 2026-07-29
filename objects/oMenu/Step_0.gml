@@ -1,4 +1,4 @@
-if(active)
+if(active && !(variable_global_exists("debug_edit_focus") && global.debug_edit_focus))
 {
 	//Control menu with keyboard
 	hover += keyboard_check_pressed(vk_down) - keyboard_check_pressed(vk_up)
