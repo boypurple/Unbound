@@ -1,5 +1,7 @@
 // Character control in overworld.
-if(!global.gamePaused)
+var _debug_blocking = variable_global_exists("debug_ui_active") && global.debug_ui_active;
+
+if(!global.gamePaused && !_debug_blocking)
 {
 	if (keyboard_check(vk_left) && !place_meeting(bbox_left, y-3, obj_block) && _status == "overworld") {
 		x -= 3;
