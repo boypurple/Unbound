@@ -1,5 +1,6 @@
 //Data
-global.coins = 0
+global.coins = 10000000 // Bank balance (ATM) — battle rewards land here
+global.cash = 0  // Cash on hand — spent at the Shop, halved on party wipe
 global.volume = 100
 global.volumeSE = 100
 
@@ -39,6 +40,7 @@ global.escape = false
 #macro RESOLUTION_H 720
 
 #macro TILE_SIZE 32
+#macro NPC_INTERACT_RANGE (TILE_SIZE * 1.25) // Shared by obj_player's Space-to-interact check and NPC "Press Space" prompts
 
 //Action Library
 global.actionLibrary =

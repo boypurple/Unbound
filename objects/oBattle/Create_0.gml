@@ -373,6 +373,9 @@ function BattleStateVictoryCheck()
 				partyUnits[i].hyper = false
 			}
 		}
+
+		ApplyDeathPenalty() // Lose 50% of cash on hand on a party wipe; bank balance is untouched.
+
 		// Dica: Aqui você também pode limpar os arrays, destruir o obj_battle,
 		// tocar uma música de vitória/Game Over ou reativar o jogador no mapa.
 		instance_destroy()
@@ -446,7 +449,7 @@ function BattleStateVictoryCheck()
 	        }
 	    }
 		
-		global.coins += _totalCoin
+		AddBankFunds(_totalCoin)
 		
 	    instance_destroy()
 	}

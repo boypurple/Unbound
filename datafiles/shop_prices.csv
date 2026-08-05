@@ -1,0 +1,13 @@
+ItemID,Price
+string,real
+healing_potion,200
+speed_potion,400
+strength_potion,470
+potion_of_wind,1000
+dagger,20
+sword,30
+icy_swird,40
+flaming_sword,50
+hand_axe,24
+wooden_shield,20
+leather_armor,20

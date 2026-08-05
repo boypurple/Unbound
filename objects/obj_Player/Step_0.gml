@@ -48,14 +48,14 @@ if(!global.gamePaused && !_debug_blocking)
 	//	instance_create_depth(obj_camera._view_x, obj_camera._view_y, 0, obj_battle);
 	//}
 
-	// When you press Z button
-	if (keyboard_check_pressed(ord("Z"))) {
+	// When you press Space (shared interact key, same as item pickups/menus)
+	if (keyboard_check_pressed(vk_space)) {
 		switch (_status) {
 			case "overworld":
-				// If there's an npc near you
-				if (place_meeting(x+3, y+3, obj_npc) || place_meeting(x-3, y-3, obj_npc)) {
+				// If there's an npc within interact range (radius check, not just touching)
+				_current_npc = instance_nearest(x, y, obj_npc);
+				if (instance_exists(_current_npc) && point_distance(x, y, _current_npc.x, _current_npc.y) <= NPC_INTERACT_RANGE) {
 					// Talk to npc
-					_current_npc = instance_nearest(x, y, obj_npc);
 					action(_current_npc._event);
 				}
 				else {
