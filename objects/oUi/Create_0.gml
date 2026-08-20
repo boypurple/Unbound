@@ -28,3 +28,4 @@ InventorySystem();
 LoadItemDatabase();
 InitEquipmentSystem();
 LoadEquipmentDatabase();
+LoadShopPriceDatabase();

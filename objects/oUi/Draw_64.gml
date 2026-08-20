@@ -35,7 +35,7 @@ if(global.gameMenu)
 		}
 	
 		draw_set_halign(fa_right)
-		draw_text(1248, 688, "Current Balance: $" + string(global.coins))
+		draw_text(1248, 688, "Bank: $" + string(global.coins) + "   Cash: $" + string(global.cash))
 	}
 	else if(global.config)
 	{

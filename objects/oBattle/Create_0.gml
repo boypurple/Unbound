@@ -1,5 +1,6 @@
 instance_deactivate_all(true)
 instance_activate_object(obj_debug_manager) // keep the debug overlay running while the overworld is frozen for battle
+instance_activate_object(obj_encounter_transition) // keep the transition running
 
 image_speed = .5
 
@@ -373,6 +374,9 @@ function BattleStateVictoryCheck()
 				partyUnits[i].hyper = false
 			}
 		}
+
+		ApplyDeathPenalty() // Lose 50% of cash on hand on a party wipe; bank balance is untouched.
+
 		// Dica: Aqui você também pode limpar os arrays, destruir o obj_battle,
 		// tocar uma música de vitória/Game Over ou reativar o jogador no mapa.
 		instance_destroy()
@@ -446,7 +450,7 @@ function BattleStateVictoryCheck()
 	        }
 	    }
 		
-		global.coins += _totalCoin
+		AddBankFunds(_totalCoin)
 		
 	    instance_destroy()
 	}
