@@ -1,5 +1,6 @@
 instance_deactivate_all(true)
 instance_activate_object(obj_debug_manager) // keep the debug overlay running while the overworld is frozen for battle
+instance_activate_object(obj_encounter_transition) // keep the transition running
 
 image_speed = .5
 

@@ -5,6 +5,7 @@ _right = 0; // Right side.
 _speed = 4;
 _status = "overworld";
 _attack = 5; // Attack strength.
+facing_dir = 270; // 0=right, 90=up, 180=left, 270=down
 
 _current_npc = noone;
 _npc_function = 0;

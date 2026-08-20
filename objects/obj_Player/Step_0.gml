@@ -5,18 +5,22 @@ if(!global.gamePaused && !_debug_blocking)
 {
 	if (keyboard_check(vk_left) && !place_meeting(bbox_left, y-3, obj_block) && _status == "overworld") {
 		x -= 3;
+		facing_dir = 180;
 	}
 
 	if (keyboard_check(vk_right) && !place_meeting(bbox_right, y-3, obj_block) && _status == "overworld") {
 		x += 3;
+		facing_dir = 0;
 	}
 
 	if (keyboard_check(vk_up) && !place_meeting(x-3, bbox_top, obj_block) && _status == "overworld") {
 		y -= 3;
+		facing_dir = 90;
 	}
 
 	if (keyboard_check(vk_down) && !place_meeting(x-3, bbox_bottom, obj_block) && _status == "overworld") {
 		y += 3;
+		facing_dir = 270;
 	}
 	
 	if(x != xprevious or y != yprevious)
