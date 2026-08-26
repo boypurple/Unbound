@@ -37,13 +37,28 @@ if (_in_battle) {
 }
 
 // --- Panel size (InventoryTray, nine-slice stretched to fit content — same panel used by oEquipment_UI) ---
-var _pad         = 26;
-var _line        = 22;
+var _pad         = 32;
+var _line        = 32;
 var _battle_rows = _in_battle ? 4 : 0; // mode/turn/phase/acting lines
 var _stat_rows   = array_length(stat_keys);
-var _content_rows = 2 + _battle_rows + _stat_rows + 2; // title + subtitle + battle info + stats + footer(gap+hint)
+var _content_rows = 3; // title + tab header
 
-var _panel_w = 360;
+var _current_enemy_key = "";
+var _loot_table = [];
+var _loot_rows = 0;
+if (array_length(loot_enemy_keys) > 0) {
+	_current_enemy_key = loot_enemy_keys[loot_enemy_index];
+	_loot_table = global.loot_database[$ _current_enemy_key];
+	_loot_rows = array_length(_loot_table);
+}
+
+if (debug_menu_tab == 0) {
+	_content_rows += 1 + _battle_rows + _stat_rows + 2; // subtitle + battle info + stats + footer
+} else {
+	_content_rows += 1 + _loot_rows + 3; // subtitle + loot rows + gap + global rate + footer
+}
+
+var _panel_w = 480;
 var _panel_h = _pad * 2 + _content_rows * _line;
 var _panel_x = RESOLUTION_W - _panel_w - 24;
 var _panel_y = RESOLUTION_H - _panel_h - 24;
@@ -66,76 +81,127 @@ draw_text(_x + _row_w, _y, debug_edit_focus ? "[EDIT — Tab to release]" : "[VI
 draw_set_halign(fa_left);
 _y += _line * 1.4;
 
-// Subtitle: mode + current target
-draw_set_color(c_white);
-draw_text(_x, _y, _in_battle ? "Mode: BATTLE" : "Mode: OVERWORLD");
-_y += _line;
+// Tab Header
+draw_set_color(debug_menu_tab == 0 ? c_yellow : c_dkgray);
+draw_text(_x, _y, "[1] STATS");
+draw_set_color(debug_menu_tab == 1 ? c_yellow : c_dkgray);
+draw_text(_x + 100, _y, "[2] GLOBAL CONFIG");
+_y += _line * 1.2;
 
-// --- Battle status ("behind the scenes" visualizer) ---
-if (_in_battle) {
-    var _phase_label = "Unknown";
-    if (oBattle.battleState == oBattle.BattleStateSelectAction)      _phase_label = "Selecting Action";
-    else if (oBattle.battleState == oBattle.BattleStatePerformAction)   _phase_label = "Performing Action";
-    else if (oBattle.battleState == oBattle.BattleStateVictoryCheck)    _phase_label = "Checking Victory";
-    else if (oBattle.battleState == oBattle.BattleStateTurnProgression) _phase_label = "Turn Progression";
+if (debug_menu_tab == 0) {
+	// Subtitle: mode + current target
+	draw_set_color(c_white);
+	draw_text(_x, _y, _in_battle ? "Mode: BATTLE" : "Mode: OVERWORLD");
+	_y += _line;
 
-    var _turn_name = "N/A";
-    if (array_length(oBattle.unitTurnOrder) > 0 && instance_exists(oBattle.unitTurnOrder[oBattle.turn])) {
-        _turn_name = oBattle.unitTurnOrder[oBattle.turn].name;
-    }
+	// --- Battle status ("behind the scenes" visualizer) ---
+	if (_in_battle) {
+	    var _phase_label = "Unknown";
+	    if (oBattle.battleState == oBattle.BattleStateSelectAction)      _phase_label = "Selecting Action";
+	    else if (oBattle.battleState == oBattle.BattleStatePerformAction)   _phase_label = "Performing Action";
+	    else if (oBattle.battleState == oBattle.BattleStateVictoryCheck)    _phase_label = "Checking Victory";
+	    else if (oBattle.battleState == oBattle.BattleStateTurnProgression) _phase_label = "Turn Progression";
 
-    draw_set_color(c_ltgray);
-    draw_text(_x, _y, $"Turn: {_turn_name}   Round: {oBattle.roundCount}");
-    _y += _line;
-    draw_text(_x, _y, $"Phase: {_phase_label}");
-    _y += _line;
+	    var _turn_name = "N/A";
+	    if (array_length(oBattle.unitTurnOrder) > 0 && instance_exists(oBattle.unitTurnOrder[oBattle.turn])) {
+	        _turn_name = oBattle.unitTurnOrder[oBattle.turn].name;
+	    }
 
-    if (instance_exists(oBattle.currentUser) && is_struct(oBattle.currentAction)) {
-        draw_text(_x, _y, $"Acting: {oBattle.currentUser.name} → {oBattle.currentAction.name}");
-    } else {
-        draw_text(_x, _y, "Acting: —");
-    }
-    _y += _line * 1.2;
-}
+	    draw_set_color(c_ltgray);
+	    draw_text(_x, _y, $"Turn: {_turn_name}   Round: {oBattle.roundCount}");
+	    _y += _line;
+	    draw_text(_x, _y, $"Phase: {_phase_label}");
+	    _y += _line;
 
-// --- Stat editor ---
-draw_set_color(c_white);
-draw_text(_x, _y, _target != undefined ? $"Editing: {_target_name}" : "Editing: —");
-_y += _line;
+	    if (instance_exists(oBattle.currentUser) && is_struct(oBattle.currentAction)) {
+	        draw_text(_x, _y, $"Acting: {oBattle.currentUser.name} → {oBattle.currentAction.name}");
+	    } else {
+	        draw_text(_x, _y, "Acting: —");
+	    }
+	    _y += _line * 1.2;
+	}
 
-if (_target == undefined) {
-    draw_set_color(c_gray);
-    draw_text(_x, _y, _in_battle ? "No battle units found." : "No character data found.");
-    _y += _stat_rows * _line;
-} else {
-    for (var i = 0; i < _stat_rows; i++) {
-        var _key      = stat_keys[i];
-        var _value    = _target[$ _key] ?? "N/A";
-        var _selected = (i == stat_selected_index);
+	// --- Stat editor ---
+	draw_set_color(c_white);
+	draw_text(_x, _y, _target != undefined ? $"Editing: {_target_name}" : "Editing: —");
+	_y += _line;
 
-        if (_selected && debug_edit_focus) {
-            draw_set_alpha(0.25);
-            draw_set_color(c_yellow);
-            draw_rectangle(_x - 6, _y - 2, _x + _row_w, _y + _line - 4, false);
-            draw_set_alpha(1);
-        }
+	if (_target == undefined) {
+	    draw_set_color(c_gray);
+	    draw_text(_x, _y, _in_battle ? "No battle units found." : "No character data found.");
+	    _y += _stat_rows * _line;
+	} else {
+	    for (var i = 0; i < _stat_rows; i++) {
+	        var _key      = stat_keys[i];
+	        var _value    = _target[$ _key] ?? "N/A";
+	        var _selected = (i == stat_selected_index);
 
-        draw_set_color(_selected && debug_edit_focus ? c_yellow : c_white);
-        draw_text(_x, _y, $"{_selected ? ">" : " "} {stat_labels[i]}");
-        draw_set_halign(fa_right);
-        draw_text(_x + _row_w, _y, string(_value));
-        draw_set_halign(fa_left);
+	        if (_selected && debug_edit_focus) {
+	            draw_set_alpha(0.25);
+	            draw_set_color(c_yellow);
+	            draw_rectangle(_x - 6, _y - 2, _x + _row_w, _y + _line - 4, false);
+	            draw_set_alpha(1);
+	        }
 
-        _y += _line;
-    }
-}
+	        draw_set_color(_selected && debug_edit_focus ? c_yellow : c_white);
+	        draw_text(_x, _y, $"{_selected ? ">" : " "} {stat_labels[i]}");
+	        draw_set_halign(fa_right);
+	        draw_text(_x + _row_w, _y, string(_value));
+	        draw_set_halign(fa_left);
 
-draw_set_color(c_ltgray);
-_y += 6;
-if (!debug_edit_focus) {
-    draw_text(_x, _y, "Tab: edit stats");
-} else {
-    draw_text(_x, _y, $"Up/Down: stat   Left/Right: -/+   Q/E: {_in_battle ? "unit" : "party member"}");
+	        _y += _line;
+	    }
+	}
+
+	draw_set_color(c_ltgray);
+	_y += 6;
+	if (!debug_edit_focus) {
+	    draw_text(_x, _y, "Tab: edit stats");
+	} else {
+	    draw_text(_x, _y, $"Up/Down: stat   Left/Right: -/+   Q/E: {_in_battle ? "unit" : "party member"}");
+	}
+} else if (debug_menu_tab == 1) {
+	draw_set_color(c_white);
+	draw_text(_x, _y, $"Loot Target: {_current_enemy_key}");
+	_y += _line * 1.5;
+
+	if (_loot_rows == 0) {
+	    draw_set_color(c_gray);
+	    draw_text(_x, _y, "No loot defined.");
+	    _y += _line;
+	} else {
+	    for (var i = 0; i < _loot_rows; i++) {
+	        var _drop     = _loot_table[i];
+	        var _selected = (i == loot_item_index);
+
+	        if (_selected && debug_edit_focus) {
+	            draw_set_alpha(0.25);
+	            draw_set_color(c_yellow);
+	            draw_rectangle(_x - 6, _y - 2, _x + _row_w, _y + _line - 4, false);
+	            draw_set_alpha(1);
+	        }
+
+	        draw_set_color(_selected && debug_edit_focus ? c_yellow : c_white);
+	        draw_text(_x, _y, $"{_selected ? ">" : " "} {_drop.item}");
+	        draw_set_halign(fa_right);
+	        draw_text(_x + _row_w, _y, $"{_drop.chance}%");
+	        draw_set_halign(fa_left);
+
+	        _y += _line;
+	    }
+	}
+	
+	_y += _line * 0.5;
+	draw_set_color(c_white);
+	draw_text(_x, _y, $"Global Drop Rate Multiplier: x{global.dropRateMultiplier}");
+	
+	draw_set_color(c_ltgray);
+	_y += _line * 1.5;
+	if (!debug_edit_focus) {
+	    draw_text(_x, _y, "Tab: edit config");
+	} else {
+	    draw_text(_x, _y, "Q/E: enemy   L/R: chance   [/]: global");
+	}
 }
 
 draw_set_color(c_white);

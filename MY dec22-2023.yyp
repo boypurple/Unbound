@@ -23,7 +23,6 @@
     {"$GMFolder":"","%Name":"Paths","folderPath":"folders/Paths.yy","name":"Paths","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Rooms","folderPath":"folders/Rooms.yy","name":"Rooms","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Scripts","folderPath":"folders/Scripts.yy","name":"Scripts","resourceType":"GMFolder","resourceVersion":"2.0",},
-
     {"$GMFolder":"","%Name":"Danilo","folderPath":"folders/Scripts/Danilo.yy","name":"Danilo","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Jyotis","folderPath":"folders/Scripts/Jyotis.yy","name":"Jyotis","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Inventory","folderPath":"folders/Scripts/Jyotis/Inventory.yy","name":"Inventory","resourceType":"GMFolder","resourceVersion":"2.0",},
@@ -85,6 +84,7 @@
     {"id":{"name":"obj_debug_button","path":"objects/obj_debug_button/obj_debug_button.yy",},},
     {"id":{"name":"obj_debug_manager","path":"objects/obj_debug_manager/obj_debug_manager.yy",},},
     {"id":{"name":"obj_dialog_box","path":"objects/obj_dialog_box/obj_dialog_box.yy",},},
+    {"id":{"name":"obj_dummy","path":"objects/obj_dummy/obj_dummy.yy",},},
     {"id":{"name":"obj_encounter_transition","path":"objects/obj_encounter_transition/obj_encounter_transition.yy",},},
     {"id":{"name":"obj_enemy_table","path":"objects/obj_enemy_table/obj_enemy_table.yy",},},
     {"id":{"name":"obj_enemy","path":"objects/obj_enemy/obj_enemy.yy",},},

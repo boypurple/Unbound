@@ -13,4 +13,3 @@ _surface_before = -1;
 _surface_overlay = -1;
 _sw = display_get_gui_width();
 _sh = display_get_gui_height();
-show_debug_message("TRANSITION Create: init done. sw=" + string(_sw) + " sh=" + string(_sh));
