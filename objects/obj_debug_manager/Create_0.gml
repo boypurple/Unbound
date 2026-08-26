@@ -2,6 +2,12 @@
 
 debug_active     = false;
 debug_edit_focus = false; // Tab, while debug_active: arms stat editing and steals arrow/enter keys from oMenu/obj_player
+debug_menu_tab   = 0;     // 0: Stats Editor, 1: Loot Editor / Global Config
+
+// --- Loot editor ---
+loot_enemy_keys  = variable_struct_get_names(global.loot_database);
+loot_enemy_index = 0;
+loot_item_index  = 0;
 
 // --- Stat editor ---
 // Overworld target: global.party[stat_char_index]. Battle target: oBattle.units[battle_unit_index].

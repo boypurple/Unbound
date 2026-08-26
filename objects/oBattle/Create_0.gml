@@ -393,6 +393,41 @@ function BattleStateVictoryCheck()
 	        _totalXP += enemyUnits[i].xpValue;
 			if(enemyUnits[i].jackpot == true) _multCoin = 0.08 
 	        _totalCoin += (enemyUnits[i].coin + (enemyUnits[i].coin * _multCoin));
+			
+			// Loot Drops
+			if (variable_struct_exists(global.loot_database, enemyUnits[i].name))
+			{
+				var _lootTable = global.loot_database[$ enemyUnits[i].name];
+				for(var j = 0; j < array_length(_lootTable); j++)
+				{
+					var _drop = _lootTable[j];
+					var _roll = irandom_range(1, 100);
+					if (_roll <= _drop.chance * global.dropRateMultiplier)
+					{
+						var _receiver = global.party[0].name; 
+						// Find an alive member
+						for(var p = 0; p < array_length(partyUnits); p++) {
+							if (partyUnits[p].hp > 0) {
+								_receiver = partyUnits[p].name;
+								break;
+							}
+						}
+						
+						var _added = AddItemToCharacterInventory(_receiver, _drop.item, 1);
+						if (_added)
+						{
+							// Create visual indicator on the enemy
+							instance_create_depth(
+								enemyUnits[i].x,
+								enemyUnits[i].y - 40 - (j * 20),
+								enemyUnits[i].depth - 1,
+								oBattleFloatingText,
+								{font: fnMother3, col: c_yellow, text: "Got Item!"}
+							);
+						}
+					}
+				}
+			}
 	    }
 		
 	    // Distribui para cada membro da party que estiver vivo

@@ -13,9 +13,9 @@ if (_player_facing_slime && _slime_facing_away) {
 }
 
 var _enemies = [
-	{data: global.enemies.boar, col: 0, row: 0},
-	{data: global.enemies.boar, col: 1, row: 0},
-	{data: global.enemies.boar, col: 1, row: 1}
+	{data: global.enemies.dummy, col: 0, row: 0},
+	{data: global.enemies.dummy, col: 1, row: 0},
+	{data: global.enemies.dummy, col: 1, row: 1}
 ];
 
 if (!instance_exists(obj_encounter_transition)) {

@@ -1,4 +1,3 @@
-show_debug_message("TRANSITION Step: _phase=" + string(_phase) + " _timer=" + string(_timer) + " _battle_spawned=" + string(_battle_spawned));
 
 switch (_phase) {
     case 0:
@@ -13,14 +12,12 @@ switch (_phase) {
         // Halfway through the animation, spawn the battle
         if (!_battle_spawned && _timer >= _duration / 2) {
             _battle_spawned = true;
-            show_debug_message("TRANSITION Step: Spawning battle at timer=" + string(_timer));
             NewEncounter(enemies_data, bg);
         }
         
         // Animation complete
         if (_timer >= _duration) {
             _phase = 2;
-            show_debug_message("TRANSITION Step: Animation done, destroying transition.");
             instance_destroy();
         }
         break;
