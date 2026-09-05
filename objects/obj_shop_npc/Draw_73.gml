@@ -1,4 +1,4 @@
-if (instance_exists(obj_player) && point_distance(x, y, obj_player.x, obj_player.y) <= NPC_INTERACT_RANGE)
+if (instance_exists(obj_player) && distance_to_object(obj_player) <= NPC_INTERACT_RANGE)
 {
     draw_set_font(fnMother3);
 

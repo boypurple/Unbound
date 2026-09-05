@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"ChatterboxLocalizationGetChars",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"ChatterboxLocalizationGetChars",
+  "parent":{
+    "name":"Localisation",
+    "path":"folders/Chatterbox/Localisation.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

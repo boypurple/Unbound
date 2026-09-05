@@ -1,6 +1,11 @@
-_camera = camera_create();
-_vm = matrix_build_lookat(0, 0, -10, 0, 0, 0, 0, 1, 0);
-_pm = matrix_build_projection_ortho(1280, 720, 1, 1280);
+// Native camera is handled in Step_0.gml now
+
 _view_x = 0;
 _view_y = 0;
 _target = obj_player;
+
+// Dialogue Camera Event variables
+_dialogue_target_x = 0;
+_dialogue_target_y = 0;
+_dialogue_returning = false;
+_in_dialogue_event = false;
