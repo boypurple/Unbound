@@ -5,6 +5,11 @@ _npc_id = "emo";
 var _db = global.dialogue_db[$ _npc_id];
 _event = {
     type:      "chatterbox",
-    _function: open_chatterbox,
-    _value:    [_db.start_node, _npc_id],
+    _function: function(_args) {
+        var _met = DialogueGetVar("emo", "met_player", false);
+        var _node = _met ? "EmoMeetsPlayer" : "Start";
+        DialogueSetVar("emo", "met_player", true);
+        open_chatterbox([_node, "emo"]);
+    },
+    _value:    [],
 };
