@@ -8,3 +8,24 @@ function open_dialog(_text){
 		}
 	}
 }
+
+function open_chatterbox(_args){
+	var _node   = is_array(_args) ? _args[0] : _args;
+	var _npc_id = is_array(_args) ? _args[1] : "";
+	if (!instance_exists(obj_dialog_box)) {
+		var _box = instance_create_layer(0, 0, "Instances_1", obj_dialog_box);
+		with (_box) {
+			_is_chatterbox = true;
+			_active_npc_id = _npc_id;
+			_chatterbox = ChatterboxCreate();
+			ChatterboxJump(_chatterbox, _node);
+			
+			if (ChatterboxIsStopped(_chatterbox)) {
+				instance_destroy();
+			} else {
+				_text_full = ChatterboxGetContentSpeech(_chatterbox, 0) ?? "";
+				_speaker_name = ChatterboxGetContentSpeaker(_chatterbox, 0) ?? "";
+			}
+		}
+	}
+}

@@ -1,0 +1,25 @@
+#__PrivCrochet_version:1
+__PrivCrochet_colorID: 0
+__PrivCrochet_position: 583,247
+__PrivCrochet_tags: 
+title: Start
+---
+Emo NPC: Do you think elderly people be sucking crazy because they have no teeth?
+Chris: When is this game coming out?
+Emo NPC: Never
+Michael: Gott'ch
+===
+
+#__PrivCrochet_version:1
+__PrivCrochet_colorID: 0
+__PrivCrochet_position: 800,247
+__PrivCrochet_tags: 
+title: EmoMeetsPlayer
+---
+Emo NPC: Hey... watch this.
+<<cameraMove(500, 200, true)>>
+Emo NPC: Pretty cool, right?
+<<waitSeconds(1)>>
+Emo NPC: I've been waiting for you.
+<<setDialogVar("emo", "met_player", true)>>
+===

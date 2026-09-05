@@ -9,8 +9,8 @@
   "name":"obj_shop_npc",
   "overriddenProperties":[],
   "parent":{
-    "name":"Jyotis",
-    "path":"folders/Objects/Jyotis.yy",
+    "name":"NPC",
+    "path":"folders/Objects/Jyotis/NPC.yy",
   },
   "parentObjectId":{
     "name":"obj_npc",

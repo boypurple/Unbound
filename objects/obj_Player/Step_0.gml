@@ -58,7 +58,7 @@ if(!global.gamePaused && !_debug_blocking)
 			case "overworld":
 				// If there's an npc within interact range (radius check, not just touching)
 				_current_npc = instance_nearest(x, y, obj_npc);
-				if (instance_exists(_current_npc) && point_distance(x, y, _current_npc.x, _current_npc.y) <= NPC_INTERACT_RANGE) {
+				if (instance_exists(_current_npc) && distance_to_object(_current_npc) <= NPC_INTERACT_RANGE) {
 					// Talk to npc
 					action(_current_npc._event);
 				}
