@@ -23,9 +23,13 @@ for(var i = arraySize; i > 0; i--)
 
 if(array_length(global.party) >= 2)
 {
-	var _follower1 = instance_create_layer(x, y, "Instances", oFollower)
-	_follower1.sprite = global.party[1].spr
-	_follower1.record = 16
+	for(var j = 1; j < array_length(global.party); j++)
+	{
+		var _follower1 = instance_create_layer(x, y, "Instances", oFollower)
+		_follower1.sprite = global.party[j].spr
+		_follower1.record = 16 * j;
+	}
+	
 }
 
 gamePausedImageSpeed = 0

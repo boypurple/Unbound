@@ -50,6 +50,7 @@ global.actionLibrary =
 	attack:
 	{
 		name: "Attack",
+		swappable: false,
 		description: "{0} attacks!",
 		subMenu: -1,
 		useOverwold: false,
@@ -142,6 +143,7 @@ global.actionLibrary =
 	stenchA:
 	{
 		name: "Stench A",
+		swappable: true,
 		description: "{0} casts Stench A!",
 		subMenu: "VZI Attack Skills",
 		useOverwold: false,
@@ -284,6 +286,7 @@ global.actionLibrary =
 	stenchB:
 	{
 		name: "Stench B",
+		swappable: true,
 		description: "{0} casts Stench B!",
 		subMenu: "VZI Attack Skills",
 		useOverwold: false,
@@ -396,6 +399,7 @@ global.actionLibrary =
 	stenchY:
 	{
 		name: "Stench Y",
+		swappable: true,
 		description: "{0} casts Stench Y!",
 		subMenu: "VZI Attack Skills",
 		useOverwold: false,
@@ -508,6 +512,7 @@ global.actionLibrary =
 	stenchO:
 	{
 		name: "Stench O",
+		swappable: true,
 		description: "{0} casts Stench O!",
 		subMenu: "VZI Attack Skills",
 		useOverwold: false,
@@ -620,6 +625,7 @@ global.actionLibrary =
 	nukeA:
 	{
 		name: "Nuke A",
+		swappable: true,
 		description: "{0} casts Nuke A!",
 		subMenu: "VZI Attack Skills",
 		useOverwold: false,
@@ -789,6 +795,7 @@ global.actionLibrary =
 	nukeB:
 	{
 		name: "Nuke B",
+		swappable: true,
 		description: "{0} casts Nuke B!",
 		subMenu: "VZI Attack Skills",
 		useOverwold: false,
@@ -934,6 +941,7 @@ global.actionLibrary =
 	nukeY:
 	{
 		name: "Nuke Y",
+		swappable: true,
 		description: "{0} casts Nuke Y!",
 		subMenu: "VZI Attack Skills",
 		useOverwold: false,
@@ -1079,6 +1087,7 @@ global.actionLibrary =
 	nukeO:
 	{
 		name: "Nuke O",
+		swappable: true,
 		description: "{0} casts Nuke O!",
 		subMenu: "VZI Attack Skills",
 		useOverwold: false,
@@ -1224,6 +1233,7 @@ global.actionLibrary =
 	lightningA:
 	{
 		name: "Lightning A",
+		swappable: true,
 		description: "{0} casts Lightning A!",
 		subMenu: "VZI Attack Skills",
 		useOverwold: false,
@@ -1333,6 +1343,7 @@ global.actionLibrary =
 	lightningB:
 	{
 		name: "Lightning B",
+		swappable: true,
 		description: "{0} casts Lightning B!",
 		subMenu: "VZI Attack Skills",
 		useOverwold: false,
@@ -1442,6 +1453,7 @@ global.actionLibrary =
 	lightningY:
 	{
 		name: "Lightning Y",
+		swappable: true,
 		description: "{0} casts Lightning Y!",
 		subMenu: "VZI Attack Skills",
 		useOverwold: false,
@@ -1551,6 +1563,7 @@ global.actionLibrary =
 	lightningO:
 	{
 		name: "Lightning O",
+		swappable: true,
 		description: "{0} casts Lightning O!",
 		subMenu: "VZI Attack Skills",
 		useOverwold: false,
@@ -1660,6 +1673,7 @@ global.actionLibrary =
 	poisonA:
 	{
 		name: "Poison A",
+		swappable: true,
 		description: "{0} cast Poison A!",
 		subMenu: "VZI Attack Skills",
 		useOverwold: false,
@@ -1767,6 +1781,7 @@ global.actionLibrary =
 	poisonB:
 	{
 		name: "Poison B",
+		swappable: true,
 		description: "{0} cast Poison B!",
 		subMenu: "VZI Attack Skills",
 		useOverwold: false,
@@ -1874,6 +1889,7 @@ global.actionLibrary =
 	poisonY:
 	{
 		name: "Poison Y",
+		swappable: true,
 		description: "{0} cast Poison Y!",
 		subMenu: "VZI Attack Skills",
 		useOverwold: false,
@@ -1981,6 +1997,7 @@ global.actionLibrary =
 	poisonO:
 	{
 		name: "Poison O",
+		swappable: true,
 		description: "{0} cast Poison O!",
 		subMenu: "VZI Attack Skills",
 		useOverwold: false,
@@ -2088,6 +2105,7 @@ global.actionLibrary =
 	nocturneA:
 	{
 		name: "Nocturne A",
+		swappable: true,
 		description: "{0} casts Nocturne A!",
 		subMenu: "VZI Attack Skills",
 		useOverwold: false,
@@ -2200,6 +2218,7 @@ global.actionLibrary =
 	nocturneB:
 	{
 		name: "Nocturne B",
+		swappable: true,
 		description: "{0} casts Nocturne B!",
 		subMenu: "VZI Attack Skills",
 		useOverwold: false,
@@ -2312,6 +2331,7 @@ global.actionLibrary =
 	nocturneY:
 	{
 		name: "Nocturne Y",
+		swappable: true,
 		description: "{0} casts Nocturne Y!",
 		subMenu: "VZI Attack Skills",
 		useOverwold: false,
@@ -2428,6 +2448,7 @@ global.actionLibrary =
 	shitstormO:
 	{
 		name: "Shitstorm O",
+		swappable: true,
 		description: "{0} casts Shitstorm O!",
 		subMenu: "VZI Attack Skills",
 		useOverwold: false,
@@ -2525,6 +2546,7 @@ global.actionLibrary =
 	fixUpA:
 	{
 		name: "Fix-Up A",
+		swappable: true,
 		description: "{0} healed!",
 		subMenu: "VZI Recovery Skills",
 		useOverwold: false,
@@ -2545,6 +2567,7 @@ global.actionLibrary =
 	fixUpB:
 	{
 		name: "Fix-Up B",
+		swappable: true,
 		description: "{0} healed!",
 		subMenu: "VZI Recovery Skills",
 		useOverwold: false,
@@ -2565,6 +2588,7 @@ global.actionLibrary =
 	fixUpY:
 	{
 		name: "Fix-Up Y",
+		swappable: true,
 		description: "{0} healed!",
 		subMenu: "VZI Recovery Skills",
 		useOverwold: false,
@@ -2585,6 +2609,7 @@ global.actionLibrary =
 	fixUpO:
 	{
 		name: "Fix-Up O",
+		swappable: true,
 		description: "{0} healed!",
 		subMenu: "VZI Recovery Skills",
 		useOverwold: false,
@@ -2608,6 +2633,7 @@ global.actionLibrary =
 	cureA:
 	{
 		name: "Cure A",
+		swappable: true,
 		description: "{0} healed!",
 		subMenu: "VZI Recovery Skills",
 		useOverwold: false,
@@ -2644,6 +2670,7 @@ global.actionLibrary =
 	cureO:
 	{
 		name: "Cure O",
+		swappable: true,
 		description: "{0} healed!",
 		subMenu: "VZI Recovery Skills",
 		useOverwold: false,
@@ -2664,6 +2691,7 @@ global.actionLibrary =
 	drainA:
 	{
 		name: "Drain A",
+		swappable: true,
 		description: "{0} drained!",
 		subMenu: "VZI Recovery Skills",
 		useOverwold: false,
@@ -2709,6 +2737,7 @@ global.actionLibrary =
 	drainO:
 	{
 		name: "Drain O",
+		swappable: true,
 		description: "{0} drained!",
 		subMenu: "VZI Recovery Skills",
 		useOverwold: false,
@@ -2757,6 +2786,7 @@ global.actionLibrary =
 	favorithingA:
 	{
 		name: "Favorite Thing A",
+		swappable: false,
 		description: "All For One!",
 		subMenu: "VZI Assist Skills",
 		useOverwold: false,
@@ -2785,6 +2815,7 @@ global.actionLibrary =
 	favorithingB:
 	{
 		name: "Favorite Thing B",
+		swappable: false,
 		description: "All For One!",
 		subMenu: "VZI Assist Skills",
 		useOverwold: false,
@@ -2813,6 +2844,7 @@ global.actionLibrary =
 	favorithingY:
 	{
 		name: "Favorite Thing Y",
+		swappable: false,
 		description: "All For One!",
 		subMenu: "VZI Assist Skills",
 		useOverwold: false,
@@ -2841,6 +2873,7 @@ global.actionLibrary =
 	favorithingO:
 	{
 		name: "Favorite Thing O",
+		swappable: false,
 		description: "All For One!",
 		subMenu: "VZI Assist Skills",
 		useOverwold: false,
@@ -2869,6 +2902,7 @@ global.actionLibrary =
 	ftsio:
 	{
 		name: "F.T.S.I.O.",
+		swappable: true,
 		description: "{0} escaped!",
 		subMenu: "VZI Assist Skills",
 		useOverwold: false,
@@ -2891,6 +2925,7 @@ global.actionLibrary =
 	mutationA:
 	{
 		name: "Mutation A",
+		swappable: true,
 		description: "{0} casts Mutation A!",
 		subMenu: "VZI Assist Skills",
 		useOverwold: false,
@@ -2910,6 +2945,7 @@ global.actionLibrary =
 	mutationO:
 	{
 		name: "Mutation O",
+		swappable: true,
 		description: "{0} casts Mutation O!",
 		subMenu: "VZI Assist Skills",
 		useOverwold: false,
@@ -2949,6 +2985,7 @@ global.actionLibrary =
 	weathA:
 	{
 		name: "Weath A",
+		swappable: true,
 		description: "{0} casts Weath A!",
 		subMenu: "VZI Assist Skills",
 		useOverwold: false,
@@ -2979,6 +3016,7 @@ global.actionLibrary =
 	weathO:
 	{
 		name: "Weath O",
+		swappable: true,
 		description: "{0} casts Weath O!",
 		subMenu: "VZI Assist Skills",
 		useOverwold: false,
@@ -3011,6 +3049,7 @@ global.actionLibrary =
 	darknessA:
 	{
 		name: "Darkness A",
+		swappable: true,
 		description: "{0} casts Darkness A!",
 		subMenu: "VZI Assist Skills",
 		useOverwold: false,
@@ -3041,6 +3080,7 @@ global.actionLibrary =
 	darknessO:
 	{
 		name: "Darkness O",
+		swappable: true,
 		description: "{0} casts Darkness O!",
 		subMenu: "VZI Assist Skills",
 		useOverwold: false,
@@ -3073,6 +3113,7 @@ global.actionLibrary =
 	defensedownA:
 	{
 		name: "Defense Down A",
+		swappable: true,
 		description: "Boink!",
 		subMenu: "VZI Assist Skills",
 		useOverwold: false,
@@ -3097,6 +3138,7 @@ global.actionLibrary =
 	defensedownO:
 	{
 		name: "Defense Down O",
+		swappable: true,
 		description: "Boink!",
 		subMenu: "VZI Assist Skills",
 		useOverwold: false,
@@ -3124,6 +3166,7 @@ global.actionLibrary =
 	offenseupA:
 	{
 		name: "Offense Up A",
+		swappable: true,
 		description: "Boink!",
 		subMenu: "VZI Assist Skills",
 		useOverwold: false,
@@ -3148,6 +3191,7 @@ global.actionLibrary =
 	offenseupO:
 	{
 		name: "Offense Up O",
+		swappable: true,
 		description: "Boink!",
 		subMenu: "VZI Assist Skills",
 		useOverwold: false,
@@ -3175,6 +3219,7 @@ global.actionLibrary =
 	hypnosisA:
 	{
 		name: "Hypnosis A",
+		swappable: true,
 		description: "{0} casts Hypnosis A!",
 		subMenu: "VZI Assist Skills",
 		useOverwold: false,
@@ -3208,6 +3253,7 @@ global.actionLibrary =
 	hypnosisO:
 	{
 		name: "Hypnosis O",
+		swappable: true,
 		description: "{0} casts Hypnosis O!",
 		subMenu: "VZI Assist Skills",
 		useOverwold: false,
@@ -3243,6 +3289,7 @@ global.actionLibrary =
 	hyperA:
 	{
 		name: "Hyper A",
+		swappable: true,
 		description: "Plus Ultra!",
 		subMenu: "VZI Assist Skills",
 		useOverwold: false,
@@ -3267,6 +3314,7 @@ global.actionLibrary =
 	hyperO:
 	{
 		name: "Hyper O",
+		swappable: true,
 		description: "Plus Ultra!",
 		subMenu: "VZI Assist Skills",
 		useOverwold: false,
@@ -3294,6 +3342,7 @@ global.actionLibrary =
 	teleport:
 	{
 		name: "Teleportation",
+		swappable: false,
 		description: "{0} casts Teleportation!",
 		subMenu: "VZI Assist Skills",
 		useOverwold: true,
@@ -3357,14 +3406,11 @@ global.party =
 		magicBarrier: false,
 		holdingPresent: false,
 		sprites: { /*idle: sChrisU, down: sChrisU*/},
-		actions: [global.actionLibrary.attack, global.actionLibrary.stenchA, global.actionLibrary.stenchB, 
-				  global.actionLibrary.nukeA, global.actionLibrary.nukeB, global.actionLibrary.nukeO, 
-				  global.actionLibrary.lightningA, global.actionLibrary.poisonA, global.actionLibrary.poisonO,
-				  global.actionLibrary.nocturneY, global.actionLibrary.cureA, global.actionLibrary.fixUpA,
-				  global.actionLibrary.drainA, global.actionLibrary.shitstormO, global.actionLibrary.favorithingA,
-				  global.actionLibrary.ftsio, global.actionLibrary.teleport, global.actionLibrary.darknessA,
-				  global.actionLibrary.defensedownA, global.actionLibrary.hyperA, global.actionLibrary.hypnosisA,
-				  global.actionLibrary.mutationA, global.actionLibrary.weathA, global.actionLibrary.offenseupA]
+		actions: [global.actionLibrary.attack, 
+				  global.actionLibrary.stenchB, global.actionLibrary.nukeB, global.actionLibrary.poisonO, 
+				  global.actionLibrary.fixUpB, global.actionLibrary.cureO, global.actionLibrary.drainO,
+				  global.actionLibrary.ftsio, global.actionLibrary.weathA, global.actionLibrary.offenseupA,
+				  global.actionLibrary.teleport, global.actionLibrary.favorithingA]
 	}
 	,
 	{
@@ -3403,6 +3449,47 @@ global.party =
 		holdingPresent: false,
 		sprites: { /*idle: sChrisU, down: sChrisU*/},
 		actions: [global.actionLibrary.attack]
+	}
+	,
+	{
+		name: "Violet",
+		spr: Violet_front,
+		lvl: 1,
+		xp: 0,
+		hp: 11,
+		hpMax: 12,
+		pp: 100,
+		ppMax: 100,
+		def: 1,
+		spd: 1,
+		wrath: 1,
+		iq: 1,
+		strength: 6,
+		stunned: false,
+		mutatedHand: false,
+		itchy: false,
+		itnum: 0,
+		poisoned: false,
+		ponum: 0,
+		poison: "",
+		blind: false,
+		sleep: false,
+		noNut: false,
+		soreT: false,
+		afo: false,
+		offenseup: false,
+		defdown: false,
+		aftype: "",
+		anum: 0,
+		hyper: false,
+		hynum: 0,
+		magicBarrier: false,
+		holdingPresent: false,
+		sprites: { /*idle: Violet_front, down: Violet_front*/},
+		actions: [global.actionLibrary.attack, global.actionLibrary.stenchA, global.actionLibrary.nukeA, global.actionLibrary.lightningA, 
+				  global.actionLibrary.fixUpA, global.actionLibrary.cureA, global.actionLibrary.drainA,
+				  global.actionLibrary.mutationA, global.actionLibrary.darknessA, global.actionLibrary.hyperA,
+				  global.actionLibrary.teleport, global.actionLibrary.favorithingA]
 	}
 ]
 
@@ -3545,3 +3632,55 @@ global.enemies =
 		}
 	}
 }
+
+// Global VZI skill pool - all swappable VZI skills available in the game.
+// Each entry: { action: <actionLibrary ref>, unlockedBy: "CharacterName" or "" }
+// "unlockedBy" tracks which character originally earned this skill (for display).
+global.vziSkillPool = [
+    // Offensive
+    { action: global.actionLibrary.stenchA,    unlockedBy: "Chris" },
+    { action: global.actionLibrary.stenchB,    unlockedBy: "Chris" },
+    { action: global.actionLibrary.stenchY,    unlockedBy: "Chris" },
+    { action: global.actionLibrary.stenchO,    unlockedBy: "Chris" },
+    { action: global.actionLibrary.nukeA,      unlockedBy: "Chris" },
+    { action: global.actionLibrary.nukeB,      unlockedBy: "Chris" },
+    { action: global.actionLibrary.nukeY,      unlockedBy: "Chris" },
+    { action: global.actionLibrary.nukeO,      unlockedBy: "Chris" },
+    { action: global.actionLibrary.lightningA, unlockedBy: "Chris" },
+    { action: global.actionLibrary.lightningB, unlockedBy: "Chris" },
+    { action: global.actionLibrary.lightningY, unlockedBy: "Chris" },
+    { action: global.actionLibrary.lightningO, unlockedBy: "Chris" },
+    { action: global.actionLibrary.poisonA,    unlockedBy: "Chris" },
+    { action: global.actionLibrary.poisonB,    unlockedBy: "Chris" },
+    { action: global.actionLibrary.poisonY,    unlockedBy: "Chris" },
+    { action: global.actionLibrary.poisonO,    unlockedBy: "Chris" },
+    { action: global.actionLibrary.nocturneA,  unlockedBy: "Chris" },
+    { action: global.actionLibrary.nocturneB,  unlockedBy: "Chris" },
+    { action: global.actionLibrary.nocturneY,  unlockedBy: "Chris" },
+    { action: global.actionLibrary.shitstormO, unlockedBy: "Chris" },
+    // Recovery
+    { action: global.actionLibrary.fixUpA,     unlockedBy: "Chris" },
+    { action: global.actionLibrary.fixUpB,     unlockedBy: "Chris" },
+    { action: global.actionLibrary.fixUpY,     unlockedBy: "Chris" },
+    { action: global.actionLibrary.fixUpO,     unlockedBy: "Chris" },
+    { action: global.actionLibrary.cureA,      unlockedBy: "Chris" },
+    { action: global.actionLibrary.cureO,      unlockedBy: "Chris" },
+    { action: global.actionLibrary.drainA,     unlockedBy: "Chris" },
+    { action: global.actionLibrary.drainO,     unlockedBy: "Chris" },
+    // Assist
+    { action: global.actionLibrary.ftsio,       unlockedBy: "Chris" },
+    { action: global.actionLibrary.mutationA,   unlockedBy: "Chris" },
+    { action: global.actionLibrary.mutationO,   unlockedBy: "Chris" },
+    { action: global.actionLibrary.weathA,      unlockedBy: "Chris" },
+    { action: global.actionLibrary.weathO,      unlockedBy: "Chris" },
+    { action: global.actionLibrary.darknessA,   unlockedBy: "Chris" },
+    { action: global.actionLibrary.darknessO,   unlockedBy: "Chris" },
+    { action: global.actionLibrary.defensedownA, unlockedBy: "Chris" },
+    { action: global.actionLibrary.defensedownO, unlockedBy: "Chris" },
+    { action: global.actionLibrary.offenseupA,  unlockedBy: "Chris" },
+    { action: global.actionLibrary.offenseupO,  unlockedBy: "Chris" },
+    { action: global.actionLibrary.hypnosisA,   unlockedBy: "Chris" },
+    { action: global.actionLibrary.hypnosisO,   unlockedBy: "Chris" },
+    { action: global.actionLibrary.hyperA,      unlockedBy: "Chris" },
+    { action: global.actionLibrary.hyperO,      unlockedBy: "Chris" }
+]

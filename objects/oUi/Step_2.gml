@@ -4,8 +4,8 @@ if(global.gameMenu)
 	keyDown = keyboard_check_pressed(vk_down) || keyboard_check_pressed(ord("S"))
 	keyLeft = keyboard_check_pressed(vk_left) || keyboard_check_pressed(ord("A"))
 	keyRight = keyboard_check_pressed(vk_right) || keyboard_check_pressed(ord("D"))
-	keyActivate = keyboard_check_pressed(vk_space)
-	keyDeactivate = keyboard_check_pressed(vk_escape)
+	keyActivate = keyboard_check_pressed(vk_space) || keyboard_check_pressed(vk_enter)
+	keyDeactivate = keyboard_check_pressed(vk_backspace) || keyboard_check_pressed(vk_shift)
 
 	if(!global.config && !global.partyMenu)
 	{
@@ -144,6 +144,7 @@ if(global.gameMenu)
 		}
 		if(global.partyMenu)
 		{
+			if(equipSwapTimer > 0) equipSwapTimer -= 1
 			switch(partySide)
 			{
 				case 0: //Icons
@@ -152,22 +153,46 @@ if(global.gameMenu)
 					if(partyOptionSelected < 0) partyOptionSelected = array_length(global.party) - 1
 					if(keyActivate)
 					{
-						global.partySkillMenu = true
-						if(keyActivate)
-						{
-							partySide = 1
-						}
+						partySide = 1
+                        partyActionSelected = 0
 					}
 					if(keyDeactivate)
 					{
-						global.partySkillMenu = false
 						global.partyMenu = false
-
 						partySide = 0
 					}
 					break
 
-				case 1: //Functions
+                case 1: // Action selection (Use / Equip)
+                    partyActionSelected += (keyDown - keyUp)
+                    var _maxAction = 1
+                    if(global.party[partyOptionSelected].name == "Michael") _maxAction = 0 // Michael has no equip
+                    if(partyActionSelected > _maxAction) partyActionSelected = 0
+                    if(partyActionSelected < 0) partyActionSelected = _maxAction
+                    
+                    if(keyActivate)
+                    {
+                        if(partyActionSelected == 0)
+                        {
+                            global.partySkillMenu = true
+                            partySide = 2
+                            skillOptionSelected = 0
+                        }
+                        else
+                        {
+                            partySide = 3
+                            equipState = 0
+                            equipSlotSelected = 0
+                            equipPoolSelected = 0
+                        }
+                    }
+                    if(keyDeactivate)
+                    {
+                        partySide = 0
+                    }
+                    break
+
+				case 2: //Use Skills
 					if(global.partySkillMenu)
 					{
 						skillOptionSelected += (keyDown - keyUp)
@@ -183,11 +208,78 @@ if(global.gameMenu)
 					}
 					if(keyDeactivate)
 					{
-						global.partyMenu = false
 						global.partySkillMenu = false
-						partySide = 0
+						partySide = 1
 					}
 					break
+
+                case 3: //Equip Skills
+                    var _char = global.party[partyOptionSelected]
+                    
+                    // Build equipCategorySlots array (swappable skills only)
+                    equipCategorySlots = []
+                    var _slots = _char.actions
+                    for(var i=0; i<array_length(_slots); i++) {
+                        if(_slots[i].swappable) {
+                            array_push(equipCategorySlots, { index: i, action: _slots[i] })
+                        }
+                    }
+                    
+                    if (equipState == 0) // Browsing slots
+                    {
+                        equipSlotSelected += (keyDown - keyUp)
+                        if(equipSlotSelected >= array_length(equipCategorySlots)) equipSlotSelected = 0
+                        if(equipSlotSelected < 0) equipSlotSelected = max(0, array_length(equipCategorySlots) - 1)
+                        
+                        if(keyActivate && array_length(equipCategorySlots) > 0)
+                        {
+                            equipCategoryFilter = equipCategorySlots[equipSlotSelected].action.subMenu
+                            equipState = 1
+                            equipPoolSelected = 0
+                        }
+                        if(keyDeactivate)
+                        {
+                            partySide = 1
+                        }
+                    }
+                    else if (equipState == 1) // Browsing pool
+                    {
+                        // Filter pool
+                        var _filteredPool = []
+                        for(var i=0; i<array_length(global.vziSkillPool); i++) {
+                            if(global.vziSkillPool[i].action.subMenu == equipCategoryFilter) {
+                                array_push(_filteredPool, global.vziSkillPool[i])
+                            }
+                        }
+                        
+                        equipPoolSelected += (keyDown - keyUp)
+                        if(equipPoolSelected >= array_length(_filteredPool)) equipPoolSelected = 0
+                        if(equipPoolSelected < 0) equipPoolSelected = max(0, array_length(_filteredPool) - 1)
+                        
+                        if(keyActivate && array_length(_filteredPool) > 0)
+                        {
+                            var _selectedSkill = _filteredPool[equipPoolSelected].action
+                            var _owner = VziSkillGetOwner(_selectedSkill)
+                            
+                            if(_owner != "") {
+                                equipSwapMessage = "Already used by " + _owner + "!"
+                                equipSwapTimer = 120
+                            }
+                            else {
+                                // Swap
+                                var _realIndex = equipCategorySlots[equipSlotSelected].index
+                                VziSkillEquip(_char, _realIndex, _selectedSkill)
+                                equipSwapMessage = "Equipped!"
+                                equipSwapTimer = 60
+                                equipState = 0
+                            }
+                        }
+                        if(keyDeactivate)
+                        {
+                            equipState = 0
+                        }
+                    }
+                    break
 			}
 		}
 	}
