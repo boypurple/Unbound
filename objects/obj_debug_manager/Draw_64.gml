@@ -54,8 +54,10 @@ if (array_length(loot_enemy_keys) > 0) {
 
 if (debug_menu_tab == 0) {
 	_content_rows += 1 + _battle_rows + _stat_rows + 2; // subtitle + battle info + stats + footer
-} else {
+} else if (debug_menu_tab == 1) {
 	_content_rows += 1 + _loot_rows + 3; // subtitle + loot rows + gap + global rate + footer
+} else if (debug_menu_tab == 2) {
+	_content_rows += 1 + array_length(global.character_roster) + 2; // subtitle + roster + gap + footer
 }
 
 var _panel_w = 480;
@@ -86,6 +88,8 @@ draw_set_color(debug_menu_tab == 0 ? c_yellow : c_dkgray);
 draw_text(_x, _y, "[1] STATS");
 draw_set_color(debug_menu_tab == 1 ? c_yellow : c_dkgray);
 draw_text(_x + 100, _y, "[2] GLOBAL CONFIG");
+draw_set_color(debug_menu_tab == 2 ? c_yellow : c_dkgray);
+draw_text(_x + 260, _y, "[3] PARTY");
 _y += _line * 1.2;
 
 if (debug_menu_tab == 0) {
@@ -201,6 +205,44 @@ if (debug_menu_tab == 0) {
 	    draw_text(_x, _y, "Tab: edit config");
 	} else {
 	    draw_text(_x, _y, "Q/E: enemy   L/R: chance   [/]: global");
+	}
+} else if (debug_menu_tab == 2) {
+	draw_set_color(c_white);
+	draw_text(_x, _y, "PARTY ROSTER");
+	_y += _line * 1.2;
+
+	var _roster = global.character_roster;
+	for (var i = 0; i < array_length(_roster); i++) {
+		var _name     = _roster[i].name;
+		var _selected = (i == party_roster_index);
+
+		var _in_party = false;
+		for (var j = 0; j < array_length(global.party); j++) {
+			if (global.party[j].name == _name) { _in_party = true; break; }
+		}
+
+		if (_selected && debug_edit_focus) {
+			draw_set_alpha(0.25);
+			draw_set_color(c_yellow);
+			draw_rectangle(_x - 6, _y - 2, _x + _row_w, _y + _line - 4, false);
+			draw_set_alpha(1);
+		}
+
+		draw_set_color(_selected && debug_edit_focus ? c_yellow : c_white);
+		draw_text(_x, _y, $"{_selected ? ">" : " "} {_name}");
+		draw_set_halign(fa_right);
+		draw_set_color(_in_party ? c_lime : c_gray);
+		draw_text(_x + _row_w, _y, _in_party ? "IN PARTY" : "NOT IN PARTY");
+		draw_set_halign(fa_left);
+		_y += _line;
+	}
+
+	draw_set_color(c_ltgray);
+	_y += 6;
+	if (!debug_edit_focus) {
+		draw_text(_x, _y, "Tab: edit party");
+	} else {
+		draw_text(_x, _y, "Up/Down: select   Enter: toggle in/out");
 	}
 }
 

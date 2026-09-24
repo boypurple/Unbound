@@ -32,3 +32,6 @@ input_cooldown_max = 8;
 enemy_vision_default    = 96;
 enemy_vision_color      = c_lime;
 enemy_vision_alpha      = 0.25;
+
+// --- Party editor ---
+party_roster_index = 0;
