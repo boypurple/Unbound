@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"VziSkillSystem",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"VziSkillSystem",
+  "parent":{
+    "name":"Danilo",
+    "path":"folders/Scripts/Danilo.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

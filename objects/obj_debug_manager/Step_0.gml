@@ -25,6 +25,7 @@ var _in_battle = instance_exists(oBattle);
 // --- Tab Switching ---
 if (keyboard_check_pressed(ord("1"))) debug_menu_tab = 0;
 if (keyboard_check_pressed(ord("2"))) debug_menu_tab = 1;
+if (keyboard_check_pressed(ord("3"))) debug_menu_tab = 2;
 
 if (debug_menu_tab == 0) {
 	// --- Cycle target unit (Q/E) ---
@@ -161,5 +162,29 @@ if (debug_menu_tab == 0) {
 	}
 	if (keyboard_check_pressed(221)) { // ']' key
 	    global.dropRateMultiplier += 0.1;
+	}
+} else if (debug_menu_tab == 2) {
+	// Up/Down: move roster cursor
+	var _roster_count = array_length(global.character_roster);
+	if (keyboard_check_pressed(vk_up))
+		party_roster_index = (party_roster_index - 1 + _roster_count) mod _roster_count;
+	if (keyboard_check_pressed(vk_down))
+		party_roster_index = (party_roster_index + 1) mod _roster_count;
+
+	// Enter: toggle in/out of party
+	if (keyboard_check_pressed(vk_enter)) {
+		var _char_name = global.character_roster[party_roster_index].name;
+		var _in_party  = -1;
+		for (var i = 0; i < array_length(global.party); i++) {
+			if (global.party[i].name == _char_name) { _in_party = i; break; }
+		}
+		if (_in_party >= 0) {
+			// Remove — never allow party to go below 1 member
+			if (array_length(global.party) > 1)
+				array_delete(global.party, _in_party, 1);
+		} else {
+			// Add — deep copy from roster so runtime edits don't corrupt the template
+			array_push(global.party, variable_clone(global.character_roster[party_roster_index]));
+		}
 	}
 }

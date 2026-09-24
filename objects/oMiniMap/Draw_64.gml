@@ -1,4 +1,4 @@
-if(global.gamePaused && !global.config)    
+if(global.gamePaused && global.gameMenu && !global.config && !global.partyMenu)    
 {
     /// @desc Draw Background
     if(!surface_exists(surfMinimapBg))

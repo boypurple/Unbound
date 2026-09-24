@@ -91,3 +91,23 @@ function CheckLevelUp(_unit)
 		CheckLevelUp(_unit);
 	}
 }
+
+/// @func CalcHitModifiers(_user)
+/// Returns a struct { hit, b, blind, nut } with all accuracy modifiers applied.
+function CalcHitModifiers(_user) {
+    var _hit = 100;
+    if (_user.afo) {
+        switch(_user.aftype) {
+            case "a": _hit = _hit + (_hit * 0.05); break;
+            case "b": _hit = _hit + (_hit * 0.15); break;
+            case "y": _hit = _hit + (_hit * 0.25); break;
+            case "o": _hit = _hit + (_hit * 0.40); break;
+        }
+    }
+    return {
+        hit:   _hit,
+        b:     _user.itchy ? _hit / 2 : 0,
+        blind: _user.blind ? _hit / 4 : 0,
+        nut:   _user.noNut ? 0.25    : 0
+    };
+}

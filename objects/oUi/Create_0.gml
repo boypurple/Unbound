@@ -29,3 +29,12 @@ LoadItemDatabase();
 InitEquipmentSystem();
 LoadEquipmentDatabase();
 LoadShopPriceDatabase();
+
+partyActionSelected = 0
+equipSlotSelected = 0
+equipPoolSelected = 0
+equipState = 0
+equipCategoryFilter = ""
+equipCategorySlots = []
+equipSwapMessage = ""
+equipSwapTimer = 0
