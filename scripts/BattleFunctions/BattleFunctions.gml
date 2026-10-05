@@ -1,4 +1,4 @@
-function NewEncounter(_enemies, _bg)
+function NewEncounter(_enemies, _bg, _creator = id)
 {
 	instance_create_depth
 	(
@@ -6,7 +6,7 @@ function NewEncounter(_enemies, _bg)
 		camera_get_view_y(view_camera[0]),
 		-9999,
 		oBattle,
-		{enemies: _enemies, creator: id, battleBackground: _bg}
+		{enemies: _enemies, creator: _creator, battleBackground: _bg}
 	)
 }
 

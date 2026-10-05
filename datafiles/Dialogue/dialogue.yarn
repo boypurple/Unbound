@@ -23,3 +23,32 @@ Emo NPC: Pretty cool, right?
 Emo NPC: I've been waiting for you.
 <<setDialogVar("emo", "met_player", true)>>
 ===
+
+#__PrivCrochet_version:1
+__PrivCrochet_colorID: 0
+__PrivCrochet_position: 1000,247
+__PrivCrochet_tags: 
+title: HealerStart
+---
+Nurse: Welcome! You look worn out.
+<<if partyNeedsRest()>>
+Nurse: Would you like to rest a while?
+-> Yes, please.
+    <<jump HealerRestore>>
+-> No, thanks.
+    Nurse: Take care out there.
+<<else>>
+Nurse: You're all in perfect shape. Come back anytime!
+<<endif>>
+===
+
+#__PrivCrochet_version:1
+__PrivCrochet_colorID: 0
+__PrivCrochet_position: 1200,247
+__PrivCrochet_tags: 
+title: HealerRestore
+---
+Nurse: Close your eyes for a moment...
+<<restoreParty()>>
+Nurse: There! Your health and VZI are fully restored.
+===

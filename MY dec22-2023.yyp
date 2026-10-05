@@ -109,6 +109,7 @@
     {"id":{"name":"obj_item_pickup","path":"objects/obj_item_pickup/obj_item_pickup.yy",},},
     {"id":{"name":"obj_name_choose","path":"objects/obj_name_choose/obj_name_choose.yy",},},
     {"id":{"name":"obj_npc_emo","path":"objects/obj_npc_emo/obj_npc_emo.yy",},},
+    {"id":{"name":"obj_npc_healer","path":"objects/obj_npc_healer/obj_npc_healer.yy",},},
     {"id":{"name":"obj_npc","path":"objects/obj_npc/obj_npc.yy",},},
     {"id":{"name":"obj_player","path":"objects/obj_player/obj_player.yy",},},
     {"id":{"name":"obj_shop_npc","path":"objects/obj_shop_npc/obj_shop_npc.yy",},},

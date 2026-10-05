@@ -24,5 +24,6 @@ if (!instance_exists(obj_encounter_transition)) {
 	_trans.enemies_data = _enemies;
 	_trans.bg = sBattle1;
 	_trans.timer = 1500;
+	_trans.enemy_instance = id;
 }
 

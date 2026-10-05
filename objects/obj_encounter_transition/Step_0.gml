@@ -12,7 +12,7 @@ switch (_phase) {
         // Halfway through the animation, spawn the battle
         if (!_battle_spawned && _timer >= _duration / 2) {
             _battle_spawned = true;
-            NewEncounter(enemies_data, bg);
+            NewEncounter(enemies_data, bg, enemy_instance);
         }
         
         // Animation complete

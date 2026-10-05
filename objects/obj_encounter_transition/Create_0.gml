@@ -3,6 +3,7 @@
 swirl_color = c_black;
 enemies_data = [];
 bg = sBattle1;
+enemy_instance = noone; // Overworld enemy that started this encounter (destroyed when battle ends)
 // Animation state
 _phase = 0;         // 0 = wait for first draw, 1 = animating in, 2 = done
 _timer = 0;         // frames elapsed
