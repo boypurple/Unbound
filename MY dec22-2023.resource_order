@@ -79,6 +79,7 @@
     {"name":"obj_flag_table","order":10,"path":"objects/obj_flag_table/obj_flag_table.yy",},
     {"name":"obj_name_choose","order":14,"path":"objects/obj_name_choose/obj_name_choose.yy",},
     {"name":"obj_npc_emo","order":1,"path":"objects/obj_npc_emo/obj_npc_emo.yy",},
+    {"name":"obj_npc_healer","order":15,"path":"objects/obj_npc_healer/obj_npc_healer.yy",},
     {"name":"obj_npc","order":9,"path":"objects/obj_npc/obj_npc.yy",},
     {"name":"obj_slime","order":3,"path":"objects/obj_slime/obj_slime.yy",},
     {"name":"obj_sound","order":11,"path":"objects/obj_sound/obj_sound.yy",},

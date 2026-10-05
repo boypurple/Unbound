@@ -11,6 +11,8 @@ function DialogueEventsInit() {
     ChatterboxAddFunction("setDialogVar", DialogueSetVar);  // Instant, no wait
     ChatterboxAddFunction("hideDialog",   _de_hide_dialog);
     ChatterboxAddFunction("showDialog",   _de_show_dialog);
+    ChatterboxAddFunction("restoreParty", _de_restore_party);
+    ChatterboxAddFunction("partyNeedsRest", PartyNeedsRest);
 }
 
 // Resumes the dialogue box and properly updates its text variables.
@@ -132,4 +134,42 @@ function _de_hide_dialog() {
 
 function _de_show_dialog() {
     with (obj_dialog_box) _tray_hidden = false;
+}
+
+function PartyNeedsRest() {
+    for(var i = 0; i < array_length(global.party); i++) {
+        var _p = global.party[i];
+        if (_p.hp < _p.hpMax || _p.pp < _p.ppMax) return true;
+        if (_p.poisoned || _p.itchy || _p.blind || _p.sleep || _p.stunned || _p.mutatedHand || _p.noNut || _p.soreT) return true;
+    }
+    return false;
+}
+
+function PartyRestoreAll() {
+    for(var i = 0; i < array_length(global.party); i++) {
+        var _p = global.party[i];
+        _p.hp = _p.hpMax;
+        _p.pp = _p.ppMax;
+        
+        // Cure ailments
+        _p.poisoned = false;
+        _p.ponum = 0;
+        _p.poison = "";
+        _p.itchy = false;
+        _p.itnum = 0;
+        _p.blind = false;
+        _p.sleep = false;
+        _p.stunned = false;
+        _p.mutatedHand = false;
+        _p.noNut = false;
+        _p.soreT = false;
+    }
+}
+
+function _de_restore_party() {
+    PartyRestoreAll();
+    // Play a healing sound, fallback to party join if no specific sound exists
+    if (audio_exists(snd_party_join)) {
+        audio_play_sound(snd_party_join, 1, false);
+    }
 }

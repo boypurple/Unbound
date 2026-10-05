@@ -7,6 +7,7 @@ function DialogueDatabaseInit() {
     // --- Register NPCs ---
     // Format: DialogueRegisterNpc(npc_id, display_name, starting_node, source_file)
     DialogueRegisterNpc("emo",   "Emo NPC",  "EmoMeetsPlayer", "Dialogue/dialogue.yarn");
+    DialogueRegisterNpc("healer", "Nurse",   "HealerStart",    "Dialogue/dialogue.yarn");
     // Add more NPCs here as they are created
 }
 
