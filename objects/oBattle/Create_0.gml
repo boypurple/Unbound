@@ -76,8 +76,17 @@ for(var i = 0; i < array_length(global.party); i++)
 	array_push(units, partyUnits[i])
 }
 
-//Shuffle Turn order
-unitTurnOrder = array_shuffle(units)
+// Speed-based Turn Order (with tie-breaking)
+unitTurnOrder = []
+array_copy(unitTurnOrder, 0, units, 0, array_length(units))
+for(var i = 0; i < array_length(unitTurnOrder); i++)
+{
+	unitTurnOrder[i]._turnInitiative = (variable_instance_exists(unitTurnOrder[i], "spd") ? unitTurnOrder[i].spd : 1) * 100 + irandom(99);
+}
+array_sort(unitTurnOrder, function(_a, _b)
+{
+	return _b._turnInitiative - _a._turnInitiative;
+})
 
 //Get render order
 RefreshRenderOrder = function()
@@ -109,7 +118,7 @@ function BattleStateSelectAction()
 		//If unit is player controlled
 		if(_unit.object_index == oBattleUnitPC)
 		{
-			if(!_unit.stunned) || (!_unit.sleep)
+			if (!_unit.stunned && !_unit.sleep)
 			{
 				//Compile the action Menu
 				var _menuOptions = []
@@ -162,13 +171,25 @@ function BattleStateSelectAction()
 		else
 		{
 			//If unit is AI controlled:
-			if(!_unit.stunned) || (!_unit.sleep)
+			if (!_unit.stunned && !_unit.sleep)
 			{
 				var _enemyAction = _unit.AIscript()
-				if(_enemyAction != -1) BeginAction(_unit.id, _enemyAction[0], _enemyAction[1])
+				if (_enemyAction != -1 && instance_exists(_unit)) BeginAction(_unit, _enemyAction[0], _enemyAction[1])
 			}
 			else
 			{
+				if (variable_instance_exists(_unit, "isCharging") && _unit.isCharging)
+				{
+					_unit.isCharging = false;
+					instance_create_depth
+					(
+						_unit.x,
+						_unit.y - 20,
+						_unit.depth - 1,
+						oBattleFloatingText,
+						{font: fnMother3, col: c_yellow, text: "Interrupted!"}
+					);
+				}
 				_unit.stunned = false
 				battleState = BattleStateVictoryCheck
 			}
@@ -178,6 +199,11 @@ function BattleStateSelectAction()
 
 function BeginAction(_user, _action, _targets)
 {
+	if (!instance_exists(_user))
+	{
+		battleState = BattleStateVictoryCheck;
+		exit;
+	}
 	currentUser = _user
 	currentAction = _action
 	currentTargets = _targets
@@ -506,6 +532,15 @@ function BattleStateTurnProgression()
 	{
 		turn = 0
 		roundCount++
+		// Re-sort turn order by speed each round with fresh initiative tie-breakers
+		for(var i = 0; i < array_length(unitTurnOrder); i++)
+		{
+			unitTurnOrder[i]._turnInitiative = (variable_instance_exists(unitTurnOrder[i], "spd") ? unitTurnOrder[i].spd : 1) * 100 + irandom(99);
+		}
+		array_sort(unitTurnOrder, function(_a, _b)
+		{
+			return _b._turnInitiative - _a._turnInitiative;
+		})
 	}
 	
 	for(var i = 0; i <= array_length(unitTurnOrder) - 1; i++)
