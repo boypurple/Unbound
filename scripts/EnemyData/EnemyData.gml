@@ -4,15 +4,40 @@ global.loot_database =
 	"Boar":
 	[
 		{ item: "healing_potion", chance: 50 },
-		{ item: "red_dust", chance: 15 } // You can change these items to match your actual items in items_db.csv
+		{ item: "red_dust", chance: 15 }
+	],
+	"Armored Boar":
+	[
+		{ item: "healing_potion", chance: 50 },
+		{ item: "red_dust", chance: 30 }
 	],
 	"Dummy":
 	[
 		{ item: "slime_drop", chance: 100 },
 		{ item: "healing_potion", chance: 80 },
 		{ item: "red_dust", chance: 50 }
+	],
+	"Healer Goblin":
+	[
+		{ item: "healing_potion", chance: 75 }
+	],
+	"Shield Beetle":
+	[
+		{ item: "red_dust", chance: 40 }
+	],
+	"Cultist Wizard":
+	[
+		{ item: "healing_potion", chance: 50 }
+	],
+	"Shadow Stalker":
+	[
+		{ item: "red_dust", chance: 60 }
+	],
+	"Viper":
+	[
+		{ item: "slime_drop", chance: 50 }
 	]
-}
+};
 
 global.enemies =
 {
@@ -52,12 +77,12 @@ global.enemies =
 		hynum: 0,
 		magicBarrier: false,
 		holdingPresent: false,
-		AIscript: function()
-		{
-			var _action = actions[0]
-			var _targets = [oBattle.partyUnits[0]]
-			return [_action, _targets]
-		}
+		isCharging: false,
+		isInvisible: false,
+		behaviors: [
+			AI_BasicAttack()
+		],
+		AIscript: EnemyAIRunBehaviors
 	},
 	boar:
 	{
@@ -95,46 +120,275 @@ global.enemies =
 		hynum: 0,
 		magicBarrier: false,
 		holdingPresent: false,
-		AIscript: function()
-		{
-			//enemy turn ai goes here
-			//Attack random party member
-			var _action = actions[0]
-			
-			var _possibleTargets = []
-			
-			var _chan = 1
-			var _mut = false
-				
-			if(mutatedHand) 
-			{
-				if(_chan < irandom(2)) _mut = true
-				if(_mut)
-				{
-					_possibleTargets = array_filter(oBattle.enemyUnits, function(_unit, _index)
-					{
-						return (_unit.hp > 0)
-					})
-				}
-				else
-				{
-					_possibleTargets = array_filter(oBattle.partyUnits, function(_unit, _index)
-					{
-						return (_unit.hp > 0)
-					})
-				}
-			}
-			else
-			{
-				_possibleTargets = array_filter(oBattle.partyUnits, function(_unit, _index)
-				{
-					return (_unit.hp > 0)
-				})
-			}
-			
-			var _target = _possibleTargets[irandom(array_length(_possibleTargets) - 1)]
-			return [_action, _target]
-		}
+		isCharging: false,
+		isInvisible: false,
+		behaviors: [
+			AI_BasicAttack()
+		],
+		AIscript: EnemyAIRunBehaviors
+	},
+	medic:
+	{
+		name: "Healer Goblin",
+		hp: 50,
+		hpMax: 50,
+		pp: 30,
+		ppMax: 30,
+		def: 15,
+		spd: 4,
+		wrath: 2,
+		iq: 4,
+		strength: 5,
+		actions: [global.actionLibrary.attack, global.actionLibrary.enemyHeal],
+		sprites: {idle: sEnemy},
+		xpValue: 180,
+		coin: 60,
+		stunned: false,
+		mutatedHand: false,
+		itchy: false,
+		itnum: 0,
+		poisoned: false,
+		ponum: 0,
+		poison: "",
+		jackpot: false,
+		blind: false,
+		sleep: false,
+		noNut: false,
+		afo: false,
+		offenseup: false,
+		defdown: false,
+		aftype: "",
+		anum: 0,
+		hyper: false,
+		hynum: 0,
+		magicBarrier: false,
+		holdingPresent: false,
+		isCharging: false,
+		isInvisible: false,
+		behaviors: [
+			AI_Medic(0.85, global.actionLibrary.enemyHeal),
+			AI_BasicAttack()
+		],
+		AIscript: EnemyAIRunBehaviors
+	},
+	tank:
+	{
+		name: "Shield Beetle",
+		hp: 80,
+		hpMax: 80,
+		pp: 20,
+		ppMax: 20,
+		def: 30,
+		spd: 3,
+		wrath: 3,
+		iq: 3,
+		strength: 6,
+		actions: [global.actionLibrary.attack, global.actionLibrary.enemyBarrier],
+		sprites: {idle: sEnemy},
+		xpValue: 220,
+		coin: 80,
+		stunned: false,
+		mutatedHand: false,
+		itchy: false,
+		itnum: 0,
+		poisoned: false,
+		ponum: 0,
+		poison: "",
+		jackpot: false,
+		blind: false,
+		sleep: false,
+		noNut: false,
+		afo: false,
+		offenseup: false,
+		defdown: false,
+		aftype: "",
+		anum: 0,
+		hyper: false,
+		hynum: 0,
+		magicBarrier: false,
+		holdingPresent: false,
+		isCharging: false,
+		isInvisible: false,
+		behaviors: [
+			AI_Tank(global.actionLibrary.enemyBarrier),
+			AI_BasicAttack()
+		],
+		AIscript: EnemyAIRunBehaviors
+	},
+	wizard:
+	{
+		name: "Cultist Wizard",
+		hp: 55,
+		hpMax: 55,
+		pp: 25,
+		ppMax: 25,
+		def: 15,
+		spd: 4,
+		wrath: 4,
+		iq: 5,
+		strength: 5,
+		actions: [global.actionLibrary.attack, global.actionLibrary.enemyChargeSpell, global.actionLibrary.enemyMegaBlast],
+		sprites: {idle: sEnemy},
+		xpValue: 240,
+		coin: 90,
+		stunned: false,
+		mutatedHand: false,
+		itchy: false,
+		itnum: 0,
+		poisoned: false,
+		ponum: 0,
+		poison: "",
+		jackpot: false,
+		blind: false,
+		sleep: false,
+		noNut: false,
+		afo: false,
+		offenseup: false,
+		defdown: false,
+		aftype: "",
+		anum: 0,
+		hyper: false,
+		hynum: 0,
+		magicBarrier: false,
+		holdingPresent: false,
+		isCharging: false,
+		isInvisible: false,
+		behaviors: [
+			AI_ChargingWizard(global.actionLibrary.enemyChargeSpell, global.actionLibrary.enemyMegaBlast),
+			AI_BasicAttack()
+		],
+		AIscript: EnemyAIRunBehaviors
+	},
+	armored_boar:
+	{
+		name: "Armored Boar",
+		hp: 80,
+		hpMax: 80,
+		pp: 20,
+		ppMax: 20,
+		def: 30,
+		spd: 3,
+		wrath: 3,
+		iq: 2,
+		strength: 6,
+		actions: [global.actionLibrary.attack, global.actionLibrary.enemyBarrier],
+		sprites: {idle: sEnemy},
+		xpValue: 220,
+		coin: 80,
+		stunned: false,
+		mutatedHand: false,
+		itchy: false,
+		itnum: 0,
+		poisoned: false,
+		ponum: 0,
+		poison: "",
+		jackpot: false,
+		blind: false,
+		sleep: false,
+		noNut: false,
+		afo: false,
+		offenseup: false,
+		defdown: false,
+		aftype: "",
+		anum: 0,
+		hyper: false,
+		hynum: 0,
+		magicBarrier: false,
+		holdingPresent: false,
+		isCharging: false,
+		isInvisible: false,
+		behaviors: [
+			AI_Tank(global.actionLibrary.enemyBarrier),
+			AI_BasicAttack()
+		],
+		AIscript: EnemyAIRunBehaviors
+	},
+	assassin:
+	{
+		name: "Shadow Stalker",
+		hp: 55,
+		hpMax: 55,
+		pp: 15,
+		ppMax: 15,
+		def: 25,
+		spd: 5,
+		wrath: 4,
+		iq: 3,
+		strength: 7,
+		actions: [global.actionLibrary.attack, global.actionLibrary.enemyVanish, global.actionLibrary.enemyAmbush],
+		sprites: {idle: sEnemy},
+		xpValue: 240,
+		coin: 90,
+		stunned: false,
+		mutatedHand: false,
+		itchy: false,
+		itnum: 0,
+		poisoned: false,
+		ponum: 0,
+		poison: "",
+		jackpot: false,
+		blind: false,
+		sleep: false,
+		noNut: false,
+		afo: false,
+		offenseup: false,
+		defdown: false,
+		aftype: "",
+		anum: 0,
+		hyper: false,
+		hynum: 0,
+		magicBarrier: false,
+		holdingPresent: false,
+		isCharging: false,
+		isInvisible: false,
+		behaviors: [
+			AI_ChargingAssassin(global.actionLibrary.enemyVanish, global.actionLibrary.enemyAmbush),
+			AI_BasicAttack()
+		],
+		AIscript: EnemyAIRunBehaviors
+	},
+	staller:
+	{
+		name: "Viper",
+		hp: 75,
+		hpMax: 75,
+		pp: 25,
+		ppMax: 25,
+		def: 30,
+		spd: 3,
+		wrath: 3,
+		iq: 3,
+		strength: 6,
+		actions: [global.actionLibrary.attack, global.actionLibrary.enemyToxicSting, global.actionLibrary.enemyHarden],
+		sprites: {idle: sEnemy},
+		xpValue: 200,
+		coin: 75,
+		stunned: false,
+		mutatedHand: false,
+		itchy: false,
+		itnum: 0,
+		poisoned: false,
+		ponum: 0,
+		poison: "",
+		jackpot: false,
+		blind: false,
+		sleep: false,
+		noNut: false,
+		afo: false,
+		offenseup: false,
+		defdown: false,
+		aftype: "",
+		anum: 0,
+		hyper: false,
+		hynum: 0,
+		magicBarrier: false,
+		holdingPresent: false,
+		isCharging: false,
+		isInvisible: false,
+		behaviors: [
+			AI_StallerDOT(global.actionLibrary.enemyToxicSting, global.actionLibrary.enemyHarden),
+			AI_BasicAttack()
+		],
+		AIscript: EnemyAIRunBehaviors
 	}
-}
-
+};

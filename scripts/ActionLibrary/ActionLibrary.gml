@@ -16,33 +16,64 @@ global.actionLibrary =
 		effectOnTarget: MODE.ALWAYS,
 		func: function(_user, _targets)
 		{
+			var _target = _targets[0];
+			
+			// If target is invisible in stealth, attack misses!
+			if (variable_instance_exists(_target, "isInvisible") && _target.isInvisible)
+			{
+				instance_create_depth
+				(
+					_target.x,
+					_target.y - 20,
+					_target.depth - 1,
+					oBattleFloatingText,
+					{font: fnMother3, col: c_yellow, text: "Concealed!"}
+				);
+				return;
+			}
+			
+			// If target has a magic barrier, physical attack is completely blocked without breaking the barrier!
+			// Only VZI or barrier-breaking skills can shatter it.
+			if (variable_instance_exists(_target, "magicBarrier") && _target.magicBarrier)
+			{
+				instance_create_depth
+				(
+					_target.x,
+					_target.y - 20,
+					_target.depth - 1,
+					oBattleFloatingText,
+					{font: fnMother3, col: c_aqua, text: "Blocked by Barrier!"}
+				);
+				return;
+			}
+			
 			var _m = CalcHitModifiers(_user);
 			var _b = _m.b;
 			var _blind = _m.blind;
 			var _hit = _m.hit;
 			var _nut = _m.nut;
 			
-			var defActual = _targets[0].def
-			_targets[0].def = (_targets[0].def - (_targets[0].def * _nut))
+			var defActual = _target.def;
+			_target.def = (_target.def - (_target.def * _nut));
 			
-			if(_targets[0].def + _b + _blind >= irandom(100))
+			if(_target.def + _b + _blind >= irandom(100))
 			{
 				//Attack missed
 				instance_create_depth
 				(
-					_targets[0].x,
-					_targets[0].y - 20, // Sobe um pouco para não encavalar com o texto de dano
-					_targets[0].depth - 1,
+					_target.x,
+					_target.y - 20,
+					_target.depth - 1,
 					oBattleFloatingText,
 					{font: fnMother3, col: c_yellow, text: "Missed!"}
-				)
+				);
 			}
 			else
 			{
-				var _damage = ceil(_user.strength + random_range(-_user.strength * 0.25, _user.strength * 0.25))
-				BattleChangeHP(_targets[0], -_damage)
+				var _damage = ceil(_user.strength + random_range(-_user.strength * 0.25, _user.strength * 0.25));
+				BattleChangeHP(_target, -_damage);
 			}
-			_targets[0].def = defActual
+			_target.def = defActual;
 		}
 	}
 	,
@@ -2492,8 +2523,246 @@ global.actionLibrary =
 			BattleChangePP(_user, -ppCost)
 			if(!instance_exists(oBattle)) obj_player.x = irandom(100)
 		}
+	},
+	// =========================================================================
+	// ENEMY ACTIONS (MODULAR AI SKILLS)
+	// =========================================================================
+	enemyHeal:
+	{
+		name: "Soothing Mist",
+		swappable: false,
+		description: "{0} casts Soothing Mist!",
+		subMenu: -1,
+		useOverwold: false,
+		targetRequired: true,
+		targetEnemyByDefault: false,
+		targetAll: MODE.NEVER,
+		userAnimation: "attack",
+		effectSprite: sAttack,
+		effectOnTarget: MODE.ALWAYS,
+		func: function(_user, _targets)
+		{
+			if (_targets[0].hp > 0) {
+				BattleChangeHP(_targets[0], 28);
+			}
+		}
+	},
+	enemyBarrier:
+	{
+		name: "Guard Shield",
+		swappable: false,
+		description: "{0} raises a protective barrier!",
+		subMenu: -1,
+		useOverwold: false,
+		targetRequired: true,
+		targetEnemyByDefault: false,
+		targetAll: MODE.NEVER,
+		userAnimation: "attack",
+		effectSprite: sAttack,
+		effectOnTarget: MODE.ALWAYS,
+		func: function(_user, _targets)
+		{
+			_targets[0].magicBarrier = true;
+			instance_create_depth
+			(
+				_targets[0].x,
+				_targets[0].y - 20,
+				_targets[0].depth - 1,
+				oBattleFloatingText,
+				{font: fnMother3, col: c_aqua, text: "Barrier!"}
+			);
+		}
+	},
+	enemyChargeSpell:
+	{
+		name: "Mana Surge",
+		swappable: false,
+		description: "{0} is chanting a devastating spell!",
+		subMenu: -1,
+		useOverwold: false,
+		targetRequired: false,
+		targetEnemyByDefault: false,
+		targetAll: MODE.NEVER,
+		userAnimation: "attack",
+		effectSprite: sAttack1,
+		effectOnTarget: MODE.ALWAYS,
+		func: function(_user, _targets)
+		{
+			instance_create_depth
+			(
+				_user.x,
+				_user.y - 20,
+				_user.depth - 1,
+				oBattleFloatingText,
+				{font: fnMother3, col: c_yellow, text: "Charging!"}
+			);
+		}
+	},
+	enemyMegaBlast:
+	{
+		name: "Giga Blast",
+		swappable: false,
+		description: "{0} unleashes Giga Blast!",
+		subMenu: -1,
+		useOverwold: false,
+		targetRequired: true,
+		targetEnemyByDefault: true,
+		targetAll: MODE.ALWAYS,
+		userAnimation: "attack",
+		effectSprite: sNuke,
+		effectOnTarget: MODE.ALWAYS,
+		func: function(_user, _targets)
+		{
+			for (var i = 0; i < array_length(_targets); i++)
+			{
+				if (_targets[i].hp > 0)
+				{
+					var _damage = irandom_range(10, 14);
+					BattleChangeHP(_targets[i], -_damage);
+				}
+			}
+		}
+	},
+	enemyVanish:
+	{
+		name: "Shadow Veil",
+		swappable: false,
+		description: "{0} vanishes into the shadows!",
+		subMenu: -1,
+		useOverwold: false,
+		targetRequired: false,
+		targetEnemyByDefault: false,
+		targetAll: MODE.NEVER,
+		userAnimation: "attack",
+		effectSprite: sAttack1,
+		effectOnTarget: MODE.ALWAYS,
+		func: function(_user, _targets)
+		{
+			_user.isInvisible = true;
+			_user.image_alpha = 0.4;
+			instance_create_depth
+			(
+				_user.x,
+				_user.y - 20,
+				_user.depth - 1,
+				oBattleFloatingText,
+				{font: fnMother3, col: c_ltgray, text: "Vanished!"}
+			);
+		}
+	},
+	enemyAmbush:
+	{
+		name: "Shadow Strike",
+		swappable: false,
+		description: "{0} strikes from the shadows!",
+		subMenu: -1,
+		useOverwold: false,
+		targetRequired: true,
+		targetEnemyByDefault: true,
+		targetAll: MODE.NEVER,
+		userAnimation: "attack",
+		effectSprite: sAttack,
+		effectOnTarget: MODE.ALWAYS,
+		func: function(_user, _targets)
+		{
+			_user.isInvisible = false;
+			_user.image_alpha = 1.0;
+			var _damage = irandom_range(14, 18);
+			BattleChangeHP(_targets[0], -_damage);
+			instance_create_depth
+			(
+				_targets[0].x,
+				_targets[0].y - 30,
+				_targets[0].depth - 1,
+				oBattleFloatingText,
+				{font: fnMother3, col: c_red, text: "CRITICAL!"}
+			);
+		}
+	},
+	enemyHypno:
+	{
+		name: "Drowsy Dust",
+		swappable: false,
+		description: "{0} scatters Drowsy Dust!",
+		subMenu: -1,
+		useOverwold: false,
+		targetRequired: true,
+		targetEnemyByDefault: true,
+		targetAll: MODE.NEVER,
+		userAnimation: "attack",
+		effectSprite: sAttack1,
+		effectOnTarget: MODE.ALWAYS,
+		func: function(_user, _targets)
+		{
+			_targets[0].sleep = true;
+			instance_create_depth
+			(
+				_targets[0].x,
+				_targets[0].y - 20,
+				_targets[0].depth - 1,
+				oBattleFloatingText,
+				{font: fnMother3, col: c_yellow, text: "Sleeping!"}
+			);
+		}
+	},
+	enemyToxicSting:
+	{
+		name: "Venom Needle",
+		swappable: false,
+		description: "{0} shoots a Venom Needle!",
+		subMenu: -1,
+		useOverwold: false,
+		targetRequired: true,
+		targetEnemyByDefault: true,
+		targetAll: MODE.NEVER,
+		userAnimation: "attack",
+		effectSprite: sAttack,
+		effectOnTarget: MODE.ALWAYS,
+		func: function(_user, _targets)
+		{
+			var _damage = irandom_range(5, 7);
+			BattleChangeHP(_targets[0], -_damage);
+			_targets[0].poisoned = true;
+			_targets[0].poison = "a";
+			_targets[0].ponum = 1;
+			instance_create_depth
+			(
+				_targets[0].x,
+				_targets[0].y - 20,
+				_targets[0].depth - 1,
+				oBattleFloatingText,
+				{font: fnMother3, col: c_fuchsia, text: "Poisoned!"}
+			);
+		}
+	},
+	enemyHarden:
+	{
+		name: "Shell Harden",
+		swappable: false,
+		description: "{0} hardens its defense!",
+		subMenu: -1,
+		useOverwold: false,
+		targetRequired: false,
+		targetEnemyByDefault: false,
+		targetAll: MODE.NEVER,
+		userAnimation: "attack",
+		effectSprite: sAttack,
+		effectOnTarget: MODE.ALWAYS,
+		func: function(_user, _targets)
+		{
+			_user.def += 30;
+			_user.magicBarrier = true;
+			instance_create_depth
+			(
+				_user.x,
+				_user.y - 20,
+				_user.depth - 1,
+				oBattleFloatingText,
+				{font: fnMother3, col: c_aqua, text: "Def +30 & Barrier!"}
+			);
+		}
 	}
-}
+};
 
 enum MODE
 {

@@ -18,7 +18,7 @@ var _enemies = [
 	{data: global.enemies.boar, col: 1, row: 1}
 ];
 
-if (!instance_exists(obj_encounter_transition)) {
+if (!instance_exists(oBattle) && !instance_exists(obj_encounter_transition)) {
 	var _trans = instance_create_depth(0, 0, -9999, obj_encounter_transition);
 	_trans.swirl_color = _adv_color;
 	_trans.enemies_data = _enemies;
@@ -26,4 +26,4 @@ if (!instance_exists(obj_encounter_transition)) {
 	_trans.timer = 1500;
 	_trans.enemy_instance = id;
 }
-
+
