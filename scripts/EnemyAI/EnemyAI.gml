@@ -272,6 +272,24 @@ function AI_StallerDOT(_dotAction = undefined, _stallAction = undefined) {
 	});
 }
 
+/// @func AI_Buffer(_buffAction)
+/// Support behavior: casts a buff action (see EnemyBuffAction) on the first living ally,
+/// self included, that does not have its buff yet. Does nothing once everyone is covered.
+function AI_Buffer(_buffAction) {
+	var _cfg = {
+		cfgAction: _buffAction
+	};
+	return method(_cfg, function(_unit) {
+		var _allies = EnemyAIGetAliveEnemies();
+		for (var i = 0; i < array_length(_allies); i++) {
+			if (!BuffHas(_allies[i], cfgAction.buffKey)) {
+				return [cfgAction, _allies[i]];
+			}
+		}
+		return undefined;
+	});
+}
+
 /// @func AI_BasicAttack(_attackAction)
 /// Default basic attack targeting a random party member.
 function AI_BasicAttack(_attackAction = undefined) {

@@ -76,6 +76,13 @@ for(var i = 0; i < array_length(global.party); i++)
 	array_push(units, partyUnits[i])
 }
 
+// Resist / immunity / buff data: clone per-unit copies and apply passives
+buffTurnStartedAt = -1 // turnCount of the last BuffTurnStart, so it fires once per turn
+for(var i = 0; i < array_length(units); i++)
+{
+	BuffInitUnit(units[i])
+}
+
 // Speed-based Turn Order (with tie-breaking)
 unitTurnOrder = []
 array_copy(unitTurnOrder, 0, units, 0, array_length(units))
@@ -113,7 +120,19 @@ function BattleStateSelectAction()
 			battleState = BattleStateVictoryCheck
 			exit;
 		}
-	
+
+		//Start-of-turn buff hooks (once per turn, this state can run again while a menu is open)
+		if(buffTurnStartedAt != turnCount)
+		{
+			buffTurnStartedAt = turnCount
+			BuffTurnStart(_unit)
+			if(_unit.hp <= 0)
+			{
+				battleState = BattleStateVictoryCheck
+				exit;
+			}
+		}
+
 		//Select an action to perform
 		//If unit is player controlled
 		if(_unit.object_index == oBattleUnitPC)
@@ -273,6 +292,8 @@ function BattleStatePerformAction()
 
 function BattleStateVictoryCheck()
 {
+	BuffCleanupDeadSources() // buffs that end when their giver dies
+
 	if(global.escape)
 	{
 		for(var i = 0; i < array_length(partyUnits); i++)
@@ -525,6 +546,11 @@ function BattleStateVictoryCheck()
 function BattleStateTurnProgression()
 {
 	battleText = "" //Reset battle text
+
+	//End-of-turn buff hooks + duration countdown for the unit that just acted
+	var _endedUnit = unitTurnOrder[turn]
+	if(instance_exists(_endedUnit)) && (_endedUnit.hp > 0) BuffTurnEnd(_endedUnit)
+
 	turnCount++
 	turn++
 	//Loop Turns

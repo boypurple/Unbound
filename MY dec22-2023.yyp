@@ -78,7 +78,7 @@
   "isEcma":false,
   "LibraryEmitters":[],
   "MetaData":{
-    "IDEVersion":"2026.0.0.16",
+    "IDEVersion":"2026.1.0.27",
   },
   "name":"MY dec22-2023",
   "resources":[
@@ -118,6 +118,7 @@
     {"id":{"name":"obj_test_assassin","path":"objects/obj_test_assassin/obj_test_assassin.yy",},},
     {"id":{"name":"obj_test_enemy_base","path":"objects/obj_test_enemy_base/obj_test_enemy_base.yy",},},
     {"id":{"name":"obj_test_medic","path":"objects/obj_test_medic/obj_test_medic.yy",},},
+    {"id":{"name":"obj_test_resist","path":"objects/obj_test_resist/obj_test_resist.yy",},},
     {"id":{"name":"obj_test_synergy","path":"objects/obj_test_synergy/obj_test_synergy.yy",},},
     {"id":{"name":"obj_test_viper","path":"objects/obj_test_viper/obj_test_viper.yy",},},
     {"id":{"name":"obj_test_wizard","path":"objects/obj_test_wizard/obj_test_wizard.yy",},},
@@ -177,6 +178,8 @@
     {"id":{"name":"ActionLibrary","path":"scripts/ActionLibrary/ActionLibrary.yy",},},
     {"id":{"name":"Battle_Menu","path":"scripts/Battle_Menu/Battle_Menu.yy",},},
     {"id":{"name":"BattleFunctions","path":"scripts/BattleFunctions/BattleFunctions.yy",},},
+    {"id":{"name":"BattleTags","path":"scripts/BattleTags/BattleTags.yy",},},
+    {"id":{"name":"BuffSystem","path":"scripts/BuffSystem/BuffSystem.yy",},},
     {"id":{"name":"ChatterboxAddFindReplace","path":"scripts/ChatterboxAddFindReplace/ChatterboxAddFindReplace.yy",},},
     {"id":{"name":"ChatterboxAddFunction","path":"scripts/ChatterboxAddFunction/ChatterboxAddFunction.yy",},},
     {"id":{"name":"ChatterboxContinue","path":"scripts/ChatterboxContinue/ChatterboxContinue.yy",},},

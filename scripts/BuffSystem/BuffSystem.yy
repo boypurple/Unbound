@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"BuffSystem",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"BuffSystem",
+  "parent":{
+    "name":"Jyotis",
+    "path":"folders/Scripts/Jyotis.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

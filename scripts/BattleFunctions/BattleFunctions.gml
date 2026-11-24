@@ -10,17 +10,19 @@ function NewEncounter(_enemies, _bg, _creator = id)
 	)
 }
 
-function BattleChangeHP(_target, _amount, _AliveDeadOrEither = 0)
+function BattleChangeHP(_target, _amount, _AliveDeadOrEither = 0, _damageColor = undefined)
 {
 	//AliveDeadOrEither: 0 = alive only, 1 = dead only, 2 = any
+	//_damageColor: optional text color for damage (used by BattleDealDamage to show weak / resist)
 	var _failed = false
 	if(_AliveDeadOrEither == 0) && (_target.hp <= 0) _failed = true
 	if(_AliveDeadOrEither == 1) && (_target.hp > 0) _failed = true
-	
+
 	_target.sleep = false
-	
+
 	var _col = c_white
 	if(_amount > 0) _col = c_lime
+	if(_amount < 0) && (!is_undefined(_damageColor)) _col = _damageColor
 	if(_failed)
 	{
 		_col = c_white
@@ -35,6 +37,84 @@ function BattleChangeHP(_target, _amount, _AliveDeadOrEither = 0)
 		{font: fnMother3, col: _col, text: string(_amount)}
 	)
 	if(!_failed) _target.hp = clamp(_target.hp + _amount, 0, _target.hpMax)
+}
+
+/// @func BattleFloatText(unit, text, color, [yOffset])
+/// Floating popup above a battle unit.
+function BattleFloatText(_unit, _text, _col = c_white, _yOffset = 20)
+{
+	instance_create_depth
+	(
+		_unit.x,
+		_unit.y - _yOffset,
+		_unit.depth - 1,
+		oBattleFloatingText,
+		{font: fnMother3, col: _col, text: _text}
+	)
+}
+
+/// @func BattleDealDamage(user, target, amount, [tags])
+/// Single entry point for skill damage. Applies immunity / resist / weakness from the target's tags,
+/// then calls BattleChangeHP. `amount` is the positive base damage rolled by the skill.
+///  - immune to any tag  -> nothing happens, "Immune!" popup, returns 0
+///  - several tags       -> their multipliers multiply together (and so do buffs stacking on one tag)
+///  - weak / resist      -> the damage text is orange / gray instead of white
+/// Returns the damage actually dealt, so the skill can skip side effects (stun, blind...) when it is 0.
+function BattleDealDamage(_user, _target, _amount, _tags = [])
+{
+	// Dead target: let BattleChangeHP show its usual "failed" text
+	if(_target.hp <= 0)
+	{
+		BattleChangeHP(_target, -_amount)
+		return 0
+	}
+
+	for(var i = 0; i < array_length(_tags); i++)
+	{
+		if(BuffIsTagImmune(_target, _tags[i]))
+		{
+			BattleFloatText(_target, "Immune!", c_aqua)
+			return 0
+		}
+	}
+
+	var _mult = 1
+	for(var i = 0; i < array_length(_tags); i++)
+	{
+		_mult *= BuffGetResistMult(_target, _tags[i])
+	}
+
+	var _final = _amount
+	if(_mult != 1) _final = max(1, round(_amount * _mult))
+
+	var _col = undefined
+	if(_mult > 1) _col = DMG_COLOR_WEAK
+	if(_mult < 1) _col = DMG_COLOR_RESIST
+
+	BattleChangeHP(_target, -_final, 0, _col)
+	return _final
+}
+
+/// @func BattleApplyStatus(target, status, [tags])
+/// Asks whether a status effect (STATUS_* macro) may be applied. Returns false and shows "Immune!"
+/// when the target is immune to that status (or to one of `tags`, for skills that have no damage step).
+/// The caller still sets the actual flag, e.g.:  if(BattleApplyStatus(t, STATUS_STUN)) t.stunned = true
+function BattleApplyStatus(_target, _status, _tags = [])
+{
+	for(var i = 0; i < array_length(_tags); i++)
+	{
+		if(BuffIsTagImmune(_target, _tags[i]))
+		{
+			BattleFloatText(_target, "Immune!", c_aqua)
+			return false
+		}
+	}
+	if(BuffIsStatusImmune(_target, _status))
+	{
+		BattleFloatText(_target, "Immune!", c_aqua)
+		return false
+	}
+	return true
 }
 
 function BattleChangePP(_user, _amount, _AliveDeadOrEither = 0)

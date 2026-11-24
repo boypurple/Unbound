@@ -26,6 +26,7 @@ var _in_battle = instance_exists(oBattle);
 if (keyboard_check_pressed(ord("1"))) debug_menu_tab = 0;
 if (keyboard_check_pressed(ord("2"))) debug_menu_tab = 1;
 if (keyboard_check_pressed(ord("3"))) debug_menu_tab = 2;
+if (keyboard_check_pressed(ord("4"))) debug_menu_tab = 3;
 
 if (debug_menu_tab == 0) {
 	// --- Cycle target unit (Q/E) ---
@@ -186,5 +187,61 @@ if (debug_menu_tab == 0) {
 			// Add — deep copy from roster so runtime edits don't corrupt the template
 			array_push(global.party, variable_clone(global.character_roster[party_roster_index]));
 		}
+	}
+} else if (debug_menu_tab == 3) {
+	// --- RESIST / BUFF tab: only meaningful in battle (the data lives on battle units) ---
+	if (_in_battle && array_length(oBattle.units) > 0) {
+		var _unit_count = array_length(oBattle.units);
+		battle_unit_index = clamp(battle_unit_index, 0, _unit_count - 1);
+
+		if (keyboard_check_pressed(ord("E"))) battle_unit_index = (battle_unit_index + 1) mod _unit_count;
+		if (keyboard_check_pressed(ord("Q"))) battle_unit_index = (battle_unit_index - 1 + _unit_count) mod _unit_count;
+
+		var _unit      = oBattle.units[battle_unit_index];
+		var _tag_count = array_length(resist_tag_list);
+
+		// Up/Down: select tag row
+		if (keyboard_check_pressed(vk_up))   resist_row_index = (resist_row_index - 1 + _tag_count) mod _tag_count;
+		if (keyboard_check_pressed(vk_down)) resist_row_index = (resist_row_index + 1) mod _tag_count;
+		var _tag = resist_tag_list[resist_row_index];
+
+		// Left/Right: edit the unit's base multiplier for that tag (Shift = finer step). Never 0 - use [I] for immunity.
+		var _left  = keyboard_check(vk_left);
+		var _right = keyboard_check(vk_right);
+		if (_left || _right) {
+			if (input_cooldown <= 0) {
+				var _step = keyboard_check(vk_shift) ? 0.05 : 0.1;
+				var _cur  = _unit.resist[$ _tag] ?? 1;
+				_unit.resist[$ _tag] = clamp(round((_cur + (_right ? _step : -_step)) * 100) / 100, 0.1, 5);
+				input_cooldown = input_cooldown_max;
+			} else {
+				input_cooldown--;
+			}
+		} else {
+			input_cooldown = 0;
+		}
+
+		// R: reset the tag's base multiplier to normal (x1)
+		if (keyboard_check_pressed(ord("R"))) variable_struct_remove(_unit.resist, _tag);
+
+		// I: toggle the unit's base immunity to the tag (nullifies damage of that tag)
+		if (keyboard_check_pressed(ord("I"))) {
+			var _imm = array_get_index(_unit.immuneTags, _tag);
+			if (_imm >= 0) array_delete(_unit.immuneTags, _imm, 1);
+			else array_push(_unit.immuneTags, _tag);
+		}
+
+		// Z/X: pick a library buff, Enter: apply it to the unit (source = the unit itself), Backspace: remove the newest buff
+		var _buff_count = array_length(buff_pick_keys);
+		if (_buff_count > 0) {
+			if (keyboard_check_pressed(ord("X"))) buff_pick_index = (buff_pick_index + 1) mod _buff_count;
+			if (keyboard_check_pressed(ord("Z"))) buff_pick_index = (buff_pick_index - 1 + _buff_count) mod _buff_count;
+			if (keyboard_check_pressed(vk_enter)) BuffApply(_unit, buff_pick_keys[buff_pick_index], _unit);
+		}
+		if (keyboard_check_pressed(vk_backspace) && array_length(_unit.buffs) > 0) {
+			BuffRemove(_unit.buffs[array_length(_unit.buffs) - 1]);
+		}
+	} else {
+		input_cooldown = 0;
 	}
 }

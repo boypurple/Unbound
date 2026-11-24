@@ -35,3 +35,11 @@ enemy_vision_alpha      = 0.25;
 
 // --- Party editor ---
 party_roster_index = 0;
+
+// --- Resist / buff tab (tab 4, battle only) ---
+// Edits the selected battle unit's own cloned data (BuffInitUnit), never the templates in global.enemies.
+resist_tag_list  = BattleAllTags();
+resist_row_index = 0;
+buff_pick_keys   = variable_struct_get_names(global.buffLibrary);
+array_sort(buff_pick_keys, true);
+buff_pick_index  = 0;

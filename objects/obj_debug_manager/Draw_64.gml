@@ -38,7 +38,7 @@ if (_in_battle) {
 
 // --- Panel size (InventoryTray, nine-slice stretched to fit content — same panel used by oEquipment_UI) ---
 var _pad         = 32;
-var _line        = 32;
+var _line        = (debug_menu_tab == 3) ? 28 : 32; // resist tab is denser
 var _battle_rows = _in_battle ? 4 : 0; // mode/turn/phase/acting lines
 var _stat_rows   = array_length(stat_keys);
 var _content_rows = 3; // title + tab header
@@ -58,6 +58,13 @@ if (debug_menu_tab == 0) {
 	_content_rows += 1 + _loot_rows + 3; // subtitle + loot rows + gap + global rate + footer
 } else if (debug_menu_tab == 2) {
 	_content_rows += 1 + array_length(global.character_roster) + 2; // subtitle + roster + gap + footer
+} else if (debug_menu_tab == 3) {
+	if (_in_battle && _target != undefined) {
+		var _buff_rows = clamp(array_length(_target.buffs), 1, 3);
+		_content_rows += 2 + array_length(resist_tag_list) + 1 + _buff_rows + 1 + 3; // mode + editing + tags + buff header + buffs + picker + 3 footer lines
+	} else {
+		_content_rows += 1; // just the "battle only" message
+	}
 }
 
 var _panel_w = 480;
@@ -84,12 +91,14 @@ draw_set_halign(fa_left);
 _y += _line * 1.4;
 
 // Tab Header
-draw_set_color(debug_menu_tab == 0 ? c_yellow : c_dkgray);
-draw_text(_x, _y, "[1] STATS");
-draw_set_color(debug_menu_tab == 1 ? c_yellow : c_dkgray);
-draw_text(_x + 100, _y, "[2] GLOBAL CONFIG");
-draw_set_color(debug_menu_tab == 2 ? c_yellow : c_dkgray);
-draw_text(_x + 260, _y, "[3] PARTY");
+// Laid out with string_width so labels never overlap, whatever the font width is
+var _tab_labels = ["[1] STATS", "[2] CONFIG", "[3] PARTY", "[4] RESIST"];
+var _tab_x = _x;
+for (var i = 0; i < array_length(_tab_labels); i++) {
+	draw_set_color(debug_menu_tab == i ? c_yellow : c_dkgray);
+	draw_text(_tab_x, _y, _tab_labels[i]);
+	_tab_x += string_width(_tab_labels[i]) + 14;
+}
 _y += _line * 1.2;
 
 if (debug_menu_tab == 0) {
@@ -243,6 +252,90 @@ if (debug_menu_tab == 0) {
 		draw_text(_x, _y, "Tab: edit party");
 	} else {
 		draw_text(_x, _y, "Up/Down: select   Enter: toggle in/out");
+	}
+} else if (debug_menu_tab == 3) {
+	draw_set_color(c_white);
+	if (!_in_battle || _target == undefined) {
+		draw_set_color(c_gray);
+		draw_text(_x, _y, "Resist/buff: battle only.");
+	} else {
+		draw_text(_x, _y, "Mode: BATTLE");
+		_y += _line;
+		draw_text(_x, _y, $"Editing: {_target_name}");
+		_y += _line;
+
+		// One row per tag: unit's base multiplier -> total after buffs. Immune nullifies the damage.
+		for (var i = 0; i < array_length(resist_tag_list); i++) {
+			var _tag      = resist_tag_list[i];
+			var _selected = (i == resist_row_index);
+			var _base     = _target.resist[$ _tag] ?? 1;
+			var _total    = BuffGetResistMult(_target, _tag);
+			var _immune   = BuffIsTagImmune(_target, _tag);
+
+			if (_selected && debug_edit_focus) {
+				draw_set_alpha(0.25);
+				draw_set_color(c_yellow);
+				draw_rectangle(_x - 6, _y - 2, _x + _row_w, _y + _line - 4, false);
+				draw_set_alpha(1);
+			}
+
+			draw_set_color(_selected && debug_edit_focus ? c_yellow : c_white);
+			draw_text(_x, _y, $"{_selected ? ">" : " "} {_tag}");
+
+			draw_set_halign(fa_right);
+			if (_immune) {
+				draw_set_color(c_aqua);
+				draw_text(_x + _row_w, _y, "IMMUNE");
+			} else {
+				draw_set_color(_total > 1 ? DMG_COLOR_WEAK : (_total < 1 ? DMG_COLOR_RESIST : c_white));
+				draw_text(_x + _row_w, _y, $"base x{_base}  total x{_total}");
+			}
+			draw_set_halign(fa_left);
+			_y += _line;
+		}
+
+		// Active buffs (newest 3)
+		draw_set_color(c_ltgray);
+		draw_text(_x, _y, "Buffs:");
+		_y += _line;
+		var _buff_count = array_length(_target.buffs);
+		if (_buff_count == 0) {
+			draw_set_color(c_gray);
+			draw_text(_x, _y, "  none");
+			_y += _line;
+		} else {
+			for (var i = max(0, _buff_count - 3); i < _buff_count; i++) {
+				var _b     = _target.buffs[i];
+				var _turns = (_b.turnsLeft < 0) ? "perm" : $"{_b.turnsLeft}t";
+				var _src   = (_b.source != noone && instance_exists(_b.source)) ? _b.source.name : "-";
+				draw_set_color(c_white);
+				draw_text(_x, _y, $"  {_b.def.name} ({_turns})");
+				draw_set_halign(fa_right);
+				draw_text(_x + _row_w, _y, $"from {_src}");
+				draw_set_halign(fa_left);
+				_y += _line;
+			}
+		}
+
+		// Library buff picker
+		draw_set_color(c_white);
+		if (array_length(buff_pick_keys) > 0) {
+			draw_text(_x, _y, $"Apply: {buff_pick_keys[buff_pick_index]}");
+		}
+		_y += _line;
+
+		// Footer: short lines so they stay inside the panel
+		draw_set_color(c_ltgray);
+		_y += 6;
+		if (!debug_edit_focus) {
+			draw_text(_x, _y, "Tab: edit resist/buffs");
+		} else {
+			draw_text(_x, _y, "Up/Dn: tag   L/R: mult (Shift: fine)");
+			_y += _line;
+			draw_text(_x, _y, "R: reset   I: immune   Q/E: unit");
+			_y += _line;
+			draw_text(_x, _y, "Z/X: buff   Enter: apply   Bksp: remove");
+		}
 	}
 }
 

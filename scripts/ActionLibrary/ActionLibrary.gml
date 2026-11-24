@@ -4,6 +4,7 @@ global.actionLibrary =
 	attack:
 	{
 		name: "Attack",
+		tags: [TAG_PHYSICAL],
 		swappable: false,
 		description: "{0} attacks!",
 		subMenu: -1,
@@ -71,7 +72,7 @@ global.actionLibrary =
 			else
 			{
 				var _damage = ceil(_user.strength + random_range(-_user.strength * 0.25, _user.strength * 0.25));
-				BattleChangeHP(_target, -_damage);
+				BattleDealDamage(_user, _target, _damage, tags);
 			}
 			_target.def = defActual;
 		}
@@ -80,6 +81,7 @@ global.actionLibrary =
 	stenchA:
 	{
 		name: "Stench A",
+		tags: [TAG_STENCH, TAG_MAGIC],
 		swappable: true,
 		description: "{0} casts Stench A!",
 		subMenu: "VZI Attack Skills",
@@ -118,12 +120,12 @@ global.actionLibrary =
 			else
 			{
 				var _damage = irandom_range(100, 120)
-				BattleChangeHP(_targets[0], -_damage)
+				var _dealt = BattleDealDamage(_user, _targets[0], _damage, tags)
 				// 2. Stun Logic
 				// Defines a chance to stun (e.g., 10%. Change to 100 if guaranteed)
 				var _stunChance = 99; 
 			
-				if (_stunChance >= (irandom(99) + 1)) && (_targets[0].hp > 0)
+				if (_dealt > 0) && (_stunChance >= (irandom(99) + 1)) && (_targets[0].hp > 0) && BattleApplyStatus(_targets[0], STATUS_STUN)
 				{
 					// Applies the stun variable to the target (adapt to the name you use in your project).
 					_targets[0].stunned = true; // ou _targets[0].stunTurns = 1;
@@ -176,6 +178,7 @@ global.actionLibrary =
 	stenchB:
 	{
 		name: "Stench B",
+		tags: [TAG_STENCH, TAG_MAGIC],
 		swappable: true,
 		description: "{0} casts Stench B!",
 		subMenu: "VZI Attack Skills",
@@ -214,12 +217,12 @@ global.actionLibrary =
 			else
 			{
 				var _damage = irandom_range(170, 200)
-				BattleChangeHP(_targets[0], -_damage)
+				var _dealt = BattleDealDamage(_user, _targets[0], _damage, tags)
 				// 2. Stun Logic
 				// Defines a chance to stun (e.g., 10%. Change to 100 if guaranteed)
 				var _stunChance = 10; 
 			
-				if (_stunChance >= (irandom(99) + 1)) && (_targets[0].hp > 0)
+				if (_dealt > 0) && (_stunChance >= (irandom(99) + 1)) && (_targets[0].hp > 0) && BattleApplyStatus(_targets[0], STATUS_STUN)
 				{
 					// Applies the stun variable to the target (adapt to the name you use in your project).
 					_targets[0].stunned = true; // ou _targets[0].stunTurns = 1;
@@ -242,6 +245,7 @@ global.actionLibrary =
 	stenchY:
 	{
 		name: "Stench Y",
+		tags: [TAG_STENCH, TAG_MAGIC],
 		swappable: true,
 		description: "{0} casts Stench Y!",
 		subMenu: "VZI Attack Skills",
@@ -280,12 +284,12 @@ global.actionLibrary =
 			else
 			{
 				var _damage = irandom_range(205, 320)
-				BattleChangeHP(_targets[0], -_damage)
+				var _dealt = BattleDealDamage(_user, _targets[0], _damage, tags)
 				// 2. Stun Logic
 				// Defines a chance to stun (e.g., 10%. Change to 100 if guaranteed)
 				var _stunChance = 10; 
 			
-				if (_stunChance >= (irandom(99) + 1)) && (_targets[0].hp > 0)
+				if (_dealt > 0) && (_stunChance >= (irandom(99) + 1)) && (_targets[0].hp > 0) && BattleApplyStatus(_targets[0], STATUS_STUN)
 				{
 					// Applies the stun variable to the target (adapt to the name you use in your project).
 					_targets[0].stunned = true; // ou _targets[0].stunTurns = 1;
@@ -308,6 +312,7 @@ global.actionLibrary =
 	stenchO:
 	{
 		name: "Stench O",
+		tags: [TAG_STENCH, TAG_MAGIC],
 		swappable: true,
 		description: "{0} casts Stench O!",
 		subMenu: "VZI Attack Skills",
@@ -346,12 +351,12 @@ global.actionLibrary =
 			else
 			{
 				var _damage = irandom_range(325, 450)
-				BattleChangeHP(_targets[0], -_damage)
+				var _dealt = BattleDealDamage(_user, _targets[0], _damage, tags)
 				// 2. Stun Logic
 				// Defines a chance to stun (e.g., 10%. Change to 100 if guaranteed)
 				var _stunChance = 10; 
 			
-				if (_stunChance >= (irandom(99) + 1)) && (_targets[0].hp > 0)
+				if (_dealt > 0) && (_stunChance >= (irandom(99) + 1)) && (_targets[0].hp > 0) && BattleApplyStatus(_targets[0], STATUS_STUN)
 				{
 					// Applies the stun variable to the target (adapt to the name you use in your project).
 					_targets[0].stunned = true; // ou _targets[0].stunTurns = 1;
@@ -374,6 +379,7 @@ global.actionLibrary =
 	nukeA:
 	{
 		name: "Nuke A",
+		tags: [TAG_NUKE, TAG_MAGIC],
 		swappable: true,
 		description: "{0} casts Nuke A!",
 		subMenu: "VZI Attack Skills",
@@ -474,7 +480,7 @@ global.actionLibrary =
 						//_actualTarget.def = (_actualTarget.def - (_actualTarget.def * _nut));
 						// Dano no Inimigo: 88 - 110
 						var _damage = irandom_range(88, 110);
-						BattleChangeHP(_actualTarget, -_damage);
+						BattleDealDamage(_user, _actualTarget, _damage, tags);
 					}
 				}
 				else
@@ -497,7 +503,7 @@ global.actionLibrary =
 					{
 						// Dano no Aliado: 1 - 2
 						var _damage = irandom_range(1, 2);
-						BattleChangeHP(_actualTarget, -_damage);
+						BattleDealDamage(_user, _actualTarget, _damage, tags);
 					}
 				}
 			}
@@ -508,6 +514,7 @@ global.actionLibrary =
 	nukeB:
 	{
 		name: "Nuke B",
+		tags: [TAG_NUKE, TAG_MAGIC],
 		swappable: true,
 		description: "{0} casts Nuke B!",
 		subMenu: "VZI Attack Skills",
@@ -611,13 +618,13 @@ global.actionLibrary =
 						{
 							// Dano Inimigo: 88 - 110
 							var _damage = irandom_range(88, 110);
-							BattleChangeHP(_actualTarget, -_damage);
+							BattleDealDamage(_user, _actualTarget, _damage, tags);
 						}
 						else
 						{
 							// Dano Aliado: 1 - 2
 							var _damage = irandom_range(1, 2);
-							BattleChangeHP(_actualTarget, -_damage);
+							BattleDealDamage(_user, _actualTarget, _damage, tags);
 						}
 					}
 				}
@@ -630,6 +637,7 @@ global.actionLibrary =
 	nukeY:
 	{
 		name: "Nuke Y",
+		tags: [TAG_NUKE, TAG_MAGIC],
 		swappable: true,
 		description: "{0} casts Nuke Y!",
 		subMenu: "VZI Attack Skills",
@@ -733,13 +741,13 @@ global.actionLibrary =
 						{
 							// Dano Inimigo: 88 - 110
 							var _damage = irandom_range(100, 220);
-							BattleChangeHP(_actualTarget, -_damage);
+							BattleDealDamage(_user, _actualTarget, _damage, tags);
 						}
 						else
 						{
 							// Dano Aliado: 1 - 2
 							var _damage = irandom_range(4, 5);
-							BattleChangeHP(_actualTarget, -_damage);
+							BattleDealDamage(_user, _actualTarget, _damage, tags);
 						}
 					}
 				}
@@ -752,6 +760,7 @@ global.actionLibrary =
 	nukeO:
 	{
 		name: "Nuke O",
+		tags: [TAG_NUKE, TAG_MAGIC],
 		swappable: true,
 		description: "{0} casts Nuke O!",
 		subMenu: "VZI Attack Skills",
@@ -855,13 +864,13 @@ global.actionLibrary =
 						{
 							// Dano Inimigo: 88 - 110
 							var _damage = irandom_range(100, 220);
-							BattleChangeHP(_actualTarget, -_damage);
+							BattleDealDamage(_user, _actualTarget, _damage, tags);
 						}
 						else
 						{
 							// Dano Aliado: 1 - 2
 							var _damage = irandom_range(4, 5);
-							BattleChangeHP(_actualTarget, -_damage);
+							BattleDealDamage(_user, _actualTarget, _damage, tags);
 						}
 					}
 				}
@@ -874,6 +883,7 @@ global.actionLibrary =
 	lightningA:
 	{
 		name: "Lightning A",
+		tags: [TAG_LIGHTNING, TAG_MAGIC],
 		swappable: true,
 		description: "{0} casts Lightning A!",
 		subMenu: "VZI Attack Skills",
@@ -948,7 +958,7 @@ global.actionLibrary =
 					
 					// Dano em Coluna: 60 - 70
 					var _damage = irandom_range(60, 70);
-					BattleChangeHP(_actualTarget, -_damage);
+					BattleDealDamage(_user, _actualTarget, _damage, tags);
 				}
 				
 				// Restaura a defesa original para não bugar o status do inimigo
@@ -960,6 +970,7 @@ global.actionLibrary =
 	lightningB:
 	{
 		name: "Lightning B",
+		tags: [TAG_LIGHTNING, TAG_MAGIC],
 		swappable: true,
 		description: "{0} casts Lightning B!",
 		subMenu: "VZI Attack Skills",
@@ -1034,7 +1045,7 @@ global.actionLibrary =
 					
 					// Dano em Coluna: 60 - 70
 					var _damage = irandom_range(90, 120);
-					BattleChangeHP(_actualTarget, -_damage);
+					BattleDealDamage(_user, _actualTarget, _damage, tags);
 				}
 				
 				// Restaura a defesa original para não bugar o status do inimigo
@@ -1046,6 +1057,7 @@ global.actionLibrary =
 	lightningY:
 	{
 		name: "Lightning Y",
+		tags: [TAG_LIGHTNING, TAG_MAGIC],
 		swappable: true,
 		description: "{0} casts Lightning Y!",
 		subMenu: "VZI Attack Skills",
@@ -1120,7 +1132,7 @@ global.actionLibrary =
 					
 					// Dano em Coluna: 60 - 70
 					var _damage = irandom_range(170, 220);
-					BattleChangeHP(_actualTarget, -_damage);
+					BattleDealDamage(_user, _actualTarget, _damage, tags);
 				}
 				
 				// Restaura a defesa original para não bugar o status do inimigo
@@ -1132,6 +1144,7 @@ global.actionLibrary =
 	lightningO:
 	{
 		name: "Lightning O",
+		tags: [TAG_LIGHTNING, TAG_MAGIC],
 		swappable: true,
 		description: "{0} casts Lightning O!",
 		subMenu: "VZI Attack Skills",
@@ -1206,7 +1219,7 @@ global.actionLibrary =
 					
 					// Dano em Coluna: 60 - 70
 					var _damage = irandom_range(240, 310);
-					BattleChangeHP(_actualTarget, -_damage);
+					BattleDealDamage(_user, _actualTarget, _damage, tags);
 				}
 				
 				// Restaura a defesa original para não bugar o status do inimigo
@@ -1218,6 +1231,7 @@ global.actionLibrary =
 	poisonA:
 	{
 		name: "Poison A",
+		tags: [TAG_POISON, TAG_MAGIC],
 		swappable: true,
 		description: "{0} cast Poison A!",
 		subMenu: "VZI Attack Skills",
@@ -1254,7 +1268,7 @@ global.actionLibrary =
 						{font: fnMother3, col: c_yellow, text: "Missed!"}
 					)
 				}
-				else
+				else if (BattleApplyStatus(_targets[i], STATUS_POISON, tags))
 				{
 					// Applies the stun variable to the target (adapt to the name you use in your project).
 					_targets[i].poisoned = true; // ou _targets[0].stunTurns = 1;
@@ -1278,6 +1292,7 @@ global.actionLibrary =
 	poisonB:
 	{
 		name: "Poison B",
+		tags: [TAG_POISON, TAG_MAGIC],
 		swappable: true,
 		description: "{0} cast Poison B!",
 		subMenu: "VZI Attack Skills",
@@ -1314,7 +1329,7 @@ global.actionLibrary =
 						{font: fnMother3, col: c_yellow, text: "Missed!"}
 					)
 				}
-				else
+				else if (BattleApplyStatus(_targets[i], STATUS_POISON, tags))
 				{
 					// Applies the stun variable to the target (adapt to the name you use in your project).
 					_targets[i].poisoned = true; // ou _targets[0].stunTurns = 1;
@@ -1338,6 +1353,7 @@ global.actionLibrary =
 	poisonY:
 	{
 		name: "Poison Y",
+		tags: [TAG_POISON, TAG_MAGIC],
 		swappable: true,
 		description: "{0} cast Poison Y!",
 		subMenu: "VZI Attack Skills",
@@ -1374,7 +1390,7 @@ global.actionLibrary =
 						{font: fnMother3, col: c_yellow, text: "Missed!"}
 					)
 				}
-				else
+				else if (BattleApplyStatus(_targets[i], STATUS_POISON, tags))
 				{
 					// Applies the stun variable to the target (adapt to the name you use in your project).
 					_targets[i].poisoned = true; // ou _targets[0].stunTurns = 1;
@@ -1398,6 +1414,7 @@ global.actionLibrary =
 	poisonO:
 	{
 		name: "Poison O",
+		tags: [TAG_POISON, TAG_MAGIC],
 		swappable: true,
 		description: "{0} cast Poison O!",
 		subMenu: "VZI Attack Skills",
@@ -1434,7 +1451,7 @@ global.actionLibrary =
 						{font: fnMother3, col: c_yellow, text: "Missed!"}
 					)
 				}
-				else
+				else if (BattleApplyStatus(_targets[i], STATUS_POISON, tags))
 				{
 					// Applies the stun variable to the target (adapt to the name you use in your project).
 					_targets[i].poisoned = true; // ou _targets[0].stunTurns = 1;
@@ -1458,6 +1475,7 @@ global.actionLibrary =
 	nocturneA:
 	{
 		name: "Nocturne A",
+		tags: [TAG_NOCTURNE, TAG_MAGIC],
 		swappable: true,
 		description: "{0} casts Nocturne A!",
 		subMenu: "VZI Attack Skills",
@@ -1496,12 +1514,12 @@ global.actionLibrary =
 			else
 			{
 				var _damage = irandom_range(100, 210)
-				BattleChangeHP(_targets[0], -_damage)
+				var _dealt = BattleDealDamage(_user, _targets[0], _damage, tags)
 				// 2. Stun Logic
 				// Defines a chance to stun (e.g., 10%. Change to 100 if guaranteed)
 				var _stunChance = 50; 
 			
-				if (_stunChance >= (irandom(99) + 1)) && (_targets[0].hp > 0)
+				if (_dealt > 0) && (_stunChance >= (irandom(99) + 1)) && (_targets[0].hp > 0) && BattleApplyStatus(_targets[0], STATUS_BLIND)
 				{
 					// Applies the stun variable to the target (adapt to the name you use in your project).
 					_targets[0].blind = true; // ou _targets[0].stunTurns = 1;
@@ -1524,6 +1542,7 @@ global.actionLibrary =
 	nocturneB:
 	{
 		name: "Nocturne B",
+		tags: [TAG_NOCTURNE, TAG_MAGIC],
 		swappable: true,
 		description: "{0} casts Nocturne B!",
 		subMenu: "VZI Attack Skills",
@@ -1562,12 +1581,12 @@ global.actionLibrary =
 			else
 			{
 				var _damage = irandom_range(300, 410)
-				BattleChangeHP(_targets[0], -_damage)
+				var _dealt = BattleDealDamage(_user, _targets[0], _damage, tags)
 				// 2. Stun Logic
 				// Defines a chance to stun (e.g., 10%. Change to 100 if guaranteed)
 				var _stunChance = 35; 
 			
-				if (_stunChance >= (irandom(99) + 1)) && (_targets[0].hp > 0)
+				if (_dealt > 0) && (_stunChance >= (irandom(99) + 1)) && (_targets[0].hp > 0) && BattleApplyStatus(_targets[0], STATUS_BLIND)
 				{
 					// Applies the stun variable to the target (adapt to the name you use in your project).
 					_targets[0].blind = true; // ou _targets[0].stunTurns = 1;
@@ -1590,6 +1609,7 @@ global.actionLibrary =
 	nocturneY:
 	{
 		name: "Nocturne Y",
+		tags: [TAG_NOCTURNE, TAG_MAGIC],
 		swappable: true,
 		description: "{0} casts Nocturne Y!",
 		subMenu: "VZI Attack Skills",
@@ -1631,12 +1651,12 @@ global.actionLibrary =
 				else
 				{
 					var _damage = irandom_range(460, 500)
-					BattleChangeHP(_targets[i], -_damage)
+					var _dealt = BattleDealDamage(_user, _targets[i], _damage, tags)
 					// 2. Stun Logic
 					// Defines a chance to stun (e.g., 10%. Change to 100 if guaranteed)
 					var _stunChance = 25; 
 			
-					if ((_stunChance >= (irandom(99) + 1)) && (_targets[i].hp > 0)) || (_targets[i].holdingPresent)
+					if (_dealt > 0) && (((_stunChance >= (irandom(99) + 1)) && (_targets[i].hp > 0)) || (_targets[i].holdingPresent)) && BattleApplyStatus(_targets[i], STATUS_BLIND)
 					{
 						// Applies the stun variable to the target (adapt to the name you use in your project).
 						_targets[i].blind = true; // ou _targets[0].stunTurns = 1;
@@ -1660,6 +1680,7 @@ global.actionLibrary =
 	shitstormO:
 	{
 		name: "Shitstorm O",
+		tags: [TAG_NOCTURNE, TAG_MAGIC],
 		swappable: true,
 		description: "{0} casts Shitstorm O!",
 		subMenu: "VZI Attack Skills",
@@ -1701,7 +1722,7 @@ global.actionLibrary =
 				else
 				{
 					var _damage = irandom_range(550, 900)
-					BattleChangeHP(_targets[i], -_damage)
+					BattleDealDamage(_user, _targets[i], _damage, tags)
 				}
 				_targets[i].def = defActual
 			}
@@ -2228,6 +2249,7 @@ global.actionLibrary =
 		func: function(_user, _targets)
 		{
 			BattleChangePP(_user, -ppCost)
+			if(!BattleApplyStatus(_targets[0], STATUS_BLIND)) exit
 			_targets[0].blind = true
 			
 			// Exibe um texto flutuante amarelo avisando do Stun
@@ -2261,6 +2283,7 @@ global.actionLibrary =
 			BattleChangePP(_user, -ppCost)
 			for(var i = 0; i < array_length(_targets); i++)
 			{
+				if(!BattleApplyStatus(_targets[i], STATUS_BLIND)) continue
 				_targets[i].blind = true
 				// Exibe um texto flutuante amarelo avisando do Stun
 				instance_create_depth
@@ -2400,6 +2423,7 @@ global.actionLibrary =
 			BattleChangePP(_user, -ppCost)
 			if(global.boss == false)
 			{
+				if(!BattleApplyStatus(_targets[0], STATUS_SLEEP)) exit
 				_targets[0].sleep = true
 			
 				// Exibe um texto flutuante amarelo avisando do Stun
@@ -2436,6 +2460,7 @@ global.actionLibrary =
 			{
 				for(var i = 0; i < array_length(_targets); i++)
 				{
+					if(!BattleApplyStatus(_targets[i], STATUS_SLEEP)) continue
 					_targets[i].sleep = true
 					// Exibe um texto flutuante amarelo avisando do Stun
 					instance_create_depth
@@ -2601,6 +2626,7 @@ global.actionLibrary =
 	enemyMegaBlast:
 	{
 		name: "Giga Blast",
+		tags: [TAG_MAGIC],
 		swappable: false,
 		description: "{0} unleashes Giga Blast!",
 		subMenu: -1,
@@ -2618,7 +2644,7 @@ global.actionLibrary =
 				if (_targets[i].hp > 0)
 				{
 					var _damage = irandom_range(10, 14);
-					BattleChangeHP(_targets[i], -_damage);
+					BattleDealDamage(_user, _targets[i], _damage, tags);
 				}
 			}
 		}
@@ -2653,6 +2679,7 @@ global.actionLibrary =
 	enemyAmbush:
 	{
 		name: "Shadow Strike",
+		tags: [TAG_PHYSICAL],
 		swappable: false,
 		description: "{0} strikes from the shadows!",
 		subMenu: -1,
@@ -2668,7 +2695,7 @@ global.actionLibrary =
 			_user.isInvisible = false;
 			_user.image_alpha = 1.0;
 			var _damage = irandom_range(14, 18);
-			BattleChangeHP(_targets[0], -_damage);
+			BattleDealDamage(_user, _targets[0], _damage, tags);
 			instance_create_depth
 			(
 				_targets[0].x,
@@ -2694,6 +2721,7 @@ global.actionLibrary =
 		effectOnTarget: MODE.ALWAYS,
 		func: function(_user, _targets)
 		{
+			if(!BattleApplyStatus(_targets[0], STATUS_SLEEP)) return;
 			_targets[0].sleep = true;
 			instance_create_depth
 			(
@@ -2708,6 +2736,7 @@ global.actionLibrary =
 	enemyToxicSting:
 	{
 		name: "Venom Needle",
+		tags: [TAG_POISON, TAG_PHYSICAL],
 		swappable: false,
 		description: "{0} shoots a Venom Needle!",
 		subMenu: -1,
@@ -2721,7 +2750,8 @@ global.actionLibrary =
 		func: function(_user, _targets)
 		{
 			var _damage = irandom_range(5, 7);
-			BattleChangeHP(_targets[0], -_damage);
+			var _dealt = BattleDealDamage(_user, _targets[0], _damage, tags);
+			if(_dealt <= 0) || (!BattleApplyStatus(_targets[0], STATUS_POISON)) return;
 			_targets[0].poisoned = true;
 			_targets[0].poison = "a";
 			_targets[0].ponum = 1;
@@ -2761,7 +2791,11 @@ global.actionLibrary =
 				{font: fnMother3, col: c_aqua, text: "Def +30 & Barrier!"}
 			);
 		}
-	}
+	},
+	// Support skills: only apply a buff (fixed buff per skill, see global.buffLibrary)
+	enemyWardStench: EnemyBuffAction("Stench Ward", "{0} casts Stench Ward!", "ward_stench"),
+	enemyWardNuke: EnemyBuffAction("Nuke Ward", "{0} casts Nuke Ward!", "ward_nuke"),
+	enemyWardLightning: EnemyBuffAction("Lightning Ward", "{0} casts Lightning Ward!", "ward_lightning")
 };
 
 enum MODE
