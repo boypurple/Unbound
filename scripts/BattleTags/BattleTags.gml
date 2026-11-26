@@ -21,8 +21,26 @@
 #macro DMG_COLOR_WEAK   c_orange
 #macro DMG_COLOR_RESIST c_gray
 
+// ---- Debug log: true = BattleLog() writes "[Battle] ..." lines to the Output window ----
+#macro DEBUG_BATTLE_LOG false
+
 // ---- Buff durations ----
 #macro BUFF_PERMANENT -1   // never expires (passives)
+
+/// @func BattleLog(text)
+/// Debug line for the resist / immunity / buff system. Does nothing when DEBUG_BATTLE_LOG is false.
+function BattleLog(_text) {
+	if (DEBUG_BATTLE_LOG) show_debug_message("[Battle] " + _text);
+}
+
+/// @func BattleUnitName(unit)
+/// Safe display name for log lines (handles noone / destroyed instances).
+function BattleUnitName(_unit) {
+	// -1 is "no target" (MenuFunctions passes it). It must be checked before instance_exists,
+	// because -1 means `self` there and would print the calling object (oBattle).
+	if (is_undefined(_unit) || _unit == noone || _unit == -1 || !instance_exists(_unit)) return "-";
+	return variable_instance_exists(_unit, "name") ? string(_unit.name) : object_get_name(_unit.object_index);
+}
 
 /// @func BattleAllTags()
 /// Every damage tag, in display order (used by the debug resist tab).

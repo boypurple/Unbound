@@ -2315,11 +2315,8 @@ global.actionLibrary =
 		func: function(_user, _targets)
 		{
 			BattleChangePP(_user, -ppCost)
-			if(_targets[0].hp > 0) && (!_targets[0].defdown)
-			{
-				// Applies the stun variable to the target (adapt to the name you use in your project).
-				_targets[0].defdown = true; // ou _targets[0].stunTurns = 1;
-			}
+			// Timed stat buff (see global.buffLibrary.defense_down); same caster again = refresh
+			if(_targets[0].hp > 0) BuffApply(_targets[0], "defense_down", _user)
 		}
 	}
 	,
@@ -2342,11 +2339,8 @@ global.actionLibrary =
 			BattleChangePP(_user, -ppCost)
 			for(var i = 0; i < array_length(_targets); i++)
 			{
-				if(_targets[i].hp > 0) && (!_targets[i].defdown)
-				{
-					// Applies the stun variable to the target (adapt to the name you use in your project).
-					_targets[i].defdown = true; // ou _targets[0].stunTurns = 1;
-				}
+				// Timed stat buff (see global.buffLibrary.defense_down); same caster again = refresh
+				if(_targets[i].hp > 0) BuffApply(_targets[i], "defense_down", _user)
 			}
 		}
 	}
@@ -2360,7 +2354,7 @@ global.actionLibrary =
 		useOverwold: false,
 		ppCost: 4,
 		targetRequired: true,
-		targetEnemyByDefault: true,
+		targetEnemyByDefault: false, // buff for the party
 		targetAll: MODE.NEVER,
 		userAnimation: "attack",
 		effectSprite: sAttack,
@@ -2368,11 +2362,8 @@ global.actionLibrary =
 		func: function(_user, _targets)
 		{
 			BattleChangePP(_user, -ppCost)
-			if(_targets[0].hp > 0) && (!_targets[0].offenseup)
-			{
-				// Applies the stun variable to the target (adapt to the name you use in your project).
-				_targets[0].offenseup = true; // ou _targets[0].stunTurns = 1;
-			}
+			// Timed stat buff (see global.buffLibrary.offense_up); same caster again = refresh
+			if(_targets[0].hp > 0) BuffApply(_targets[0], "offense_up", _user)
 		}
 	}
 	,
@@ -2385,7 +2376,7 @@ global.actionLibrary =
 		useOverwold: false,
 		ppCost: 8,
 		targetRequired: true,
-		targetEnemyByDefault: true,
+		targetEnemyByDefault: false, // buff for the party
 		targetAll: MODE.ALWAYS,
 		userAnimation: "attack",
 		effectSprite: sAttack,
@@ -2395,11 +2386,8 @@ global.actionLibrary =
 			BattleChangePP(_user, -ppCost)
 			for(var i = 0; i < array_length(_targets); i++)
 			{
-				if(_targets[i].hp > 0) && (!_targets[i].offenseup)
-				{
-					// Applies the stun variable to the target (adapt to the name you use in your project).
-					_targets[i].offenseup = true; // ou _targets[0].stunTurns = 1;
-				}
+				// Timed stat buff (see global.buffLibrary.offense_up); same caster again = refresh
+				if(_targets[i].hp > 0) BuffApply(_targets[i], "offense_up", _user)
 			}
 		}
 	}

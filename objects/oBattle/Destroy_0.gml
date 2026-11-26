@@ -6,6 +6,8 @@ if (variable_instance_exists(id, "partyUnits") && is_array(partyUnits)) {
     for(var i = 0; i < array_length(partyUnits); i++) {
         var _pu = partyUnits[i];
         if (instance_exists(_pu) && i < array_length(global.party)) {
+            // Remove every buff first so their stat changes (Offense Up...) are undone before saving
+            BuffRemoveAll(_pu, "battle ended");
             var _gp = global.party[i];
             _gp.hp = _pu.hp;
             _gp.hpMax = _pu.hpMax;

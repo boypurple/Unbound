@@ -10,8 +10,6 @@ unitTurnOrder = []
 unitRenderOrder = []
 allst = []
 alldef = []
-off = []
-defd = []
 
 turnCount = 0
 roundCount = 0
@@ -80,6 +78,9 @@ for(var i = 0; i < array_length(global.party); i++)
 buffTurnStartedAt = -1 // turnCount of the last BuffTurnStart, so it fires once per turn
 for(var i = 0; i < array_length(units); i++)
 {
+	// Battle-start stats, taken BEFORE passives are applied (unbuffed): BattleClearOnDeath restores these
+	units[i].battleBaseStrength = units[i].strength
+	units[i].battleBaseDef = units[i].def
 	BuffInitUnit(units[i])
 }
 
@@ -228,6 +229,14 @@ function BeginAction(_user, _action, _targets)
 	currentTargets = _targets
 	battleText = string_ext(_action.description, [_user.name])
 	if(!is_array(currentTargets)) currentTargets = [currentTargets]
+	if(DEBUG_BATTLE_LOG)
+	{
+		var _names = []
+		for(var i = 0; i < array_length(currentTargets); i++) array_push(_names, BattleUnitName(currentTargets[i]))
+		//-1 = no target given (menu actions with targetRequired: false, e.g. Nuke picks a random target itself)
+		var _targetText = (!is_array(_targets) && _targets == -1) ? "(skill picks its own target)" : "[" + string_join_ext(", ", _names) + "]"
+		BattleLog(">> " + BattleUnitName(_user) + " uses " + _action.name + " on " + _targetText)
+	}
 	battleWaitTimeRemaining = battleWaitTimeFrames
 	with(_user)
 	{
@@ -292,6 +301,11 @@ function BattleStatePerformAction()
 
 function BattleStateVictoryCheck()
 {
+	// Dead units lose all buffs (except passives), status effects and stat changes
+	for(var i = 0; i < array_length(units); i++)
+	{
+		BattleClearOnDeath(units[i])
+	}
 	BuffCleanupDeadSources() // buffs that end when their giver dies
 
 	if(global.escape)
@@ -323,18 +337,6 @@ function BattleStateVictoryCheck()
 				partyUnits[i].afo = false
 				partyUnits[i].aftype = ""
 				partyUnits[i].anum = 0
-			}
-			
-			if(partyUnits[i].offenseup)
-			{
-				partyUnits[i].strength -= (off[i] * 0.2)
-				partyUnits[i].offenseup = false
-			}
-			
-			if(partyUnits[i].defdown)
-			{
-				partyUnits[i].def -= (defd[i] * 0.2)
-				partyUnits[i].defdown = false
 			}
 			
 			if(partyUnits[i].hyper)
@@ -401,18 +403,6 @@ function BattleStateVictoryCheck()
 				partyUnits[i].afo = false
 				partyUnits[i].aftype = ""
 				partyUnits[i].anum = 0
-			}
-			
-			if(partyUnits[i].offenseup)
-			{
-				partyUnits[i].strength -= (off[i] * 0.2)
-				partyUnits[i].offenseup = false
-			}
-			
-			if(partyUnits[i].defdown)
-			{
-				partyUnits[i].def -= (defd[i] * 0.2)
-				partyUnits[i].defdown = false
 			}
 			
 			if(partyUnits[i].hyper)
@@ -507,18 +497,6 @@ function BattleStateVictoryCheck()
 				partyUnits[i].anum = 0
 			}
 			
-			if(partyUnits[i].offenseup)
-			{
-				partyUnits[i].strength -= (off[i] * 0.2)
-				partyUnits[i].offenseup = false
-			}
-			
-			if(partyUnits[i].defdown)
-			{
-				partyUnits[i].def -= (def[i] * 0.2)
-				partyUnits[i].defdown = false
-			}
-			
 			if(partyUnits[i].hyper)
 			{
 				partyUnits[i].spd -= 1
@@ -592,6 +570,8 @@ function BattleStateTurnProgression()
 			}
 		}
 		
+		var _strBefore = _unit.strength //Debug: compared after the stat effects below
+		var _defBefore = _unit.def
 		if(_unit.afo)
 		{
 			if(_unit.anum <= 0)
@@ -631,41 +611,53 @@ function BattleStateTurnProgression()
 			}
 		}
 		
-		if(_unit.offenseup)
+		//Offense Up / Defense Down are timed buffs now (global.buffLibrary.offense_up / defense_down)
+
+		//Debug: log stat changes made by afo above
+		if(_unit.strength != _strBefore) || (_unit.def != _defBefore)
 		{
-			off[i] = _unit.strength
-			_unit.strength += (_unit.strength * 0.2)
+			BattleLog(BattleUnitName(_unit) + " | stats (afo=" + string(_unit.afo) + " " + _unit.aftype + ")"
+				+ " strength " + string_format(_strBefore, 1, 2) + "->" + string_format(_unit.strength, 1, 2)
+				+ " def " + string_format(_defBefore, 1, 2) + "->" + string_format(_unit.def, 1, 2))
 		}
 		
-		if(_unit.defdown)
+		//Poison immunity gained while poisoned (buff / debug toggle) cures the existing poison.
+		//Queries the immunity directly (not BattleApplyStatus) so the log is not spammed every tick.
+		if(_unit.poisoned) && (_unit.hp > 0) && (BuffIsTagImmune(_unit, TAG_POISON) || BuffIsStatusImmune(_unit, STATUS_POISON))
 		{
-			defd[i] = _unit.def
-			_unit.def += (_unit.def * 0.2)
+			_unit.poisoned = false
+			_unit.ponum = 0
+			_unit.poison = ""
+			BattleFloatText(_unit, "Immune!", c_aqua)
+			BattleLog(BattleUnitName(_unit) + " | poison cured (now immune)")
 		}
-		
-		if(_unit.poisoned)
+
+		//Poison only ticks at the end of the poisoned unit's OWN turn (also when that turn was skipped
+		//by stun / sleep), like buff durations. Before, it ticked after every unit's turn.
+		if(_unit.poisoned) && (_unit == _endedUnit)
 		{
 			if(_unit.ponum >= 1)
 			{
+				//Tick damage goes through BattleDealDamage so TAG_POISON resist / weakness applies
 				switch(_unit.poison)
 				{
 					case "":
 						break
-				
+
 					case "a":
-						BattleChangeHP(_unit, irandom_range(-4, -8), 0)
+						BattleDealDamage(noone, _unit, irandom_range(4, 8), [TAG_POISON])
 						break
-					
+
 					case "b":
-						BattleChangeHP(_unit, irandom_range(-20, -40), 0)
+						BattleDealDamage(noone, _unit, irandom_range(20, 40), [TAG_POISON])
 						break
-					
+
 					case "y":
-						BattleChangeHP(_unit, irandom_range(-50, -80), 0)
+						BattleDealDamage(noone, _unit, irandom_range(50, 80), [TAG_POISON])
 						break
-					
+
 					case "o":
-						BattleChangeHP(_unit, irandom_range(-80, -100), 0)
+						BattleDealDamage(noone, _unit, irandom_range(80, 100), [TAG_POISON])
 						break
 				}
 			}
@@ -677,6 +669,7 @@ function BattleStateTurnProgression()
 				_unit.poisoned = false
 				_unit.ponum = 0
 				_unit.poison = ""
+				BattleLog(BattleUnitName(_unit) + " | poison wore off")
 			}
 		}
 	}

@@ -62,9 +62,19 @@ function BattleFloatText(_unit, _text, _col = c_white, _yOffset = 20)
 /// Returns the damage actually dealt, so the skill can skip side effects (stun, blind...) when it is 0.
 function BattleDealDamage(_user, _target, _amount, _tags = [])
 {
+	// Log prefix: "user -> target | Skill [tags]". With no user (poison tick etc.) it is "target | tick [tags]".
+	var _logHead = ""
+	if(DEBUG_BATTLE_LOG)
+	{
+		var _skill = "tick"
+		if(_user != noone) && (instance_exists(oBattle)) && (is_struct(oBattle.currentAction)) _skill = oBattle.currentAction.name
+		_logHead = (_user != noone ? BattleUnitName(_user) + " -> " : "") + BattleUnitName(_target) + " | " + _skill + " [" + string_join_ext(",", _tags) + "]"
+	}
+
 	// Dead target: let BattleChangeHP show its usual "failed" text
 	if(_target.hp <= 0)
 	{
+		BattleLog(_logHead + " target already dead (failed)")
 		BattleChangeHP(_target, -_amount)
 		return 0
 	}
@@ -73,6 +83,7 @@ function BattleDealDamage(_user, _target, _amount, _tags = [])
 	{
 		if(BuffIsTagImmune(_target, _tags[i]))
 		{
+			BattleLog(_logHead + " IMMUNE (" + _tags[i] + ")")
 			BattleFloatText(_target, "Immune!", c_aqua)
 			return 0
 		}
@@ -91,6 +102,8 @@ function BattleDealDamage(_user, _target, _amount, _tags = [])
 	if(_mult > 1) _col = DMG_COLOR_WEAK
 	if(_mult < 1) _col = DMG_COLOR_RESIST
 
+	BattleLog(_logHead + " base " + string(_amount) + " x" + string_format(_mult, 1, 2) + " = " + string(_final)
+		+ (_mult > 1 ? " (weak)" : (_mult < 1 ? " (resist)" : "")))
 	BattleChangeHP(_target, -_final, 0, _col)
 	return _final
 }
@@ -105,16 +118,81 @@ function BattleApplyStatus(_target, _status, _tags = [])
 	{
 		if(BuffIsTagImmune(_target, _tags[i]))
 		{
+			BattleLog(BattleUnitName(_target) + " | status " + _status + " refused (immune to tag " + _tags[i] + ")")
 			BattleFloatText(_target, "Immune!", c_aqua)
 			return false
 		}
 	}
 	if(BuffIsStatusImmune(_target, _status))
 	{
+		BattleLog(BattleUnitName(_target) + " | status " + _status + " refused (immune)")
 		BattleFloatText(_target, "Immune!", c_aqua)
 		return false
 	}
+	BattleLog(BattleUnitName(_target) + " | status " + _status + " allowed")
 	return true
+}
+
+/// @func BattleClearOnDeath(unit)
+/// Resets a dead unit to a clean state: no buffs (passives stay attached but are inactive while dead,
+/// see BuffOwnerAlive), no status effects, no stat buffs/debuffs. Silent and safe to call repeatedly.
+/// Called from BattleStateVictoryCheck, i.e. AFTER the action finished, so skills that temporarily
+/// change target.def and restore it afterwards cannot overwrite this reset.
+/// Kept on purpose: jackpot (coin reward is read from dead enemies at victory), holdingPresent,
+/// and the base resist / immuneTags / statusImmune data.
+function BattleClearOnDeath(_unit)
+{
+	if(!instance_exists(_unit)) || (_unit.hp > 0) exit
+
+	var _buffsRemoved = BuffClearOnDeath(_unit)
+
+	// Field -> value it is reset to. Fields a unit does not have (e.g. soreT on enemies) are skipped.
+	static _reset =
+	{
+		// status effects
+		stunned: false, blind: false, sleep: false,
+		itchy: false, itnum: 0,
+		poisoned: false, ponum: 0, poison: "",
+		mutatedHand: false, noNut: false, soreT: false,
+		// stat buffs / debuffs (strength and def are restored below)
+		afo: false, aftype: "", anum: 0,
+		offenseup: false, defdown: false,
+		hyper: false, hynum: 0,
+		// other combat flags
+		magicBarrier: false, isCharging: false, isInvisible: false
+	}
+	var _keys = variable_struct_get_names(_reset)
+	var _changed = [] // only for the debug log
+	for(var i = 0; i < array_length(_keys); i++)
+	{
+		if(!variable_instance_exists(_unit, _keys[i])) continue
+		if(variable_instance_get(_unit, _keys[i]) != _reset[$ _keys[i]]) array_push(_changed, _keys[i])
+		variable_instance_set(_unit, _keys[i], _reset[$ _keys[i]])
+	}
+
+	// Undo every stat change by going back to the battle-start values (snapshot in oBattle Create)
+	if(variable_instance_exists(_unit, "battleBaseStrength")) && (_unit.strength != _unit.battleBaseStrength)
+	{
+		array_push(_changed, "strength " + string(_unit.strength) + "->" + string(_unit.battleBaseStrength))
+		_unit.strength = _unit.battleBaseStrength
+	}
+	if(variable_instance_exists(_unit, "battleBaseDef")) && (_unit.def != _unit.battleBaseDef)
+	{
+		array_push(_changed, "def " + string(_unit.def) + "->" + string(_unit.battleBaseDef))
+		_unit.def = _unit.battleBaseDef
+	}
+	// The base values are unbuffed: re-apply the multipliers of the buffs that stay (passives)
+	if(variable_instance_exists(_unit, "buffStatMult"))
+	{
+		_unit.buffStatMult = {}
+		BuffRefreshStats(_unit)
+	}
+
+	// Runs after every action, so only log when something was actually cleared
+	if(_buffsRemoved > 0) || (array_length(_changed) > 0)
+	{
+		BattleLog(BattleUnitName(_unit) + " | died: removed " + string(_buffsRemoved) + " buff(s), reset [" + string_join_ext(", ", _changed) + "]")
+	}
 }
 
 function BattleChangePP(_user, _amount, _AliveDeadOrEither = 0)

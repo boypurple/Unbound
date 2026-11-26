@@ -393,7 +393,7 @@ global.enemies =
 	},
 	resister:
 	{
-		name: "Hardshell Crab",
+		name: "Crab",
 		hp: 70,
 		hpMax: 70,
 		pp: 1,
@@ -402,7 +402,7 @@ global.enemies =
 		spd: 3,
 		wrath: 2,
 		iq: 2,
-		strength: 5,
+		strength: 1,
 		actions: [global.actionLibrary.attack],
 		sprites: {idle: sEnemy},
 		xpValue: 220,
@@ -442,7 +442,7 @@ global.enemies =
 	},
 	nullifier:
 	{
-		name: "Null Spirit",
+		name: "Spirit",
 		hp: 60,
 		hpMax: 60,
 		pp: 1,
@@ -451,7 +451,7 @@ global.enemies =
 		spd: 3,
 		wrath: 2,
 		iq: 2,
-		strength: 5,
+		strength: 1,
 		actions: [global.actionLibrary.attack],
 		sprites: {idle: sEnemy},
 		xpValue: 220,
@@ -491,7 +491,7 @@ global.enemies =
 	},
 	warder:
 	{
-		name: "Ward Shaman",
+		name: "Seer",
 		hp: 55,
 		hpMax: 55,
 		pp: 30,
@@ -500,7 +500,7 @@ global.enemies =
 		spd: 4,
 		wrath: 3,
 		iq: 4,
-		strength: 4,
+		strength: 1,
 		actions: [global.actionLibrary.attack, global.actionLibrary.enemyWardStench, global.actionLibrary.enemyWardNuke, global.actionLibrary.enemyWardLightning],
 		sprites: {idle: sEnemy},
 		xpValue: 240,

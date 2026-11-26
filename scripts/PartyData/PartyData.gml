@@ -37,7 +37,7 @@ global.party =
 		holdingPresent: false,
 		sprites: { /*idle: sChrisU, down: sChrisU*/},
 		actions: [global.actionLibrary.attack, 
-				  global.actionLibrary.stenchB, global.actionLibrary.nukeB, global.actionLibrary.poisonO, 
+				  global.actionLibrary.stenchB, global.actionLibrary.nukeB, global.actionLibrary.poisonA, 
 				  global.actionLibrary.fixUpB, global.actionLibrary.cureO, global.actionLibrary.drainO,
 				  global.actionLibrary.ftsio, global.actionLibrary.weathA, global.actionLibrary.offenseupA,
 				  global.actionLibrary.teleport, global.actionLibrary.favorithingA]
@@ -164,7 +164,7 @@ global.character_roster =
 		holdingPresent: false,
 		sprites: { /*idle: sChrisU, down: sChrisU*/},
 		actions: [global.actionLibrary.attack, 
-				  global.actionLibrary.stenchB, global.actionLibrary.nukeB, global.actionLibrary.poisonO, 
+				  global.actionLibrary.stenchB, global.actionLibrary.nukeB, global.actionLibrary.poisonA, 
 				  global.actionLibrary.fixUpB, global.actionLibrary.cureO, global.actionLibrary.drainO,
 				  global.actionLibrary.ftsio, global.actionLibrary.weathA, global.actionLibrary.offenseupA,
 				  global.actionLibrary.teleport, global.actionLibrary.favorithingA]

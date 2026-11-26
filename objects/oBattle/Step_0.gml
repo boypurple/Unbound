@@ -74,6 +74,13 @@ if(cursor.active)
 					return !_isBlocked; // Retorna true (alvejável) se NÃO estiver bloqueado
 				});
 			}
+			else //Target all mode: every living enemy (cover rule does not apply)
+			{
+				targetSide = array_filter(oBattle.enemyUnits, function(_element, _index)
+				{
+					return _element.hp > 0;
+				});
+			}
 		}
 		else
 		{

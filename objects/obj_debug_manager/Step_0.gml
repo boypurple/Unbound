@@ -239,7 +239,7 @@ if (debug_menu_tab == 0) {
 			if (keyboard_check_pressed(vk_enter)) BuffApply(_unit, buff_pick_keys[buff_pick_index], _unit);
 		}
 		if (keyboard_check_pressed(vk_backspace) && array_length(_unit.buffs) > 0) {
-			BuffRemove(_unit.buffs[array_length(_unit.buffs) - 1]);
+			BuffRemove(_unit.buffs[array_length(_unit.buffs) - 1], "debug");
 		}
 	} else {
 		input_cooldown = 0;
